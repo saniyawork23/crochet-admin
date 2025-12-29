@@ -178,12 +178,12 @@
   <!-- Customer Info -->
   <div class="form-group">
     <label>Customer Name</label>
-    <input type="text" required>
+    <input type="text" id="customerName" required>
   </div>
 
   <div class="form-group">
     <label>Contact Number</label>
-    <input type="tel">
+    <input type="tel" id="contact">
   </div>
 
   <!-- ITEMS SECTION -->
@@ -208,21 +208,21 @@
   <!-- Order Details -->
   <div class="form-group">
     <label>Total Order Amount</label>
-    <input type="number" required>
+    <input type="number" id="total" required>
   </div>
 
   <div class="form-group">
     <label>Date of Purchase</label>
-    <input type="date" required>
+    <input type="date" id="date" required>
   </div>
 
   <div class="form-group">
     <label>Purchase Mode</label>
-    <select required>
-      <option value="">Select</option>
-      <option>Offline</option>
-      <option>Online</option>
-    </select>
+    <select id="mode" required>
+  <option value="">Select</option>
+  <option>Offline</option>
+  <option>Online</option>
+</select>
   </div>
 
   <button type="submit" class="btn-primary">Add Order</button>
@@ -309,3 +309,4 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
 
 </body>
 </html>
+
