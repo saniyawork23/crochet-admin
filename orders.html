@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Crochet Admin – View Orders</title>
 
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
@@ -100,9 +99,30 @@
       font-weight: 500;
     }
 
+    .edit-btn {
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-right: 6px;
+    }
+
+    .delete-btn {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
     .items-row {
-      background: #fafafa;
       display: none;
+      background: #fafafa;
     }
 
     .items-box {
@@ -159,8 +179,8 @@
           <th>Customer</th>
           <th>Total (₹)</th>
           <th>Payment</th>
-          <th>Hearts</th>
           <th>Items</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -180,6 +200,7 @@ async function fetchOrders() {
   tbody.innerHTML = "";
 
   orders.forEach((o, index) => {
+
     const mainRow = document.createElement("tr");
     mainRow.innerHTML = `
       <td>${o.date}</td>
@@ -187,11 +208,12 @@ async function fetchOrders() {
       <td>${o.customerName}</td>
       <td>${o.total}</td>
       <td>${o.mode}</td>
-      <td>${o.heartsEarned}</td>
       <td>
-        <button class="view-btn" onclick="toggleItems(${index})">
-          View Items
-        </button>
+        <button class="view-btn" onclick="toggleItems(${index})">View Items</button>
+      </td>
+      <td>
+        <button class="edit-btn" onclick="editOrder('${o.orderId}')">Edit</button>
+        <button class="delete-btn" onclick="deleteOrder('${o.orderId}')">Delete</button>
       </td>
     `;
 
@@ -235,9 +257,17 @@ function toggleItems(index) {
   row.style.display = row.style.display === "table-row" ? "none" : "table-row";
 }
 
+function editOrder(orderId) {
+  alert("Edit logic coming next 🚧\nOrder ID: " + orderId);
+}
+
+async function deleteOrder(orderId) {
+  if (!confirm("Delete this order?")) return;
+  alert("Delete logic coming next 🚧\nOrder ID: " + orderId);
+}
+
 window.addEventListener("DOMContentLoaded", fetchOrders);
 </script>
 
 </body>
 </html>
-
