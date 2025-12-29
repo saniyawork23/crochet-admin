@@ -232,71 +232,80 @@
     </div>
   </div>
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTXekefgcSPOV16vT4LnRKHc2EVvUEDKSXPvlpoLLze_rULosAb33bf_zsvCIg-kmF/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLws_Xjv-Sc1u-D1gtzYrZfaBEe1H_JVaYcktWP7tyClfORI4HE5SkqyGhNl1IWsRj/exec";
 
 function addItemRow() {
   const container = document.getElementById("itemsContainer");
   const row = document.createElement("div");
   row.className = "item-row";
   row.innerHTML = `
-    <input type="text" placeholder="Item Name" required style="width:150px;">
-    <input type="number" placeholder="Qty" min="1" required>
-    <input type="number" placeholder="Price" required>
+    <input type="text" placeholder="Item Name" required class="item-name" style="width:150px;">
+    <input type="number" placeholder="Qty" min="1" required class="item-qty">
+    <input type="number" placeholder="Price" required class="item-price">
   `;
   container.appendChild(row);
 }
 
-// Collect item data
+// Collect item data as OBJECT ARRAY
 function getItemsData() {
   const rows = document.querySelectorAll("#itemsContainer .item-row");
-  const items = [], quantities = [], prices = [];
+  const items = [];
+
   rows.forEach(r => {
-    const inputs = r.querySelectorAll("input");
-    items.push(inputs[0].value);
-    quantities.push(inputs[1].value);
-    prices.push(inputs[2].value);
+    const name = r.querySelector(".item-name").value;
+    const qty = r.querySelector(".item-qty").value;
+    const price = r.querySelector(".item-price").value;
+
+    items.push({
+      name,
+      qty,
+      price
+    });
   });
-  return { items, quantities, prices };
+
+  return items;
 }
 
 document.getElementById("orderForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  const customerName = this.querySelector('input[type="text"]').value;
-  const contact = this.querySelector('input[type="tel"]').value;
-  const date = this.querySelector('input[type="date"]').value;
-  const mode = this.querySelector('select').value;
-  const total = this.querySelector('input[type="number"]').value;
+  const customerName = document.querySelector("#customerName").value;
+  const contact = document.querySelector("#contact").value;
+  const date = document.querySelector("#date").value;
+  const mode = document.querySelector("#mode").value;
+  const total = document.querySelector("#total").value;
 
-  const { items, quantities, prices } = getItemsData();
+  const items = getItemsData();
 
-  const formData = new URLSearchParams();
-  formData.append("action", "addOrder");
-  formData.append("customerName", customerName);
-  formData.append("contact", contact);
-  formData.append("date", date);
-  formData.append("mode", mode);
-  formData.append("total", total);
-  formData.append("items", items.join(","));
-  formData.append("quantities", quantities.join(","));
-  formData.append("prices", prices.join(","));
+  const params = new URLSearchParams({
+    action: "addOrder",
+    customerName,
+    contact,
+    date,
+    purchaseMode: mode,
+    total,
+    items: JSON.stringify(items)
+  });
 
-  const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
-  const text = await res.text();
-  alert(text);
+  try {
+    const res = await fetch(`${SCRIPT_URL}?${params.toString()}`);
+    const text = await res.text();
+    alert("✅ Order added successfully!");
 
-  this.reset();
-  document.getElementById("itemsContainer").innerHTML = `
-    <div class="item-row">
-      <input type="text" placeholder="Item Name" required style="width:150px;">
-      <input type="number" placeholder="Qty" min="1" required>
-      <input type="number" placeholder="Price" required>
-    </div>
-  `;
+    this.reset();
+    document.getElementById("itemsContainer").innerHTML = `
+      <div class="item-row">
+        <input type="text" placeholder="Item Name" required class="item-name" style="width:150px;">
+        <input type="number" placeholder="Qty" min="1" required class="item-qty">
+        <input type="number" placeholder="Price" required class="item-price">
+      </div>
+    `;
+  } catch (err) {
+    console.error(err);
+    alert("❌ Failed to add order");
+  }
 });
 </script>
-
-
 
 </body>
 </html>
