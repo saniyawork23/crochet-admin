@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crochet Admin – Add Order</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= NAVBAR STYLES ================= */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 30px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      font-size: 22px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #4f46e5;
+    }
+
+    .nav-links a {
+      margin-left: 20px;
+      text-decoration: none;
+      font-size: 14px;
+      color: #444;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: #4f46e5;
+    }
+
+    /* ================= ADD ORDER PAGE ONLY ================= */
+    .add-order-page {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fb;
+      min-height: calc(100vh - 64px);
+      padding-top: 30px;
+    }
+
+    .add-order-page .page-container {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .add-order-page .form-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .add-order-page h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .add-order-page .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 16px;
+    }
+
+    .add-order-page label {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .add-order-page input,
+    .add-order-page select {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    .add-order-page input:focus,
+    .add-order-page select:focus {
+      outline: none;
+      border-color: #8b5cf6;
+    }
+
+    .add-order-page .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .add-order-page .btn-primary:hover {
+      opacity: 0.95;
+    }
+
+    .add-order-page .item-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.add-order-page .item-row input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  width: 100px;
+}
+
+.add-item-btn {
+  background: transparent;
+  border: 1px dashed #8b5cf6;
+  color: #8b5cf6;
+  padding: 8px;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+
+  </style>
+</head>
+
+<body>
+  
+  <!-- ================= NAVBAR ================= -->
+  <div class="navbar">
+    <div class="nav-left">
+      <div class="brand-icon">🧶</div>
+      <div class="brand-name">Crochet Admin</div>
+    </div>
+
+    <div class="nav-links">
+      <a href="index.html">Add Order</a>
+      <a href="orders.html">View Orders</a>
+      <a href="customers.html">Customers</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+  </div>
+
+  <!-- ================= ADD ORDER PAGE ================= -->
+  <div class="add-order-page">
+    <div class="page-container">
+      <div class="form-card">
+        <h2>Add New Order</h2>
+
+        <form id="orderForm">
+
+  <!-- Customer Info -->
+  <div class="form-group">
+    <label>Customer Name</label>
+    <input type="text" required>
+  </div>
+
+  <div class="form-group">
+    <label>Contact Number</label>
+    <input type="tel">
+  </div>
+
+  <!-- ITEMS SECTION -->
+  <h3 style="margin: 20px 0 10px; font-size: 14px; color:#4f46e5;">
+    Items Purchased
+  </h3>
+
+  <div id="itemsContainer">
+
+    <div class="item-row">
+      <input type="text" placeholder="Item Name" required style="width: 150px;">
+      <input type="number" placeholder="Qty" min="1" required>
+      <input type="number" placeholder="Price" required>
+    </div>
+
+  </div>
+
+  <button type="button" class="add-item-btn" onclick="addItemRow()">
+    + Add Item
+  </button>
+
+  <!-- Order Details -->
+  <div class="form-group">
+    <label>Total Order Amount</label>
+    <input type="number" required>
+  </div>
+
+  <div class="form-group">
+    <label>Date of Purchase</label>
+    <input type="date" required>
+  </div>
+
+  <div class="form-group">
+    <label>Purchase Mode</label>
+    <select required>
+      <option value="">Select</option>
+      <option>Offline</option>
+      <option>Online</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn-primary">Add Order</button>
+</form>
+
+      </div>
+    </div>
+  </div>
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTXekefgcSPOV16vT4LnRKHc2EVvUEDKSXPvlpoLLze_rULosAb33bf_zsvCIg-kmF/exec";
+
+function addItemRow() {
+  const container = document.getElementById("itemsContainer");
+  const row = document.createElement("div");
+  row.className = "item-row";
+  row.innerHTML = `
+    <input type="text" placeholder="Item Name" required style="width:150px;">
+    <input type="number" placeholder="Qty" min="1" required>
+    <input type="number" placeholder="Price" required>
+  `;
+  container.appendChild(row);
+}
+
+// Collect item data
+function getItemsData() {
+  const rows = document.querySelectorAll("#itemsContainer .item-row");
+  const items = [], quantities = [], prices = [];
+  rows.forEach(r => {
+    const inputs = r.querySelectorAll("input");
+    items.push(inputs[0].value);
+    quantities.push(inputs[1].value);
+    prices.push(inputs[2].value);
+  });
+  return { items, quantities, prices };
+}
+
+document.getElementById("orderForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const customerName = this.querySelector('input[type="text"]').value;
+  const contact = this.querySelector('input[type="tel"]').value;
+  const date = this.querySelector('input[type="date"]').value;
+  const mode = this.querySelector('select').value;
+  const total = this.querySelector('input[type="number"]').value;
+
+  const { items, quantities, prices } = getItemsData();
+
+  const formData = new URLSearchParams();
+  formData.append("action", "addOrder");
+  formData.append("customerName", customerName);
+  formData.append("contact", contact);
+  formData.append("date", date);
+  formData.append("mode", mode);
+  formData.append("total", total);
+  formData.append("items", items.join(","));
+  formData.append("quantities", quantities.join(","));
+  formData.append("prices", prices.join(","));
+
+  const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
+  const text = await res.text();
+  alert(text);
+
+  this.reset();
+  document.getElementById("itemsContainer").innerHTML = `
+    <div class="item-row">
+      <input type="text" placeholder="Item Name" required style="width:150px;">
+      <input type="number" placeholder="Qty" min="1" required>
+      <input type="number" placeholder="Price" required>
+    </div>
+  `;
+});
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crochet Admin – Edit Order</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= NAVBAR ================= */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 30px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      font-size: 22px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #4f46e5;
+    }
+
+    .nav-links a {
+      margin-left: 20px;
+      text-decoration: none;
+      font-size: 14px;
+      color: #444;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: #4f46e5;
+    }
+
+    /* ================= EDIT ORDER PAGE ================= */
+    .edit-order-page {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fb;
+      min-height: calc(100vh - 64px);
+      padding: 30px;
+    }
+
+    .form-card {
+      background: #ffffff;
+      max-width: 520px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .order-id {
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 16px;
+    }
+
+    label {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #8b5cf6;
+    }
+
+    /* Items */
+    .items-title {
+      margin: 20px 0 10px;
+      font-size: 14px;
+      color: #4f46e5;
+      font-weight: 500;
+    }
+
+    .item-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .item-row input {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 13px;
+    }
+
+    .remove-item {
+      background: #fee2e2;
+      color: #991b1b;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .add-item-btn {
+      background: transparent;
+      border: 1px dashed #8b5cf6;
+      color: #8b5cf6;
+      padding: 8px;
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn-primary {
+      flex: 1;
+      padding: 12px;
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      flex: 1;
+      padding: 12px;
+      background: #e5e7eb;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= NAVBAR ================= -->
+  <div class="navbar">
+    <div class="nav-left">
+      <div class="brand-icon">🧶</div>
+      <div class="brand-name">Crochet Admin</div>
+    </div>
+
+    <div class="nav-links">
+      <a href="index.html">Add Order</a>
+      <a href="orders.html">View Orders</a>
+      <a href="customers.html">Customers</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+  </div>
+
+  <!-- ================= EDIT ORDER PAGE ================= -->
+  <div class="edit-order-page">
+    <div class="form-card">
+
+      <h2>Edit Order</h2>
+      <div class="order-id">Order ID: <span id="orderIdText">ORD_XXXX</span></div>
+
+      <form id="editOrderForm">
+
+        <div class="form-group">
+          <label>Customer Name</label>
+          <input type="text" required>
+        </div>
+
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="tel">
+        </div>
+
+        <div class="items-title">Items Purchased</div>
+
+        <div id="itemsContainer">
+          <div class="item-row">
+            <input type="text" placeholder="Item Name" required>
+            <input type="number" placeholder="Qty" min="1" required>
+            <input type="number" placeholder="Price" required>
+            <button type="button" class="remove-item" onclick="removeItem(this)">✕</button>
+          </div>
+        </div>
+
+        <button type="button" class="add-item-btn" onclick="addItemRow()">+ Add Item</button>
+
+        <div class="form-group">
+          <label>Total Order Amount</label>
+          <input type="number" required>
+        </div>
+
+        <div class="form-group">
+          <label>Purchase Mode</label>
+          <select required>
+            <option>Offline</option>
+            <option>Online</option>
+          </select>
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn-primary">Update Order</button>
+          <button type="button" class="btn-cancel" onclick="window.location.href='orders.html'">
+            Cancel
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= JS (UI ONLY) ================= -->
+   
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTXekefgcSPOV16vT4LnRKHc2EVvUEDKSXPvlpoLLze_rULosAb33bf_zsvCIg-kmF/exec";
+
+// Get orderId from URL
+const params = new URLSearchParams(window.location.search);
+const orderId = params.get("orderId") || "UNKNOWN";
+document.getElementById("orderIdText").innerText = orderId;
+
+function addItemRow() {
+  const container = document.getElementById("itemsContainer");
+  const row = document.createElement("div");
+  row.className = "item-row";
+  row.innerHTML = `
+    <input type="text" placeholder="Item Name" required>
+    <input type="number" placeholder="Qty" min="1" required>
+    <input type="number" placeholder="Price" required>
+    <button type="button" class="remove-item" onclick="removeItem(this)">✕</button>
+  `;
+  container.appendChild(row);
+}
+
+function removeItem(btn) {
+  const container = document.getElementById("itemsContainer");
+  if (container.children.length > 1) btn.parentElement.remove();
+  else alert("At least one item is required.");
+}
+
+async function loadOrder() {
+  const res = await fetch(`${SCRIPT_URL}?action=getOrderById&orderId=${orderId}`);
+  const order = await res.json();
+
+  document.querySelector('input[type="text"]').value = order.customerName || "";
+  document.querySelector('input[type="tel"]').value = order.contact || "";
+  document.querySelector('input[type="date"]').value = order.date || "";
+  document.querySelector('select').value = order.mode || "";
+  document.querySelector('input[type="number"]').value = order.total || 0;
+
+  const container = document.getElementById("itemsContainer");
+  container.innerHTML = "";
+
+  if (order.items) {
+    order.items.forEach((item, idx) => {
+      const row = document.createElement("div");
+      row.className = "item-row";
+      row.innerHTML = `
+        <input type="text" value="${item}" required>
+        <input type="number" value="${order.quantities[idx]}" min="1" required>
+        <input type="number" value="${order.prices[idx]}" required>
+        <button type="button" class="remove-item" onclick="removeItem(this)">✕</button>
+      `;
+      container.appendChild(row);
+    });
+  }
+}
+
+document.getElementById("editOrderForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const customerName = this.querySelector('input[type="text"]').value;
+  const contact = this.querySelector('input[type="tel"]').value;
+  const date = this.querySelector('input[type="date"]').value;
+  const mode = this.querySelector('select').value;
+  const total = this.querySelector('input[type="number"]').value;
+
+  const rows = document.querySelectorAll("#itemsContainer .item-row");
+  const items = [], quantities = [], prices = [];
+  rows.forEach(r => {
+    const inputs = r.querySelectorAll("input");
+    items.push(inputs[0].value);
+    quantities.push(inputs[1].value);
+    prices.push(inputs[2].value);
+  });
+
+  const formData = new URLSearchParams();
+  formData.append("action", "updateOrder");
+  formData.append("orderId", orderId);
+  formData.append("customerName", customerName);
+  formData.append("contact", contact);
+  formData.append("date", date);
+  formData.append("mode", mode);
+  formData.append("total", total);
+  formData.append("items", items.join(","));
+  formData.append("quantities", quantities.join(","));
+  formData.append("prices", prices.join(","));
+
+  const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
+  const text = await res.text();
+  alert(text);
+  window.location.href = "orders.html";
+});
+
+window.addEventListener("DOMContentLoaded", loadOrder);
+</script>
+
+
+</body>
+</html>
