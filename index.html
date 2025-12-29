@@ -247,7 +247,7 @@
     </div>
   </div>
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfaKpgE-cQiUhDc-stxctaSW8kRc9C6LSbZyNNt-Tw7c3cn5PUhBrkXVzFIp62xH3U/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzx8nCPt0lZd837KeIcgEQ6ZekV-w-OBbkOI_4pFPSbhOscNluSPDzYrnY2fu0ujt-L/exec";
 
 function addItemRow() {
   const container = document.getElementById("itemsContainer");
@@ -261,50 +261,44 @@ function addItemRow() {
   container.appendChild(row);
 }
 
-// Collect item data as OBJECT ARRAY
+/* ================= ITEMS COLLECT ================= */
+
 function getItemsData() {
   const rows = document.querySelectorAll("#itemsContainer .item-row");
   const items = [];
 
   rows.forEach(r => {
-    const name = r.querySelector(".item-name").value;
-    const qty = r.querySelector(".item-qty").value;
-    const price = r.querySelector(".item-price").value;
-
     items.push({
-      name,
-      qty,
-      price
+      name: r.querySelector(".item-name").value,
+      qty: r.querySelector(".item-qty").value,
+      price: r.querySelector(".item-price").value
     });
   });
 
   return items;
 }
 
+/* ================= FORM SUBMIT ================= */
+
 document.getElementById("orderForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  const customerName = document.querySelector("#customerName").value;
-  const contact = document.querySelector("#contact").value;
-  const date = document.querySelector("#date").value;
-  const mode = document.querySelector("#mode").value;
-  const total = document.querySelector("#total").value;
-
-  const items = getItemsData();
-
   const params = new URLSearchParams({
     action: "addOrder",
-    customerName,
-    contact,
-    date,
-    purchaseMode: mode,
-    total,
-    items: JSON.stringify(items)
+    customerName: document.getElementById("customerName").value,
+    contact: document.getElementById("contact").value,
+    date: document.getElementById("date").value,
+    purchaseMode: document.getElementById("mode").value,
+    total: document.getElementById("total").value,
+    items: JSON.stringify(getItemsData())
   });
 
   try {
-    const res = await fetch(`${SCRIPT_URL}?${params.toString()}`);
-    const text = await res.text();
+    await fetch(`${SCRIPT_URL}?${params.toString()}`, {
+      method: "GET",
+      mode: "no-cors"
+    });
+
     alert("✅ Order added successfully!");
 
     this.reset();
@@ -322,8 +316,10 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
 });
 </script>
 
+
 </body>
 </html>
+
 
 
 
