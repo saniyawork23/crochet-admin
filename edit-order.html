@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Order</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Assuming same stylesheet as index.html -->
+  <link rel="stylesheet" href="styles.css">
   <style>
-    /* If you have inline overrides for index.html layout */
     body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 20px; }
     .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     h1 { text-align: center; margin-bottom: 20px; }
@@ -52,109 +51,103 @@
             <th>Action</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Items will be dynamically added here -->
-        </tbody>
+        <tbody></tbody>
       </table>
       <button type="button" class="btn add-item" onclick="addItemRow()">Add Item</button>
 
       <label for="total">Total Amount</label>
-      <input type="number" id="total" name="total" required>
+      <input type="number" id="total" name="total" required readonly>
 
       <button type="submit" class="btn">Save Changes</button>
     </form>
   </div>
 
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('orderId');
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const orderId = urlParams.get('orderId');
+const form = document.getElementById('editOrderForm');
+const itemsTableBody = document.querySelector('#itemsTable tbody');
 
-    const form = document.getElementById('editOrderForm');
-    const itemsTableBody = document.querySelector('#itemsTable tbody');
+// Replace this with your actual deployed Apps Script Web App URL
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxvH0taPzoIVcxo9s5M8I1y4gwfPhXCjEOKbIQQWHsAevB7uBZ8wfrJrDZYmEEzUrtv/exec";
 
-    // Fetch order details and prefill form
-    async function loadOrder() {
-      try {
-        const res = await fetch(`https://script.google.com/macros/s/AKfycbxvH0taPzoIVcxo9s5M8I1y4gwfPhXCjEOKbIQQWHsAevB7uBZ8wfrJrDZYmEEzUrtv/exec`);
-        const order = await res.json();
+// Load order and prefill form
+async function loadOrder() {
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=getOrderById&orderId=${orderId}`);
+    const order = await res.json();
 
-        document.getElementById('customerName').value = order.customerName;
-        document.getElementById('contact').value = order.contact;
-        document.getElementById('date').value = order.date;
-        document.getElementById('purchaseMode').value = order.purchaseMode;
-        document.getElementById('total').value = order.total;
+    document.getElementById('customerName').value = order.customerName;
+    document.getElementById('contact').value = order.contact;
+    document.getElementById('date').value = order.date;
+    document.getElementById('purchaseMode').value = order.purchaseMode;
 
-        order.items.forEach(item => addItemRow(item.name, item.qty, item.price));
-      } catch (err) {
-        alert('Failed to load order data: ' + err.message);
-      }
-    }
+    order.items.forEach(item => addItemRow(item.name, item.qty, item.price));
+    updateTotal();
+  } catch (err) {
+    alert('Failed to load order: ' + err.message);
+  }
+}
 
-    function addItemRow(name = '', qty = '', price = '') {
-      const row = document.createElement('tr');
+function addItemRow(name = '', qty = '', price = '') {
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" class="itemName" value="${name}" required></td>
+    <td><input type="number" class="itemQty" value="${qty}" min="1" required></td>
+    <td><input type="number" class="itemPrice" value="${price}" min="0" required></td>
+    <td><button type="button" class="remove-item" onclick="this.closest('tr').remove(); updateTotal()">Remove</button></td>
+  `;
+  itemsTableBody.appendChild(row);
+}
 
-      row.innerHTML = `
-        <td><input type="text" class="itemName" value="${name}" required></td>
-        <td><input type="number" class="itemQty" value="${qty}" min="1" required></td>
-        <td><input type="number" class="itemPrice" value="${price}" min="0" required></td>
-        <td><button type="button" class="remove-item" onclick="this.closest('tr').remove()">Remove</button></td>
-      `;
-      itemsTableBody.appendChild(row);
-      updateTotal();
-    }
+function updateTotal() {
+  let total = 0;
+  document.querySelectorAll('#itemsTable tbody tr').forEach(row => {
+    const qty = Number(row.querySelector('.itemQty').value) || 0;
+    const price = Number(row.querySelector('.itemPrice').value) || 0;
+    total += qty * price;
+  });
+  document.getElementById('total').value = total;
+}
 
-    function updateTotal() {
-      let total = 0;
-      document.querySelectorAll('#itemsTable tbody tr').forEach(row => {
-        const qty = Number(row.querySelector('.itemQty').value) || 0;
-        const price = Number(row.querySelector('.itemPrice').value) || 0;
-        total += qty * price;
-      });
-      document.getElementById('total').value = total;
-    }
+// Recalculate total on input change
+itemsTableBody.addEventListener('input', updateTotal);
 
-    itemsTableBody.addEventListener('input', updateTotal);
+// Handle form submission
+form.addEventListener('submit', async e => {
+  e.preventDefault();
 
-    // Handle form submission
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
+  const items = Array.from(document.querySelectorAll('#itemsTable tbody tr')).map(row => ({
+    name: row.querySelector('.itemName').value,
+    qty: Number(row.querySelector('.itemQty').value),
+    price: Number(row.querySelector('.itemPrice').value)
+  }));
 
-      const items = [];
-      document.querySelectorAll('#itemsTable tbody tr').forEach(row => {
-        items.push({
-          name: row.querySelector('.itemName').value,
-          qty: Number(row.querySelector('.itemQty').value),
-          price: Number(row.querySelector('.itemPrice').value)
-        });
-      });
+  const payload = new URLSearchParams({
+    action: 'updateOrder',
+    orderId: orderId,
+    customerName: form.customerName.value,
+    contact: form.contact.value,
+    date: form.date.value,
+    purchaseMode: form.purchaseMode.value,
+    total: form.total.value,
+    items: JSON.stringify(items)
+  });
 
-      const payload = new URLSearchParams({
-        action: 'updateOrder',
-        orderId: orderId,
-        customerName: form.customerName.value,
-        contact: form.contact.value,
-        date: form.date.value,
-        purchaseMode: form.purchaseMode.value,
-        total: form.total.value,
-        items: JSON.stringify(items)
-      });
-
-      try {
-        const res = await fetch(`https://script.google.com/macros/s/AKfycbywdyecRtrIwdBwDmiwvcZV8kCSS0w4mBd5DmiWxXDqh5b6JlC95_s_xktiq0RWwni9/exec`, {
-          method: 'POST',
-          body: payload
-        });
-        const text = await res.text();
-        alert(text);
-        window.location.href = 'orders.html'; // Redirect back to orders page
-      } catch (err) {
-        alert('Failed to update order: ' + err.message);
-      }
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: payload,
+      mode: 'no-cors' // avoids CORS issues from GitHub Pages
     });
+    alert('Order updated successfully!');
+    window.location.href = 'orders.html';
+  } catch (err) {
+    alert('Failed to update order: ' + err.message);
+  }
+});
 
-    loadOrder();
-  </script>
+loadOrder();
+</script>
 </body>
 </html>
-
-
