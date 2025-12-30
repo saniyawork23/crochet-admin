@@ -303,15 +303,27 @@ function editOrder(orderId) {
   alert("Edit logic next phase 🚧\nOrder ID: " + orderId);
 }
 
-function deleteOrder(orderId) {
-  alert("Delete logic next phase 🚧\nOrder ID: " + orderId);
+async function deleteOrder(orderId) {
+  if (!confirm("Delete this order permanently?")) return;
+
+  const SCRIPT_URL = "YOUR_APPS_SCRIPT_EXEC_URL";
+
+  const res = await fetch(
+    `${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`
+  );
+
+  const text = await res.text();
+  alert(text);
+  fetchOrders(); // refresh table
 }
+
 
 window.addEventListener("DOMContentLoaded", fetchOrders);
 </script>
 
 </body>
 </html>
+
 
 
 
