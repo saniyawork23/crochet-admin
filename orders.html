@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Crochet Admin – View Orders</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
   <style>
     /* ================= NAVBAR ================= */
     .navbar {
@@ -15,19 +17,20 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       font-family: 'Poppins', sans-serif;
     }
+
     .nav-left {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .brand-icon {
-      font-size: 22px;
-    }
+
+    .brand-icon { font-size: 22px; }
     .brand-name {
       font-size: 18px;
       font-weight: 600;
       color: #4f46e5;
     }
+
     .nav-links a {
       margin-left: 20px;
       text-decoration: none;
@@ -35,9 +38,8 @@
       color: #444;
       font-weight: 500;
     }
-    .nav-links a:hover {
-      color: #4f46e5;
-    }
+
+    .nav-links a:hover { color: #4f46e5; }
 
     /* ================= PAGE ================= */
     .orders-page {
@@ -46,6 +48,7 @@
       min-height: calc(100vh - 64px);
       padding: 30px;
     }
+
     .orders-container {
       max-width: 1150px;
       margin: auto;
@@ -54,16 +57,19 @@
       border-radius: 14px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
     }
+
     .orders-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
     }
+
     th {
       background: #f0f1ff;
       padding: 12px;
@@ -71,6 +77,7 @@
       color: #4f46e5;
       text-align: left;
     }
+
     td {
       padding: 12px;
       font-size: 13px;
@@ -78,9 +85,9 @@
       color: #444;
       vertical-align: top;
     }
-    tr:hover {
-      background: #fafafa;
-    }
+
+    tr:hover { background: #fafafa; }
+
     .view-btn {
       background: #e0e7ff;
       color: #3730a3;
@@ -91,6 +98,7 @@
       font-size: 12px;
       font-weight: 500;
     }
+
     .edit-btn {
       background: #4f46e5;
       color: #fff;
@@ -101,6 +109,7 @@
       cursor: pointer;
       margin-right: 6px;
     }
+
     .delete-btn {
       background: #ef4444;
       color: #fff;
@@ -110,163 +119,212 @@
       font-size: 12px;
       cursor: pointer;
     }
+
     .items-row {
       display: none;
       background: #fafafa;
     }
+
     .items-box {
       padding: 15px 25px;
     }
+
     .items-box table {
       width: 100%;
       border-collapse: collapse;
     }
+
     .items-box th {
       background: #f8fafc;
       color: #555;
       font-size: 12px;
     }
+
     .items-box td {
       font-size: 12px;
     }
   </style>
 </head>
+
 <body>
-  <!-- ================= NAVBAR ================= -->
-  <div class="navbar">
-    <div class="nav-left">
-      <div class="brand-icon">🧶</div>
-      <div class="brand-name">Crochet Admin</div>
-    </div>
-    <div class="nav-links">
-      <a href="index.html">Add Order</a>
-      <a href="orders.html">View Orders</a>
-      <a href="customers.html">Customers</a>
-      <a href="dashboard.html">Dashboard</a>
-    </div>
+
+<!-- ================= NAVBAR ================= -->
+<div class="navbar">
+  <div class="nav-left">
+    <div class="brand-icon">🧶</div>
+    <div class="brand-name">Crochet Admin</div>
   </div>
 
-  <!-- ================= ORDERS PAGE ================= -->
-  <div class="orders-page">
-    <div class="orders-container">
-      <div class="orders-header">
-        <h2>Orders</h2>
-      </div>
-      <table id="ordersTable">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Order ID</th>
-            <th>Customer</th>
-            <th>Total (₹)</th>
-            <th>Payment</th>
-            <th>Items</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+  <div class="nav-links">
+    <a href="index.html">Add Order</a>
+    <a href="orders.html">View Orders</a>
+    <a href="customers.html">Customers</a>
+    <a href="dashboard.html">Dashboard</a>
   </div>
+</div>
 
-  <script>
-    const API_KEY = "AIzaSyBOYSx1ViWXNl8OJG0s1aQDjGJm6A8r9dE";
-    const SPREADSHEET_ID = "10Z1De-hhJkihZsncW15xlz-VihhGodcWP1eGWWJ7bNU";
-    const ORDERS_RANGE = "Orders!A2:Z";
-    const ITEMS_RANGE = "Order Items!A2:E";
+<!-- ================= ORDERS PAGE ================= -->
+<div class="orders-page">
+  <div class="orders-container">
 
-    async function fetchSheet(range) {
-      const url = https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY};
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.values || [];
-    }
+    <div class="orders-header">
+      <h2>Orders</h2>
+    </div>
 
-    async function fetchOrders() {
-      const ordersData = await fetchSheet(ORDERS_RANGE);
-      const itemsData = await fetchSheet(ITEMS_RANGE);
+    <table id="ordersTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Total (₹)</th>
+          <th>Payment</th>
+          <th>Items</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-      /* ---------- Map Order Items by OrderID ---------- */
-      const itemsMap = {};
-      itemsData.forEach(row => {
-        const [orderId, item, qty, price] = row;
-        if (!itemsMap[orderId]) itemsMap[orderId] = [];
-        itemsMap[orderId].push({ item, qty: Number(qty), price: Number(price) });
-      });
+  </div>
+</div>
 
-      const tbody = document.querySelector("#ordersTable tbody");
-      tbody.innerHTML = "";
+<script>
+const API_KEY = "AIzaSyBOYSx1ViWXNl8OJG0s1aQDjGJm6A8r9dE";
+const SPREADSHEET_ID = "10Z1De-hhJkihZsncW15xlz-VihhGodcWP1eGWWJ7bNU";
 
-      ordersData.forEach((row, index) => {
-        const [ orderId, customerId, customerName, contact, date, mode, total ] = row;
-        const items = itemsMap[orderId] || [];
+const ORDERS_RANGE = "Orders!A2:Z";
+const ITEMS_RANGE  = "Order Items!A2:E";
 
-        /* -------- Main Order Row -------- */
-        const mainRow = document.createElement("tr");
-        mainRow.innerHTML =
-          <td>${date || ""}</td>
-          <td>${orderId}</td>
-          <td>${customerName}</td>
-          <td>₹${total}</td>
-          <td>${mode}</td>
-          <td>
-            <button class="view-btn" onclick="toggleItems(${index})">
-              View Items (${items.length})
-            </button>
-          </td>
-          <td>
-            <button class="edit-btn" onclick="editOrder('${orderId}')">Edit</button>
-            <button class="delete-btn" onclick="deleteOrder('${orderId}')">Delete</button>
-          </td>
-        ;
+async function fetchSheet(range) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.values || [];
+}
 
-        /* -------- Expandable Items Row -------- */
-        const itemsRow = document.createElement("tr");
-        itemsRow.className = "items-row";
-        itemsRow.id = items-${index};
-        itemsRow.innerHTML =
-          <td colspan="7">
-            <div class="items-box">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Price (₹)</th>
-                    <th>Total (₹)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${
-                    items.length === 0
-                      ? <tr><td colspan="4">No items</td></tr>
-                      : items.map(it =>
-                          <tr>
-                            <td>${it.item}</td>
-                            <td>${it.qty}</td>
-                            <td>${it.price}</td>
-                            <td>${it.qty * it.price}</td>
-                          </tr>
-                        ).join("")
-                  }
-                </tbody>
-              </table>
-            </div>
-          </td>
-        ;
+async function fetchOrders() {
+  const ordersData = await fetchSheet(ORDERS_RANGE);
+  const itemsData  = await fetchSheet(ITEMS_RANGE);
 
-        tbody.appendChild(mainRow);
-        tbody.appendChild(itemsRow);
-      });
-    }
+  /* ---------- Map Order Items by OrderID ---------- */
+  const itemsMap = {};
+  itemsData.forEach(row => {
+    const [orderId, item, qty, price] = row;
+    if (!itemsMap[orderId]) itemsMap[orderId] = [];
+    itemsMap[orderId].push({
+      item,
+      qty: Number(qty),
+      price: Number(price)
+    });
+  });
 
-    function toggleItems(index) {
-      const row = document.getElementById(items-${index});
-      row.style.display = row.style.display === "table-row" ? "none" : "table-row";
-    }
+  const tbody = document.querySelector("#ordersTable tbody");
+  tbody.innerHTML = "";
 
-    function editOrder(orderId) {
-      window.location.href = edit-order.html?orderId=${orderId};
-    }
+  ordersData.forEach((row, index) => {
+    const [
+      orderId,
+      customerId,
+      customerName,
+      contact,
+      date,
+      mode,
+      total
+    ] = row;
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxvH0taPzoIVcxo9s5M8I1y4gwfPhXCjEOKbIQQWHsAevB7uBZ8wfrJrDZYmEE
+    const items = itemsMap[orderId] || [];
+
+    /* -------- Main Order Row -------- */
+    const mainRow = document.createElement("tr");
+    mainRow.innerHTML = `
+      <td>${date || ""}</td>
+      <td>${orderId}</td>
+      <td>${customerName}</td>
+      <td>₹${total}</td>
+      <td>${mode}</td>
+      <td>
+        <button class="view-btn" onclick="toggleItems(${index})">
+          View Items (${items.length})
+        </button>
+      </td>
+      <td>
+        <button class="edit-btn" onclick="editOrder('${orderId}')">Edit</button>
+        <button class="delete-btn" onclick="deleteOrder('${orderId}')">Delete</button>
+      </td>
+    `;
+
+    /* -------- Expandable Items Row -------- */
+    const itemsRow = document.createElement("tr");
+    itemsRow.className = "items-row";
+    itemsRow.id = `items-${index}`;
+    itemsRow.innerHTML = `
+      <td colspan="7">
+        <div class="items-box">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price (₹)</th>
+                <th>Total (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                items.length === 0
+                  ? `<tr><td colspan="4">No items</td></tr>`
+                  : items.map(it => `
+                    <tr>
+                      <td>${it.item}</td>
+                      <td>${it.qty}</td>
+                      <td>${it.price}</td>
+                      <td>${it.qty * it.price}</td>
+                    </tr>
+                  `).join("")
+              }
+            </tbody>
+          </table>
+        </div>
+      </td>
+    `;
+
+    tbody.appendChild(mainRow);
+    tbody.appendChild(itemsRow);
+  });
+}
+
+function toggleItems(index) {
+  const row = document.getElementById(`items-${index}`);
+  row.style.display = row.style.display === "table-row" ? "none" : "table-row";
+}
+
+function editOrder(orderId) {
+  window.location.href = `edit-order.html?orderId=${orderId}`;
+}
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxvH0taPzoIVcxo9s5M8I1y4gwfPhXCjEOKbIQQWHsAevB7uBZ8wfrJrDZYmEEzUrtv/exec";
+async function deleteOrder(orderId) {
+  if (!confirm("Delete this order?")) return;
+
+  try {
+    await fetch(
+      `${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`,
+      {
+        method: "POST",
+        mode: "no-cors"   // 🔑 avoids CORS error
+      }
+    );
+  } catch (e) {
+    // ignore — delete already happens server-side
+  }
+
+  // 🔄 FORCE FULL PAGE REFRESH
+  window.location.href = window.location.href.split('?')[0] + '?nocache=' + Date.now();
+}
+
+window.addEventListener("DOMContentLoaded", fetchOrders);
+</script>
+
+</body>
+</html>
