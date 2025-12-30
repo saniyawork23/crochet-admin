@@ -306,7 +306,7 @@ function editOrder(orderId) {
 async function deleteOrder(orderId) {
   if (!confirm("Delete this order permanently?")) return;
 
-  const SCRIPT_URL = "YOUR_APPS_SCRIPT_EXEC_URL";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaiNXCokyWEo47scppQB6X7RM1jjoBbi2wDmDhmygsKKLoqT4dwB2tYHM0yUGhXidY/exec";
 
   const res = await fetch(
     `${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`
@@ -323,6 +323,7 @@ window.addEventListener("DOMContentLoaded", fetchOrders);
 
 </body>
 </html>
+
 
 
 
