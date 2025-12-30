@@ -225,7 +225,7 @@
 </div>
 
 <script>
-  let ALL_ORDERS = [];
+let ALL_ORDERS = [];
 let ALL_ITEMS_MAP = {};
 
 const API_KEY = "AIzaSyBOYSx1ViWXNl8OJG0s1aQDjGJm6A8r9dE";
@@ -245,15 +245,24 @@ async function fetchOrders() {
   const ordersData = await fetchSheet(ORDERS_RANGE);
   const itemsData  = await fetchSheet(ITEMS_RANGE);
 
-  /* ---------- Map Order Items by OrderID ---------- */
   const itemsMap = {};
-  ALL_ITEMS_MAP = itemsMap;
-ALL_ORDERS = ordersData;
-renderOrders(ALL_ORDERS);
-
+  itemsData.forEach(row => {
+    const [orderId, item, qty, price] = row;
+    if (!itemsMap[orderId]) itemsMap[orderId] = [];
+    itemsMap[orderId].push({
+      item,
+      qty: Number(qty),
+      price: Number(price)
+    });
   });
 
-  function renderOrders(data) {
+  ALL_ITEMS_MAP = itemsMap;
+  ALL_ORDERS = ordersData;
+
+  renderOrders(ALL_ORDERS);
+}
+
+function renderOrders(data) {
   const tbody = document.querySelector("#ordersTable tbody");
   tbody.innerHTML = "";
 
@@ -318,105 +327,30 @@ renderOrders(ALL_ORDERS);
   });
 }
 
-  const tbody = document.querySelector("#ordersTable tbody");
-  tbody.innerHTML = "";
-
-  ordersData.forEach((row, index) => {
-    const [
-      orderId,
-      customerId,
-      customerName,
-      contact,
-      date,
-      mode,
-      total
-    ] = row;
-
-    const items = itemsMap[orderId] || [];
-
-    /* -------- Main Order Row -------- */
-    const mainRow = document.createElement("tr");
-    mainRow.innerHTML = `
-      <td>${date || ""}</td>
-      <td>${orderId}</td>
-      <td>${customerName}</td>
-      <td>₹${total}</td>
-      <td>${mode}</td>
-      <td>
-        <button class="view-btn" onclick="toggleItems(${index})">
-          View Items (${items.length})
-        </button>
-      </td>
-      <td>
-        <button class="delete-btn" onclick="deleteOrder('${orderId}')">Delete</button>
-      </td>
-    `;
-
-    /* -------- Expandable Items Row -------- */
-    const itemsRow = document.createElement("tr");
-    itemsRow.className = "items-row";
-    itemsRow.id = `items-${index}`;
-    itemsRow.innerHTML = `
-      <td colspan="7">
-        <div class="items-box">
-          <table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Price (₹)</th>
-                <th>Total (₹)</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${
-                items.length === 0
-                  ? `<tr><td colspan="4">No items</td></tr>`
-                  : items.map(it => `
-                    <tr>
-                      <td>${it.item}</td>
-                      <td>${it.qty}</td>
-                      <td>${it.price}</td>
-                      <td>${it.qty * it.price}</td>
-                    </tr>
-                  `).join("")
-              }
-            </tbody>
-          </table>
-        </div>
-      </td>
-    `;
-
-    tbody.appendChild(mainRow);
-    tbody.appendChild(itemsRow);
-  });
-}
-
 function toggleItems(index) {
   const row = document.getElementById(`items-${index}`);
   row.style.display = row.style.display === "table-row" ? "none" : "table-row";
 }
 
+/* ================= DELETE ================= */
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHFfhjg6ogP4oOtvJKyGytOau558UrWzwfQIif0L2fBIZ0uEsFUbS2YkmyLVNWW7oo/exec";
+
 async function deleteOrder(orderId) {
   if (!confirm("Delete this order?")) return;
 
   try {
-    await fetch(
-      `${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`,
-      {
-        method: "POST",
-        mode: "no-cors"   // 🔑 avoids CORS error
-      }
-    );
-  } catch (e) {
-    // ignore — delete already happens server-side
-  }
+    await fetch(`${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`, {
+      method: "POST",
+      mode: "no-cors"
+    });
+  } catch (e) {}
 
-  // 🔄 FORCE FULL PAGE REFRESH
-  window.location.href = window.location.href.split('?')[0] + '?nocache=' + Date.now();
+  location.reload();
 }
-  
+
+/* ================= SEARCH ================= */
+
 function filterOrders() {
   const query = document.getElementById("searchInput").value.toLowerCase();
   const rows = document.querySelectorAll("#ordersTable tbody tr");
@@ -425,18 +359,19 @@ function filterOrders() {
     const mainRow = rows[i];
     const itemsRow = rows[i + 1];
 
-    const mainText = mainRow.innerText.toLowerCase();
-    const itemsText = itemsRow.innerText.toLowerCase();
+    const text =
+      mainRow.innerText.toLowerCase() +
+      itemsRow.innerText.toLowerCase();
 
-    const match =
-      mainText.includes(query) || itemsText.includes(query);
-
+    const match = text.includes(query);
     mainRow.style.display = match ? "" : "none";
     itemsRow.style.display = match ? "" : "none";
   }
 }
 
-  function applyFilters() {
+/* ================= FILTERS ================= */
+
+function applyFilters() {
   const fromDate = document.getElementById("fromDate").value;
   const toDate = document.getElementById("toDate").value;
   const mode = document.getElementById("modeFilter").value;
@@ -472,8 +407,10 @@ function clearFilters() {
 window.addEventListener("DOMContentLoaded", fetchOrders);
 </script>
 
+
 </body>
 </html>
+
 
 
 
