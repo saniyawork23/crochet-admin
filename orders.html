@@ -321,13 +321,14 @@ async function deleteOrder(orderId) {
   }
 
   // 🔄 FORCE FULL PAGE REFRESH
-  location.reload(true);
+  window.location.href = window.location.href.split('?')[0] + '?nocache=' + Date.now();
 }
 window.addEventListener("DOMContentLoaded", fetchOrders);
 </script>
 
 </body>
 </html>
+
 
 
 
