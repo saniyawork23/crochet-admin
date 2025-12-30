@@ -303,19 +303,30 @@ function editOrder(orderId) {
   alert("Edit logic next phase 🚧\nOrder ID: " + orderId);
 }
 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaiNXCokyWEo47scppQB6X7RM1jjoBbi2wDmDhmygsKKLoqT4dwB2tYHM0yUGhXidY/exec";
 async function deleteOrder(orderId) {
   if (!confirm("Delete this order permanently?")) return;
 
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaiNXCokyWEo47scppQB6X7RM1jjoBbi2wDmDhmygsKKLoqT4dwB2tYHM0yUGhXidY/exec";
+  try {
+    const res = await fetch(
+      `${SCRIPT_URL}?action=deleteOrder&orderId=${encodeURIComponent(orderId)}`
+    );
 
-  const res = await fetch(
-    `${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`
-  );
+    const text = await res.text();
 
-  const text = await res.text();
-  alert(text);
-  fetchOrders(); // refresh table
+    if (text.toLowerCase().includes("error")) {
+      alert("❌ " + text);
+    } else {
+      alert("✅ " + text);
+      fetchOrders(); // refresh
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("❌ Delete failed. Check console.");
+  }
 }
+
 
 
 window.addEventListener("DOMContentLoaded", fetchOrders);
@@ -323,6 +334,7 @@ window.addEventListener("DOMContentLoaded", fetchOrders);
 
 </body>
 </html>
+
 
 
 
