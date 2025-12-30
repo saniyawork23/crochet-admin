@@ -305,26 +305,16 @@ function editOrder(orderId) {
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyE1ugRiqJDlLQv5be17rHyewTNOk6XPDoyowMIE1dRmgkXO-Eto1TH3eZmqSI5P-wY/exec";
 async function deleteOrder(orderId) {
-  if (!confirm("Delete this order permanently?")) return;
+  if (!confirm("Delete this order?")) return;
 
-  try {
-    const res = await fetch(
-      `${SCRIPT_URL}?action=deleteOrder&orderId=${encodeURIComponent(orderId)}`
-    );
+  fetch(`${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`, {
+    method: "POST",
+    mode: "no-cors"
+  });
 
-    const text = await res.text();
-
-    if (text.toLowerCase().includes("error")) {
-      alert("❌ " + text);
-    } else {
-      alert("✅ " + text);
-      fetchOrders(); // refresh
-    }
-
-  } catch (err) {
-    console.error(err);
-    alert("❌ Delete failed. Check console.");
-  }
+  // ✅ Optimistically update UI
+  alert("Order deleted");
+  fetchOrders();
 }
 
 
@@ -334,6 +324,7 @@ window.addEventListener("DOMContentLoaded", fetchOrders);
 
 </body>
 </html>
+
 
 
 
