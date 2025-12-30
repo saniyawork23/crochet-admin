@@ -157,8 +157,24 @@
   <div class="orders-container">
 
     <div class="orders-header">
-      <h2>Orders</h2>
-    </div>
+  <h2>Orders</h2>
+
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="Search by customer, contact or item..."
+    style="
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 13px;
+      width: 280px;
+      font-family: Poppins, sans-serif;
+    "
+    oninput="filterOrders()"
+  />
+</div>
+
 
     <table id="ordersTable">
       <thead>
@@ -306,12 +322,32 @@ async function deleteOrder(orderId) {
   // 🔄 FORCE FULL PAGE REFRESH
   window.location.href = window.location.href.split('?')[0] + '?nocache=' + Date.now();
 }
+  
+function filterOrders() {
+  const query = document.getElementById("searchInput").value.toLowerCase();
+  const rows = document.querySelectorAll("#ordersTable tbody tr");
+
+  for (let i = 0; i < rows.length; i += 2) {
+    const mainRow = rows[i];
+    const itemsRow = rows[i + 1];
+
+    const mainText = mainRow.innerText.toLowerCase();
+    const itemsText = itemsRow.innerText.toLowerCase();
+
+    const match =
+      mainText.includes(query) || itemsText.includes(query);
+
+    mainRow.style.display = match ? "" : "none";
+    itemsRow.style.display = match ? "" : "none";
+  }
+}
 
 window.addEventListener("DOMContentLoaded", fetchOrders);
 </script>
 
 </body>
 </html>
+
 
 
 
