@@ -14,17 +14,26 @@
       background: #f5f7fb;
     }
 
-    /* NAVBAR */
+    /* ================= NAVBAR ================= */
     .navbar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       padding: 12px 30px;
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,.08);
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      font-family: 'Poppins', sans-serif;
     }
 
-    .brand {
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon { font-size: 22px; }
+
+    .brand-name {
       font-size: 18px;
       font-weight: 600;
       color: #4f46e5;
@@ -33,9 +42,9 @@
     .nav-links a {
       margin-left: 20px;
       text-decoration: none;
+      font-size: 14px;
       color: #444;
       font-weight: 500;
-      font-size: 14px;
     }
 
     .nav-links a:hover { color: #4f46e5; }
