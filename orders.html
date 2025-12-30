@@ -177,10 +177,10 @@
 <!-- ================= FILTERS ================= -->
 <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
   
-  <input type="date" id="fromDate" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
-  <input type="date" id="toDate" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
+  <label>From</label><input type="date" id="fromDate" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
+  <label>To</label><input type="date" id="toDate" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
 
-  <select id="modeFilter" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
+  <label>Mode</label><select id="modeFilter" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
     <option value="">All Modes</option>
     <option value="Online">Online</option>
     <option value="Offline">Offline</option>
@@ -410,6 +410,7 @@ window.addEventListener("DOMContentLoaded", fetchOrders);
 
 </body>
 </html>
+
 
 
 
