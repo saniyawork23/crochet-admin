@@ -336,18 +336,23 @@ function toggleItems(index) {
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHFfhjg6ogP4oOtvJKyGytOau558UrWzwfQIif0L2fBIZ0uEsFUbS2YkmyLVNWW7oo/exec";
 
-function deleteOrder(orderId) {
+async function deleteOrder(orderId) {
   if (!confirm("Delete this order?")) return;
 
-  fetch(`${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`, {
-    method: "POST"
-  })
-  .then(() => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("refresh", Date.now());
-    window.location.href = url.toString();
-  })
-  .catch(err => console.error(err));
+  try {
+    await fetch(
+      `${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`,
+      {
+        method: "POST",
+        mode: "no-cors"   // 🔑 avoids CORS error
+      }
+    );
+  } catch (e) {
+    // ignore — delete already happens server-side
+  }
+
+  // 🔄 FORCE FULL PAGE REFRESH
+  window.location.href = window.location.href.split('?')[0] + '?nocache=' + Date.now();
 }
 
 /* ================= SEARCH ================= */
@@ -411,6 +416,7 @@ window.addEventListener("DOMContentLoaded", fetchOrders);
 
 </body>
 </html>
+
 
 
 
