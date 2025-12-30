@@ -344,6 +344,7 @@ function deleteOrder(orderId) {
   })
   .then(() => location.reload())
   .catch(err => console.error(err));
+  location.href = location.href.split('?')[0] + '?refresh=' + new Date().getTime();
 }
 
 /* ================= SEARCH ================= */
@@ -407,6 +408,7 @@ window.addEventListener("DOMContentLoaded", fetchOrders);
 
 </body>
 </html>
+
 
 
 
