@@ -190,33 +190,71 @@
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlt-dEMURF-uII4QDiqfBzdmYAJJ8hB791z0prkPC-EpVV5yY5cd05zV2_XKwSxFFg/exec";
+const API_KEY = "AIzaSyBOYSx1ViWXNl8OJG0s1aQDjGJm6A8r9dE";
+const SPREADSHEET_ID = "10Z1De-hhJkihZsncW15xlz-VihhGodcWP1eGWWJ7bNU";
+
+const ORDERS_RANGE = "Orders!A2:Z";
+const ITEMS_RANGE  = "Order Items!A2:E";
+
+async function fetchSheet(range) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.values || [];
+}
 
 async function fetchOrders() {
-  const res = await fetch(`${SCRIPT_URL}?action=getOrdersWithDetails`);
-  const orders = await res.json();
+  const ordersData = await fetchSheet(ORDERS_RANGE);
+  const itemsData  = await fetchSheet(ITEMS_RANGE);
+
+  /* ---------- Map Order Items by OrderID ---------- */
+  const itemsMap = {};
+  itemsData.forEach(row => {
+    const [orderId, item, qty, price] = row;
+    if (!itemsMap[orderId]) itemsMap[orderId] = [];
+    itemsMap[orderId].push({
+      item,
+      qty: Number(qty),
+      price: Number(price)
+    });
+  });
 
   const tbody = document.querySelector("#ordersTable tbody");
   tbody.innerHTML = "";
 
-  orders.forEach((o, index) => {
+  ordersData.forEach((row, index) => {
+    const [
+      orderId,
+      customerId,
+      customerName,
+      contact,
+      date,
+      mode,
+      total
+    ] = row;
 
+    const items = itemsMap[orderId] || [];
+
+    /* -------- Main Order Row -------- */
     const mainRow = document.createElement("tr");
     mainRow.innerHTML = `
-      <td>${o.date}</td>
-      <td>${o.orderId}</td>
-      <td>${o.customerName}</td>
-      <td>${o.total}</td>
-      <td>${o.mode}</td>
+      <td>${date || ""}</td>
+      <td>${orderId}</td>
+      <td>${customerName}</td>
+      <td>₹${total}</td>
+      <td>${mode}</td>
       <td>
-        <button class="view-btn" onclick="toggleItems(${index})">View Items</button>
+        <button class="view-btn" onclick="toggleItems(${index})">
+          View Items (${items.length})
+        </button>
       </td>
       <td>
-        <button class="edit-btn" onclick="editOrder('${o.orderId}')">Edit</button>
-        <button class="delete-btn" onclick="deleteOrder('${o.orderId}')">Delete</button>
+        <button class="edit-btn" onclick="editOrder('${orderId}')">Edit</button>
+        <button class="delete-btn" onclick="deleteOrder('${orderId}')">Delete</button>
       </td>
     `;
 
+    /* -------- Expandable Items Row -------- */
     const itemsRow = document.createElement("tr");
     itemsRow.className = "items-row";
     itemsRow.id = `items-${index}`;
@@ -233,14 +271,18 @@ async function fetchOrders() {
               </tr>
             </thead>
             <tbody>
-              ${o.items.map(it => `
-                <tr>
-                  <td>${it.item}</td>
-                  <td>${it.qty}</td>
-                  <td>${it.price}</td>
-                  <td>${it.qty * it.price}</td>
-                </tr>
-              `).join("")}
+              ${
+                items.length === 0
+                  ? `<tr><td colspan="4">No items</td></tr>`
+                  : items.map(it => `
+                    <tr>
+                      <td>${it.item}</td>
+                      <td>${it.qty}</td>
+                      <td>${it.price}</td>
+                      <td>${it.qty * it.price}</td>
+                    </tr>
+                  `).join("")
+              }
             </tbody>
           </table>
         </div>
@@ -258,12 +300,11 @@ function toggleItems(index) {
 }
 
 function editOrder(orderId) {
-  alert("Edit logic coming next 🚧\nOrder ID: " + orderId);
+  alert("Edit logic next phase 🚧\nOrder ID: " + orderId);
 }
 
-async function deleteOrder(orderId) {
-  if (!confirm("Delete this order?")) return;
-  alert("Delete logic coming next 🚧\nOrder ID: " + orderId);
+function deleteOrder(orderId) {
+  alert("Delete logic next phase 🚧\nOrder ID: " + orderId);
 }
 
 window.addEventListener("DOMContentLoaded", fetchOrders);
@@ -271,6 +312,7 @@ window.addEventListener("DOMContentLoaded", fetchOrders);
 
 </body>
 </html>
+
 
 
 
