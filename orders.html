@@ -190,108 +190,76 @@
 </div>
 
 <script>
-const API_KEY = "AIzaSyBOYSx1ViWXNl8OJG0s1aQDjGJm6A8r9dE";
-const SPREADSHEET_ID = "10Z1De-hhJkihZsncW15xlz-VihhGodcWP1eGWWJ7bNU";
-
-const ORDERS_RANGE = "Orders!A2:Z";
-const ITEMS_RANGE  = "Order Items!A2:E";
-
-async function fetchSheet(range) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.values || [];
-}
+const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_URL/exec"; // replace with your deployed script URL
 
 async function fetchOrders() {
-  const ordersData = await fetchSheet(ORDERS_RANGE);
-  const itemsData  = await fetchSheet(ITEMS_RANGE);
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=getOrdersWithDetails`);
+    const orders = await res.json();
 
-  /* ---------- Map Order Items by OrderID ---------- */
-  const itemsMap = {};
-  itemsData.forEach(row => {
-    const [orderId, item, qty, price] = row;
-    if (!itemsMap[orderId]) itemsMap[orderId] = [];
-    itemsMap[orderId].push({
-      item,
-      qty: Number(qty),
-      price: Number(price)
+    const tbody = document.querySelector("#ordersTable tbody");
+    tbody.innerHTML = "";
+
+    orders.forEach((order, index) => {
+      const mainRow = document.createElement("tr");
+      mainRow.innerHTML = `
+        <td>${order.date || ""}</td>
+        <td>${order.orderId}</td>
+        <td>${order.customerName}</td>
+        <td>₹${order.total}</td>
+        <td>${order.purchaseMode}</td>
+        <td>
+          <button class="view-btn" onclick="toggleItems(${index})">
+            View Items (${order.items.length})
+          </button>
+        </td>
+        <td>
+          <button class="edit-btn" onclick="editOrder('${order.orderId}')">Edit</button>
+          <button class="delete-btn" onclick="deleteOrder('${order.orderId}')">Delete</button>
+        </td>
+      `;
+
+      const itemsRow = document.createElement("tr");
+      itemsRow.className = "items-row";
+      itemsRow.id = `items-${index}`;
+      itemsRow.innerHTML = `
+        <td colspan="7">
+          <div class="items-box">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Qty</th>
+                  <th>Price (₹)</th>
+                  <th>Total (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${
+                  order.items.length === 0
+                    ? `<tr><td colspan="4">No items</td></tr>`
+                    : order.items.map(it => `
+                      <tr>
+                        <td>${it.name}</td>
+                        <td>${it.qty}</td>
+                        <td>${it.price}</td>
+                        <td>${it.qty * it.price}</td>
+                      </tr>
+                    `).join("")
+                }
+              </tbody>
+            </table>
+          </div>
+        </td>
+      `;
+
+      tbody.appendChild(mainRow);
+      tbody.appendChild(itemsRow);
     });
-  });
 
-  const tbody = document.querySelector("#ordersTable tbody");
-  tbody.innerHTML = "";
-
-  ordersData.forEach((row, index) => {
-    const [
-      orderId,
-      customerId,
-      customerName,
-      contact,
-      date,
-      mode,
-      total
-    ] = row;
-
-    const items = itemsMap[orderId] || [];
-
-    /* -------- Main Order Row -------- */
-    const mainRow = document.createElement("tr");
-    mainRow.innerHTML = `
-      <td>${date || ""}</td>
-      <td>${orderId}</td>
-      <td>${customerName}</td>
-      <td>₹${total}</td>
-      <td>${mode}</td>
-      <td>
-        <button class="view-btn" onclick="toggleItems(${index})">
-          View Items (${items.length})
-        </button>
-      </td>
-      <td>
-        <button class="edit-btn" onclick="editOrder('${orderId}')">Edit</button>
-        <button class="delete-btn" onclick="deleteOrder('${orderId}')">Delete</button>
-      </td>
-    `;
-
-    /* -------- Expandable Items Row -------- */
-    const itemsRow = document.createElement("tr");
-    itemsRow.className = "items-row";
-    itemsRow.id = `items-${index}`;
-    itemsRow.innerHTML = `
-      <td colspan="7">
-        <div class="items-box">
-          <table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Price (₹)</th>
-                <th>Total (₹)</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${
-                items.length === 0
-                  ? `<tr><td colspan="4">No items</td></tr>`
-                  : items.map(it => `
-                    <tr>
-                      <td>${it.item}</td>
-                      <td>${it.qty}</td>
-                      <td>${it.price}</td>
-                      <td>${it.qty * it.price}</td>
-                    </tr>
-                  `).join("")
-              }
-            </tbody>
-          </table>
-        </div>
-      </td>
-    `;
-
-    tbody.appendChild(mainRow);
-    tbody.appendChild(itemsRow);
-  });
+  } catch (err) {
+    console.error("Error fetching orders:", err);
+  }
 }
 
 function toggleItems(index) {
@@ -303,43 +271,22 @@ function editOrder(orderId) {
   window.location.href = `edit-order.html?orderId=${orderId}`;
 }
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxvH0taPzoIVcxo9s5M8I1y4gwfPhXCjEOKbIQQWHsAevB7uBZ8wfrJrDZYmEEzUrtv/exec";
 async function deleteOrder(orderId) {
   if (!confirm("Delete this order?")) return;
 
   try {
-    await fetch(
-      `${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`,
-      {
-        method: "POST",
-        mode: "no-cors"   // 🔑 avoids CORS error
-      }
-    );
-
-  } catch (e) {
-    // ignore — delete already happens server-side
+    await fetch(`${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`, {
+      method: "POST"
+    });
+    // refresh orders
+    fetchOrders();
+  } catch (err) {
+    console.error("Error deleting order:", err);
   }
-
-  // 🔄 FORCE FULL PAGE REFRESH
-  window.location.href = window.location.href.split('?')[0] + '?nocache=' + Date.now();
 }
+
 window.addEventListener("DOMContentLoaded", fetchOrders);
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
