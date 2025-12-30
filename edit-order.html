@@ -75,7 +75,7 @@
     // Fetch order details and prefill form
     async function loadOrder() {
       try {
-        const res = await fetch(`https://script.google.com/macros/s/YOUR_DEPLOYED_URL/exec?action=getOrderById&orderId=${orderId}`);
+        const res = await fetch(`https://script.google.com/macros/s/AKfycbxvH0taPzoIVcxo9s5M8I1y4gwfPhXCjEOKbIQQWHsAevB7uBZ8wfrJrDZYmEEzUrtv/exec`);
         const order = await res.json();
 
         document.getElementById('customerName').value = order.customerName;
@@ -156,4 +156,5 @@
   </script>
 </body>
 </html>
+
 
