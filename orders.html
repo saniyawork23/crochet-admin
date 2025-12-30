@@ -300,7 +300,7 @@ function toggleItems(index) {
 }
 
 function editOrder(orderId) {
-  alert("Edit logic next phase 🚧\nOrder ID: " + orderId);
+  window.location.href = `edit-order.html?orderId=${orderId}`;
 }
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywdyecRtrIwdBwDmiwvcZV8kCSS0w4mBd5DmiWxXDqh5b6JlC95_s_xktiq0RWwni9/exec";
@@ -328,6 +328,7 @@ window.addEventListener("DOMContentLoaded", fetchOrders);
 
 </body>
 </html>
+
 
 
 
