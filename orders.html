@@ -342,9 +342,12 @@ function deleteOrder(orderId) {
   fetch(`${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`, {
     method: "POST"
   })
-  .then(() => location.reload())
+  .then(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("refresh", Date.now());
+    window.location.href = url.toString();
+  })
   .catch(err => console.error(err));
-  location.href = location.href.split('?')[0] + '?refresh=' + new Date().getTime();
 }
 
 /* ================= SEARCH ================= */
@@ -408,6 +411,7 @@ window.addEventListener("DOMContentLoaded", fetchOrders);
 
 </body>
 </html>
+
 
 
 
