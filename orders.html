@@ -174,6 +174,36 @@
     oninput="filterOrders()"
   />
 </div>
+<!-- ================= FILTERS ================= -->
+<div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
+  
+  <input type="date" id="fromDate" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
+  <input type="date" id="toDate" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
+
+  <select id="modeFilter" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
+    <option value="">All Modes</option>
+    <option value="Online">Online</option>
+    <option value="Offline">Offline</option>
+  </select>
+
+  <input type="number" id="minAmount" placeholder="Min ₹"
+         style="width:100px;padding:8px;border-radius:8px;border:1px solid #ddd;">
+
+  <input type="number" id="maxAmount" placeholder="Max ₹"
+         style="width:100px;padding:8px;border-radius:8px;border:1px solid #ddd;">
+
+  <button onclick="applyFilters()"
+          style="padding:8px 14px;border-radius:8px;border:none;
+                 background:#4f46e5;color:white;cursor:pointer;">
+    Apply
+  </button>
+
+  <button onclick="clearFilters()"
+          style="padding:8px 14px;border-radius:8px;border:1px solid #ddd;
+                 background:#fff;cursor:pointer;">
+    Clear
+  </button>
+</div>
 
 
     <table id="ordersTable">
@@ -195,6 +225,9 @@
 </div>
 
 <script>
+  let ALL_ORDERS = [];
+let ALL_ITEMS_MAP = {};
+
 const API_KEY = "AIzaSyBOYSx1ViWXNl8OJG0s1aQDjGJm6A8r9dE";
 const SPREADSHEET_ID = "10Z1De-hhJkihZsncW15xlz-VihhGodcWP1eGWWJ7bNU";
 
@@ -214,15 +247,76 @@ async function fetchOrders() {
 
   /* ---------- Map Order Items by OrderID ---------- */
   const itemsMap = {};
-  itemsData.forEach(row => {
-    const [orderId, item, qty, price] = row;
-    if (!itemsMap[orderId]) itemsMap[orderId] = [];
-    itemsMap[orderId].push({
-      item,
-      qty: Number(qty),
-      price: Number(price)
-    });
+  ALL_ITEMS_MAP = itemsMap;
+ALL_ORDERS = ordersData;
+renderOrders(ALL_ORDERS);
+
   });
+
+  function renderOrders(data) {
+  const tbody = document.querySelector("#ordersTable tbody");
+  tbody.innerHTML = "";
+
+  data.forEach((row, index) => {
+    const [
+      orderId,
+      customerId,
+      customerName,
+      contact,
+      date,
+      mode,
+      total
+    ] = row;
+
+    const items = ALL_ITEMS_MAP[orderId] || [];
+
+    const mainRow = document.createElement("tr");
+    mainRow.innerHTML = `
+      <td>${date || ""}</td>
+      <td>${orderId}</td>
+      <td>${customerName}</td>
+      <td>₹${total}</td>
+      <td>${mode}</td>
+      <td>
+        <button class="view-btn" onclick="toggleItems(${index})">
+          View Items (${items.length})
+        </button>
+      </td>
+      <td>
+        <button class="delete-btn" onclick="deleteOrder('${orderId}')">Delete</button>
+      </td>
+    `;
+
+    const itemsRow = document.createElement("tr");
+    itemsRow.className = "items-row";
+    itemsRow.id = `items-${index}`;
+    itemsRow.innerHTML = `
+      <td colspan="7">
+        <div class="items-box">
+          <table>
+            <tbody>
+              ${
+                items.length === 0
+                  ? `<tr><td colspan="4">No items</td></tr>`
+                  : items.map(it => `
+                    <tr>
+                      <td>${it.item}</td>
+                      <td>${it.qty}</td>
+                      <td>${it.price}</td>
+                      <td>${it.qty * it.price}</td>
+                    </tr>
+                  `).join("")
+              }
+            </tbody>
+          </table>
+        </div>
+      </td>
+    `;
+
+    tbody.appendChild(mainRow);
+    tbody.appendChild(itemsRow);
+  });
+}
 
   const tbody = document.querySelector("#ordersTable tbody");
   tbody.innerHTML = "";
@@ -342,11 +436,45 @@ function filterOrders() {
   }
 }
 
+  function applyFilters() {
+  const fromDate = document.getElementById("fromDate").value;
+  const toDate = document.getElementById("toDate").value;
+  const mode = document.getElementById("modeFilter").value;
+  const minAmt = Number(document.getElementById("minAmount").value || 0);
+  const maxAmt = Number(document.getElementById("maxAmount").value || Infinity);
+
+  const filtered = ALL_ORDERS.filter(row => {
+    const date = row[4];
+    const purchaseMode = row[5];
+    const total = Number(row[6]);
+
+    if (fromDate && date < fromDate) return false;
+    if (toDate && date > toDate) return false;
+    if (mode && purchaseMode !== mode) return false;
+    if (total < minAmt || total > maxAmt) return false;
+
+    return true;
+  });
+
+  renderOrders(filtered);
+}
+
+function clearFilters() {
+  document.getElementById("fromDate").value = "";
+  document.getElementById("toDate").value = "";
+  document.getElementById("modeFilter").value = "";
+  document.getElementById("minAmount").value = "";
+  document.getElementById("maxAmount").value = "";
+
+  renderOrders(ALL_ORDERS);
+}
+
 window.addEventListener("DOMContentLoaded", fetchOrders);
 </script>
 
 </body>
 </html>
+
 
 
 
