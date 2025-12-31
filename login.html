@@ -83,8 +83,13 @@ async function sha256(text) {
 }
 
 async function login() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value;
+  // 🔒 normalize input
+  const username = document.getElementById("username").value
+    .trim()
+    .toLowerCase();
+
+  const password = document.getElementById("password").value
+    .trim();
 
   const uHash = await sha256(username);
   const pHash = await sha256(password);
