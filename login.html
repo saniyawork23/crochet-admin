@@ -70,39 +70,21 @@ button {
 </div>
 
 <script>
-const USERNAME_HASH = "e4b8f63b5e3c2d243a6ccbe14e5282c897ee88b36dcbc2ef038f5b7ab531f464";
-const PASSWORD_HASH = "c343ec167009d4ded48ff96ec13341f7b1aa070b27cf2108782f42e0f6eb61f0";
+function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
 
-async function sha256(text) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(text);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(hashBuffer))
-    .map(b => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-async function login() {
-  // 🔒 normalize input
-  const username = document.getElementById("username").value
-    .trim()
-    .toLowerCase();
-
-  const password = document.getElementById("password").value
-    .trim();
-
-  const uHash = await sha256(username);
-  const pHash = await sha256(password);
-
-  if (uHash === USERNAME_HASH && pHash === PASSWORD_HASH) {
-    localStorage.setItem("isLoggedIn", "true");
+  if (
+    username === "theCuties_admin8" &&
+    password === "admin@323"
+  ) {
+    localStorage.setItem("adminLoggedIn", "true");
     window.location.href = "dashboard.html";
   } else {
     document.getElementById("error").innerText = "Invalid credentials";
   }
 }
 </script>
-
 
 </body>
 </html>
