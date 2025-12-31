@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f7f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-box {
+  background: #fff;
+  padding: 30px;
+  width: 320px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  text-align: center;
+}
+
+.login-box img {
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="login-box">
+  <img src="logo.png" alt="Logo">
+  <h2>Admin Login</h2>
+
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+
+  <div class="error" id="error"></div>
+</div>
+
+<script>
+const USERNAME_HASH = "4a8b6a27c62b20bb51b7bafeb9ef5c16cc08e7cda58b5f00c77d0e65a59d5b57";
+const PASSWORD_HASH = "7b0c71b5b9c6cc98f4b47f0e94f6cfa8a40a5b74e6a1fde37d399a8ce28ed5c5";
+
+async function sha256(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+
+  const uHash = await sha256(username);
+  const pHash = await sha256(password);
+
+  if (uHash === USERNAME_HASH && pHash === PASSWORD_HASH) {
+    localStorage.setItem("isLoggedIn", "true");
+    window.location.href = "dashboard.html";
+  } else {
+    document.getElementById("error").innerText = "Invalid credentials";
+  }
+}
+</script>
+
+
+</body>
+</html>
