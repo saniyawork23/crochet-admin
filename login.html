@@ -78,7 +78,7 @@ function login() {
     username === "theCuties_admin8" &&
     password === "admin@323"
   ) {
-    localStorage.setItem("adminLoggedIn", "true");
+    localStorage.setItem("isLoggedIn", "true");
     window.location.href = "dashboard.html";
   } else {
     document.getElementById("error").innerText = "Invalid credentials";
