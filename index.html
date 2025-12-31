@@ -162,6 +162,12 @@ if (localStorage.getItem("isLoggedIn") !== "true") {
   window.location.href = "login.html";
 }
 </script>
+<script>
+function logout() {
+  localStorage.removeItem("isLoggedIn");
+  window.location.href = "login.html";
+}
+</script>
 
 </head>
 
@@ -337,6 +343,7 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
 
 </body>
 </html>
+
 
 
 
