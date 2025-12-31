@@ -108,7 +108,31 @@
     canvas {
       max-height: 300px;
     }
+
+    .logout-btn {
+  background: crimson;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
   </style>
+
+  <script>
+if (localStorage.getItem("isLoggedIn") !== "true") {
+  window.location.href = "login.html";
+}
+</script>
+
+  <script>
+function logout() {
+  localStorage.removeItem("isLoggedIn");
+  window.location.href = "login.html";
+}
+</script>
+
 </head>
 
 <body>
@@ -127,6 +151,7 @@
     <a href="orders.html">View Orders</a>
     <a href="customers.html">Customers</a>
     <a href="dashboard.html">Dashboard</a>
+    <button onclick="logout()" class="logout-btn">Logout</button>
   </div>
 </div>
 
