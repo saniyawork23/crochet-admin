@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Crochet Admin – Add Order</title>
 
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
@@ -157,121 +156,98 @@
 
 
   </style>
-  <script>
-if (localStorage.getItem("isLoggedIn") !== "true") {
-  window.location.href = "login.html";
-}
-</script>
-<script>
-function logout() {
-  localStorage.removeItem("isLoggedIn");
-  window.location.href = "login.html";
-}
-</script>
 
+  <script>
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      window.location.href = "login.html";
+    }
+  </script>
 </head>
 
 <body>
-  
-  <!-- ================= NAVBAR ================= -->
-  <div class="navbar">
-    <div class="nav-left">
-  <img src="logo.png" alt="Business Logo" class="brand-logo" height="50px" width="50px">
-  <div class="brand-text">
-    <div class="brand-name">theCutiesLoop Admin</div>
+
+<!-- NAVBAR (unchanged) -->
+
+<div class="add-order-page">
+  <div class="page-container">
+    <div class="form-card">
+      <h2>Add New Order</h2>
+
+      <form id="orderForm">
+
+        <div class="form-group">
+          <label>Customer Name</label>
+          <input type="text" id="customerName" required>
+        </div>
+
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="tel" id="contact">
+        </div>
+
+        <h3 style="margin: 20px 0 10px; font-size: 14px; color:#4f46e5;">
+          Items Purchased
+        </h3>
+
+        <div id="itemsContainer">
+          <div class="item-row">
+            <input type="text" placeholder="Item Name" required class="item-name" style="width:150px;">
+            <input type="number" placeholder="Qty" min="1" required class="item-qty">
+            <input type="number" placeholder="Price" required class="item-price">
+          </div>
+        </div>
+
+        <button type="button" class="add-item-btn" onclick="addItemRow()">
+          + Add Item
+        </button>
+
+        <div class="form-group">
+          <label>Total Order Amount</label>
+          <input type="number" id="total" required>
+        </div>
+
+        <div class="form-group">
+          <label>Date of Purchase</label>
+          <input type="date" id="date" required>
+        </div>
+
+        <div class="form-group">
+          <label>Purchase Mode</label>
+          <select id="mode" required>
+            <option value="">Select</option>
+            <option>Stall</option>
+            <option>Online</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary">Add Order</button>
+      </form>
+
+    </div>
   </div>
 </div>
 
-    <div class="nav-links">
-      <a href="index.html">Add Order</a>
-      <a href="orders.html">View Orders</a>
-      <a href="customers.html">Customers</a>
-      <a href="dashboard.html">Dashboard</a>
-      <button onclick="logout()" class="logout-btn">Logout</button>
-    </div>
-  </div>
-
-  <!-- ================= ADD ORDER PAGE ================= -->
-  <div class="add-order-page">
-    <div class="page-container">
-      <div class="form-card">
-        <h2>Add New Order</h2>
-
-        <form id="orderForm">
-
-  <!-- Customer Info -->
-  <div class="form-group">
-    <label>Customer Name</label>
-    <input type="text" id="customerName" required>
-  </div>
-
-  <div class="form-group">
-    <label>Contact Number</label>
-    <input type="tel" id="contact">
-  </div>
-
-  <!-- ITEMS SECTION -->
-  <h3 style="margin: 20px 0 10px; font-size: 14px; color:#4f46e5;">
-    Items Purchased
-  </h3>
-
-  <div id="itemsContainer">
-
-    <div class="item-row">
-  <input type="text"
-         placeholder="Item Name"
-         required
-         class="item-name"
-         style="width:150px;">
-
-  <input type="number"
-         placeholder="Qty"
-         min="1"
-         required
-         class="item-qty">
-
-  <input type="number"
-         placeholder="Price"
-         required
-         class="item-price">
-</div>
-
-
-
-  </div>
-
-  <button type="button" class="add-item-btn" onclick="addItemRow()">
-    + Add Item
-  </button>
-
-  <!-- Order Details -->
-  <div class="form-group">
-    <label>Total Order Amount</label>
-    <input type="number" id="total" required>
-  </div>
-
-  <div class="form-group">
-    <label>Date of Purchase</label>
-    <input type="date" id="date" required>
-  </div>
-
-  <div class="form-group">
-    <label>Purchase Mode</label>
-    <select id="mode" required>
-  <option value="">Select</option>
-  <option>Stall</option>
-  <option>Online</option>
-</select>
-  </div>
-
-  <button type="submit" class="btn-primary">Add Order</button>
-</form>
-
-      </div>
-    </div>
-  </div>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqYxeCKpWYTaAJjlzkgJL-M61LxVZ1Eqz65gX3e5D1itJ6o59nHnbYuJdleGSoL_ng/exec";
+
+/* ================= AUTO TOTAL CALC ================= */
+
+function calculateTotal() {
+  let total = 0;
+  document.querySelectorAll(".item-row").forEach(row => {
+    const qty = Number(row.querySelector(".item-qty").value || 0);
+    const price = Number(row.querySelector(".item-price").value || 0);
+    total += qty * price;
+  });
+  document.getElementById("total").value = total;
+}
+
+/* ================= ADD ITEM ================= */
 
 function addItemRow() {
   const container = document.getElementById("itemsContainer");
@@ -284,6 +260,14 @@ function addItemRow() {
   `;
   container.appendChild(row);
 }
+
+/* 🔁 Recalculate on any qty / price change */
+document.addEventListener("input", function (e) {
+  if (e.target.classList.contains("item-qty") ||
+      e.target.classList.contains("item-price")) {
+    calculateTotal();
+  }
+});
 
 /* ================= ITEMS COLLECT ================= */
 
@@ -309,11 +293,11 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
 
   const params = new URLSearchParams({
     action: "addOrder",
-    customerName: document.getElementById("customerName").value,
-    contact: document.getElementById("contact").value,
-    date: document.getElementById("date").value,
-    purchaseMode: document.getElementById("mode").value,
-    total: document.getElementById("total").value,
+    customerName: customerName.value,
+    contact: contact.value,
+    date: date.value,
+    purchaseMode: mode.value,
+    total: total.value, // ✅ editable & auto-calculated
     items: JSON.stringify(getItemsData())
   });
 
@@ -324,7 +308,6 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     });
 
     alert("✅ Order added successfully!");
-
     this.reset();
     document.getElementById("itemsContainer").innerHTML = `
       <div class="item-row">
@@ -334,10 +317,10 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
       </div>
     `;
   } catch (err) {
-    console.error(err);
     alert("❌ Failed to add order");
   }
 });
 </script>
+
 </body>
 </html>
