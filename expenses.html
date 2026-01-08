@@ -146,5 +146,49 @@
   </tbody>
 </table>
 
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpeGwOgNEkM_MD6whqERthEe4G7LokqF75BVnYIUj8A30jFmq7YQmFGT66Utpfc_Q2/exec";
+const table = document.getElementById("expenseTable");
+
+async function loadExpenses() {
+  const res = await fetch(`${SCRIPT_URL}?action=getExpenses`);
+  const data = await res.json();
+
+  table.innerHTML = "";
+
+  data.forEach(exp => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${exp["Purchased By"]}</td>
+      <td>${exp.Date}</td>
+      <td>${exp.Item}</td>
+      <td>${exp["Item Price"]}</td>
+      <td>${exp.Total}</td>
+      <td class="${exp.Status === "Cleared" ? "status-cleared" : "status-pending"}">
+        ${exp.Status}
+      </td>
+      <td>
+        <button class="clear-btn"
+          ${exp.Status === "Cleared" ? "disabled" : ""}
+          onclick="clearExpense('${exp.ExpenseID}')">
+          Cleared
+        </button>
+      </td>
+    `;
+    table.appendChild(row);
+  });
+}
+
+async function clearExpense(id) {
+  await fetch(`${SCRIPT_URL}?action=clearExpense&expenseId=${id}`, {
+    mode: "no-cors"
+  });
+  loadExpenses();
+}
+
+loadExpenses();
+</script>
+
 </body>
 </html>
