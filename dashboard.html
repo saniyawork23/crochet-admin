@@ -56,33 +56,33 @@
       padding: 20px;
     }
 
-    /* KPI CARDS */
-    .kpis {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      margin-bottom: 30px;
-    }
+    /* KPI GRID */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 25px;
+}
 
-    .kpi {
-      background: #fff;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.08);
-    }
+.kpis.secondary {
+  grid-template-columns: repeat(2, 1fr);
+}
 
-    .kpi h4 {
-      margin: 0;
-      font-size: 14px;
-      color: #666;
-    }
+/* KPI COLORS */
+.kpi.sales { border-left: 5px solid #22c55e; }
+.kpi.expense { border-left: 5px solid #ef4444; }
+.kpi.profit { border-left: 5px solid #8b5cf6; }
+.kpi.orders { border-left: 5px solid #0ea5e9; }
 
-    .kpi p {
-      margin: 8px 0 0;
-      font-size: 26px;
-      font-weight: 600;
-      color: #111;
-    }
+.kpi h4 {
+  font-size: 13px;
+  color: #666;
+}
+
+.kpi p {
+  font-size: 24px;
+  font-weight: 600;
+}
 
     /* CHART SECTIONS */
     .chart-box {
@@ -160,29 +160,56 @@ function logout() {
 <!-- DASHBOARD -->
 <div class="dashboard">
 
-  <!-- KPI CARDS -->
+  <!-- FINANCIAL KPIs -->
   <div class="kpis">
-    <div class="kpi">
+    <div class="kpi sales">
       <h4>Total Sales</h4>
       <p id="totalSales">₹0</p>
     </div>
-    <div class="kpi">
+
+    <div class="kpi expense">
+      <h4>Total Expenses</h4>
+      <p id="totalExpenses">₹0</p>
+    </div>
+
+    <div class="kpi profit">
+      <h4>Net Profit</h4>
+      <p id="netProfit">₹0</p>
+    </div>
+
+    <div class="kpi orders">
       <h4>Total Orders</h4>
       <p id="totalOrders">0</p>
     </div>
+  </div>
+
+  <!-- BUSINESS KPIs -->
+  <div class="kpis secondary">
     <div class="kpi">
       <h4>Total Customers</h4>
       <p id="totalCustomers">0</p>
     </div>
+
+    <div class="kpi">
+      <h4>Avg Order Value</h4>
+      <p id="avgOrder">₹0</p>
+    </div>
   </div>
 
-  <!-- TOP PRODUCTS -->
-  <div class="chart-box">
-    <h3>Top 5 Most Sold Products</h3>
-    <canvas id="productsChart"></canvas>
+  <!-- CHARTS -->
+  <div class="chart-row">
+    <div class="chart-box">
+      <h3>Top 5 Most Sold Products</h3>
+      <canvas id="productsChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3>Expense Breakdown</h3>
+      <canvas id="expensesChart"></canvas>
+    </div>
   </div>
 
-  <!-- TOP CUSTOMERS -->
+  <!-- CUSTOMERS -->
   <div class="chart-row">
     <div class="chart-box">
       <h3>Top Customers (By Orders)</h3>
@@ -208,6 +235,10 @@ async function loadDashboard() {
   document.getElementById("totalSales").innerText = "₹" + data.totalSales;
   document.getElementById("totalOrders").innerText = data.totalOrders;
   document.getElementById("totalCustomers").innerText = data.totalCustomers;
+  document.getElementById("totalExpenses").innerText = "₹" + data.totalExpenses;
+document.getElementById("netProfit").innerText = "₹" + data.netProfit;
+document.getElementById("avgOrder").innerText = "₹" + data.avgOrder;
+
 
   // Top Products
   new Chart(productsChart, {
