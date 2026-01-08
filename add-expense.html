@@ -189,5 +189,27 @@
   </div>
 </div>
 
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpeGwOgNEkM_MD6whqERthEe4G7LokqF75BVnYIUj8A30jFmq7YQmFGT66Utpfc_Q2/exec";
+
+document.getElementById("expenseForm").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const params = new URLSearchParams({
+    action: "addExpense",
+    purchasedBy: purchasedBy.value,
+    date: expenseDate.value,
+    item: item.value,
+    itemPrice: itemPrice.value,
+    total: totalAmount.value
+  });
+
+  await fetch(`${SCRIPT_URL}?${params}`, { mode: "no-cors" });
+
+  alert("✅ Expense added");
+  e.target.reset();
+});
+</script>
+
 </body>
 </html>
