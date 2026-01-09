@@ -161,27 +161,32 @@ function logout() {
 <div class="dashboard">
 
   <!-- FINANCIAL KPIs -->
-  <div class="kpis">
-    <div class="kpi sales">
-      <h4>Total Sales</h4>
-      <p id="totalSales">₹0</p>
-    </div>
-
-    <div class="kpi expense">
-      <h4>Total Expenses</h4>
-      <p id="totalExpenses">₹0</p>
-    </div>
-
-    <div class="kpi profit">
-      <h4>Net Profit</h4>
-      <p id="netProfit">₹0</p>
-    </div>
-
-    <div class="kpi orders">
-      <h4>Total Orders</h4>
-      <p id="totalOrders">0</p>
-    </div>
+  <div class="kpis" style="grid-template-columns: repeat(5, 1fr);">
+  <div class="kpi">
+    <h4>Total Sales</h4>
+    <p id="totalSales">₹0</p>
   </div>
+
+  <div class="kpi">
+    <h4>Total Expenses</h4>
+    <p id="totalExpenses">₹0</p>
+  </div>
+
+  <div class="kpi">
+    <h4>Net Profit</h4>
+    <p id="netProfit">₹0</p>
+  </div>
+
+  <div class="kpi">
+    <h4>Total Orders</h4>
+    <p id="totalOrders">0</p>
+  </div>
+
+  <div class="kpi">
+    <h4>Total Customers</h4>
+    <p id="totalCustomers">0</p>
+  </div>
+</div>
 
   <!-- BUSINESS KPIs -->
   <div class="kpis secondary">
@@ -225,19 +230,18 @@ function logout() {
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqYxeCKpWYTaAJjlzkgJL-M61LxVZ1Eqz65gX3e5D1itJ6o59nHnbYuJdleGSoL_ng/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLoLbieO9v5N37CJbs_FiO8qHdOtfuQV9PHJttd0FjpaogZ2jiaFuMSt5_qgpHEUCd/exec";
 
 async function loadDashboard() {
   const res = await fetch(`${SCRIPT_URL}?action=getDashboardStats`);
   const data = await res.json();
 
   // KPIs
-  document.getElementById("totalSales").innerText = "₹" + data.totalSales;
-  document.getElementById("totalOrders").innerText = data.totalOrders;
-  document.getElementById("totalCustomers").innerText = data.totalCustomers;
-  document.getElementById("totalExpenses").innerText = "₹" + data.totalExpenses;
+ document.getElementById("totalSales").innerText = "₹" + data.totalSales;
+document.getElementById("totalExpenses").innerText = "₹" + data.totalExpenses;
 document.getElementById("netProfit").innerText = "₹" + data.netProfit;
-document.getElementById("avgOrder").innerText = "₹" + data.avgOrder;
+document.getElementById("totalOrders").innerText = data.totalOrders;
+document.getElementById("totalCustomers").innerText = data.totalCustomers;
 
 
   // Top Products
