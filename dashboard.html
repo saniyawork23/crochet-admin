@@ -232,6 +232,8 @@ function logout() {
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYWKcXC_5AlY4qzoZ3iHXAsZRV4hMBoSFBc7222Z7ZrlAVOHD-GF-LzLSCe5ZdBBCx/exec";
 
+let charts = []; // to destroy old charts if reloaded
+
 async function loadDashboard() {
   try {
     const res = await fetch(`${SCRIPT_URL}?action=getDashboardStats`);
@@ -241,60 +243,83 @@ async function loadDashboard() {
     try {
       data = JSON.parse(text);
     } catch (e) {
-      console.error("Server response:", text);
-      alert("Dashboard error: Backend did not return JSON.\nCheck action name in Code.gs");
+      console.error("❌ Backend response (NOT JSON):", text);
+      alert(
+        "Dashboard error ❌\n\n" +
+        "Backend did not return JSON.\n\n" +
+        "Response was:\n" + text
+      );
       return;
     }
 
     // ================= KPIs =================
-    document.getElementById("totalSales").innerText = "₹" + data.totalSales;
-    document.getElementById("totalExpenses").innerText = "₹" + (data.totalExpenses || 0);
-    document.getElementById("netProfit").innerText = "₹" + (data.netProfit || 0);
-    document.getElementById("totalOrders").innerText = data.totalOrders;
-    document.getElementById("totalCustomersMain").innerText = data.totalCustomers;
-    document.getElementById("totalCustomersSecondary").innerText = data.totalCustomers;
+    const totalSales = Number(data.totalSales || 0);
+    const totalExpenses = Number(data.totalExpenses || 0);
+    const totalOrders = Number(data.totalOrders || 0);
+    const totalCustomers = Number(data.totalCustomers || 0);
+
+    document.getElementById("totalSales").innerText = "₹" + totalSales;
+    document.getElementById("totalExpenses").innerText = "₹" + totalExpenses;
+    document.getElementById("netProfit").innerText = "₹" + (totalSales - totalExpenses);
+    document.getElementById("totalOrders").innerText = totalOrders;
+
+    document.getElementById("totalCustomersMain").innerText = totalCustomers;
+    document.getElementById("totalCustomersSecondary").innerText = totalCustomers;
 
     document.getElementById("avgOrder").innerText =
-      "₹" + (data.totalOrders ? Math.round(data.totalSales / data.totalOrders) : 0);
+      "₹" + (totalOrders ? Math.round(totalSales / totalOrders) : 0);
+
+    // ================= DESTROY OLD CHARTS =================
+    charts.forEach(c => c.destroy());
+    charts = [];
 
     // ================= CHARTS =================
 
-    new Chart(document.getElementById("productsChart"), {
-      type: "bar",
-      data: {
-        labels: data.topProducts.map(p => p.name),
-        datasets: [{
-          label: "Quantity Sold",
-          data: data.topProducts.map(p => p.qty)
-        }]
+    charts.push(new Chart(
+      document.getElementById("productsChart"),
+      {
+        type: "bar",
+        data: {
+          labels: data.topProducts.map(p => p.name),
+          datasets: [{
+            label: "Quantity Sold",
+            data: data.topProducts.map(p => p.qty)
+          }]
+        }
       }
-    });
+    ));
 
-    new Chart(document.getElementById("customersOrdersChart"), {
-      type: "bar",
-      data: {
-        labels: data.topCustomersByOrders.map(c => c.name),
-        datasets: [{
-          label: "Orders",
-          data: data.topCustomersByOrders.map(c => c.orders)
-        }]
+    charts.push(new Chart(
+      document.getElementById("customersOrdersChart"),
+      {
+        type: "bar",
+        data: {
+          labels: data.topCustomersByOrders.map(c => c.name),
+          datasets: [{
+            label: "Orders",
+            data: data.topCustomersByOrders.map(c => c.orders)
+          }]
+        }
       }
-    });
+    ));
 
-    new Chart(document.getElementById("customersValueChart"), {
-      type: "bar",
-      data: {
-        labels: data.topCustomersByValue.map(c => c.name),
-        datasets: [{
-          label: "₹ Spent",
-          data: data.topCustomersByValue.map(c => c.amount)
-        }]
+    charts.push(new Chart(
+      document.getElementById("customersValueChart"),
+      {
+        type: "bar",
+        data: {
+          labels: data.topCustomersByValue.map(c => c.name),
+          datasets: [{
+            label: "₹ Spent",
+            data: data.topCustomersByValue.map(c => c.amount)
+          }]
+        }
       }
-    });
+    ));
 
   } catch (err) {
-    console.error(err);
-    alert("Failed to load dashboard.");
+    console.error("❌ Dashboard JS Error:", err);
+    alert("Failed to load dashboard.\nCheck console for details.");
   }
 }
 
