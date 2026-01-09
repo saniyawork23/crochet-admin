@@ -182,10 +182,6 @@ function logout() {
     <p id="totalOrders">0</p>
   </div>
 
-  <div class="kpi">
-    <h4>Total Customers</h4>
-    <p id="totalCustomersMain">0</p>
-  </div>
 </div>
 
   <!-- BUSINESS KPIs -->
@@ -263,7 +259,6 @@ async function loadDashboard() {
     document.getElementById("netProfit").innerText = "₹" + (totalSales - totalExpenses);
     document.getElementById("totalOrders").innerText = totalOrders;
 
-    document.getElementById("totalCustomersMain").innerText = totalCustomers;
     document.getElementById("totalCustomersSecondary").innerText = totalCustomers;
 
     document.getElementById("avgOrder").innerText =
