@@ -254,7 +254,11 @@
 
         <div id="itemsContainer">
           <div class="item-row">
-            <input type="text" placeholder="Item Name" required class="item-name" style="width:150px;">
+            <div style="position: relative;">
+  <input type="text" placeholder="Item Name" required class="item-name" autocomplete="off">
+  <div class="suggestions-box item-suggestions"></div>
+</div>
+
             <input type="number" placeholder="Qty" min="1" required class="item-qty">
             <input type="number" placeholder="Price" required class="item-price">
           </div>
@@ -291,7 +295,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySA7SRaLQx7nTAAH6JxMpZ_g1HIfcs-IIBMacIQM_LDzoKzCUK6L9Kbm0P9xSXkRWe/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwSkuL7B22bOXB1jCy9KOaWKT8Z6pecj1WkH6UEFCiBI9hXrY8jd31z85Q8Ve7AqRk/exec";
 
 /* ================= AUTO TOTAL CALC ================= */
 
@@ -404,6 +408,64 @@ document.addEventListener("click", function (e) {
   }
 });
 
+<script>
+/* ================= ITEM AUTOCOMPLETE ================= */
+
+let itemDebounce = null;
+
+document.addEventListener("input", function (e) {
+  if (!e.target.classList.contains("item-name")) return;
+
+  const input = e.target;
+  const box = input.nextElementSibling;
+  const query = input.value.trim();
+
+  box.style.display = "none";
+  if (query.length < 2) return;
+
+  clearTimeout(itemDebounce);
+  itemDebounce = setTimeout(() => {
+    fetch(`${SCRIPT_URL}?action=getItemNames&query=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(items => showItemSuggestions(items, input, box))
+      .catch(err => console.error(err));
+  }, 300);
+});
+
+function showItemSuggestions(items, input, box) {
+  box.innerHTML = "";
+
+  if (!items.length) {
+    box.style.display = "none";
+    return;
+  }
+
+  items.forEach(name => {
+    const div = document.createElement("div");
+    div.className = "suggestion-item";
+    div.textContent = name;
+
+    div.onclick = () => {
+      input.value = name;
+      box.style.display = "none";
+    };
+
+    box.appendChild(div);
+  });
+
+  box.style.display = "block";
+}
+
+/* Hide item suggestions on outside click */
+document.addEventListener("click", function (e) {
+  document.querySelectorAll(".item-suggestions").forEach(box => {
+    if (!box.contains(e.target)) {
+      box.style.display = "none";
+    }
+  });
+});
+</script>
+
 
 /* ================= FORM SUBMIT ================= */
 
@@ -443,6 +505,7 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
 
 </body>
 </html>
+
 
 
 
