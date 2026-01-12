@@ -7,6 +7,42 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
+    /* ================= AUTOCOMPLETE ================= */
+.suggestions-box {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+}
+
+.suggestion-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  border-bottom: 1px solid #eee;
+}
+
+.suggestion-item:hover {
+  background: #f3f4ff;
+}
+
+.suggestion-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.suggestion-contact {
+  font-size: 12px;
+  color: #777;
+}
+
     /* ================= NAVBAR STYLES ================= */
     .navbar {
       display: flex;
@@ -200,7 +236,11 @@
 
         <div class="form-group">
           <label>Customer Name</label>
-          <input type="text" id="customerName" required>
+          <div style="position: relative;">
+  <input type="text" id="customerName" autocomplete="off" required>
+  <div id="customerSuggestions" class="suggestions-box"></div>
+</div>
+
         </div>
 
         <div class="form-group">
@@ -251,7 +291,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqYxeCKpWYTaAJjlzkgJL-M61LxVZ1Eqz65gX3e5D1itJ6o59nHnbYuJdleGSoL_ng/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySA7SRaLQx7nTAAH6JxMpZ_g1HIfcs-IIBMacIQM_LDzoKzCUK6L9Kbm0P9xSXkRWe/exec";
 
 /* ================= AUTO TOTAL CALC ================= */
 
@@ -304,6 +344,67 @@ function getItemsData() {
   return items;
 }
 
+  /* ================= CUSTOMER AUTOCOMPLETE ================= */
+
+const customerInput = document.getElementById("customerName");
+const contactInput = document.getElementById("contact");
+const suggestionsBox = document.getElementById("customerSuggestions");
+
+let debounceTimer = null;
+
+customerInput.addEventListener("input", function () {
+  const query = this.value.trim();
+
+  contactInput.value = ""; // clear contact if typing again
+  suggestionsBox.style.display = "none";
+
+  if (query.length < 2) return;
+
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    fetch(`${SCRIPT_URL}?action=searchCustomers&query=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(showCustomerSuggestions)
+      .catch(err => console.error(err));
+  }, 300);
+});
+
+function showCustomerSuggestions(customers) {
+  suggestionsBox.innerHTML = "";
+
+  if (!customers.length) {
+    suggestionsBox.style.display = "none";
+    return;
+  }
+
+  customers.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "suggestion-item";
+    div.innerHTML = `
+      <div class="suggestion-name">${c.name}</div>
+      <div class="suggestion-contact">${c.contact || "No contact"}</div>
+    `;
+
+    div.onclick = () => {
+      customerInput.value = c.name;
+      contactInput.value = c.contact || "";
+      suggestionsBox.style.display = "none";
+    };
+
+    suggestionsBox.appendChild(div);
+  });
+
+  suggestionsBox.style.display = "block";
+}
+
+/* Hide suggestions on outside click */
+document.addEventListener("click", function (e) {
+  if (!suggestionsBox.contains(e.target) && e.target !== customerInput) {
+    suggestionsBox.style.display = "none";
+  }
+});
+
+
 /* ================= FORM SUBMIT ================= */
 
 document.getElementById("orderForm").addEventListener("submit", async function(e) {
@@ -342,6 +443,7 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
 
 </body>
 </html>
+
 
 
 
