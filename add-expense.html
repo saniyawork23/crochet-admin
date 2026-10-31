@@ -1,213 +1,605 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Crochet Admin – Add Expense</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>theCutiesLoop – Add Expense</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- 🔁 SAME STYLES AS index.html -->
-  <style>
-    /* ===== NAVBAR ===== */
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 30px;
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      font-family: 'Poppins', sans-serif;
-    }
+<style>
+:root {
+  --primary: #7460dc;
+  --primary-dark: #5b48bd;
+  --bg: #f7f6fc;
+  --text: #29263a;
+  --muted: #89869b;
+  --border: #eae8f2;
+  --white: #ffffff;
+}
 
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    .brand-name {
-      font-size: 18px;
-      font-weight: 600;
-      color: #4f46e5;
-    }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
 
-    .nav-links a {
-      margin-left: 20px;
-      text-decoration: none;
-      font-size: 14px;
-      color: #444;
-      font-weight: 500;
-    }
+/* NAVBAR */
+.navbar {
+  min-height: 76px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 4%;
+  box-shadow: 0 2px 12px rgba(40,30,80,.05);
+  position: relative;
+  z-index: 10;
+}
 
-    .nav-links a:hover {
-      color: #4f46e5;
-    }
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-    .logout-btn {
-      background: crimson;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+.nav-left img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
 
-    /* ===== PAGE ===== */
-    .add-order-page {
-      font-family: 'Poppins', sans-serif;
-      background: #f5f7fb;
-      min-height: calc(100vh - 64px);
-      padding-top: 30px;
-    }
+.brand-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary);
+}
 
-    .page-container {
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-    }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
-    .form-card {
-      background: #ffffff;
-      width: 100%;
-      max-width: 420px;
-      padding: 30px;
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-    }
+.nav-links a {
+  text-decoration: none;
+  color: #656176;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 10px 11px;
+  border-radius: 8px;
+  transition: .2s;
+  white-space: nowrap;
+}
 
-    h2 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: #333;
-      font-weight: 600;
-    }
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--primary);
+  background: #f1efff;
+}
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 16px;
-    }
+.logout-btn {
+  border: none;
+  background: #fff0f1;
+  color: #dc4560;
+  padding: 9px 15px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 8px;
+}
 
-    label {
-      font-size: 13px;
-      color: #555;
-      margin-bottom: 6px;
-    }
+.logout-btn:hover {
+  background: #ffe0e5;
+}
 
-    input {
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-    }
+.menu-toggle {
+  display: none;
+  background: #f1efff;
+  border: none;
+  color: var(--primary);
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+}
 
-    input:focus {
-      outline: none;
-      border-color: #8b5cf6;
-    }
+/* PAGE */
+.add-order-page {
+  min-height: calc(100vh - 76px);
+  padding: 42px 20px 60px;
+}
 
-    .btn-primary {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #8b5cf6, #6366f1);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-  </style>
+.page-container {
+  max-width: 850px;
+  margin: auto;
+}
 
-  <script>
-    if (localStorage.getItem("isLoggedIn") !== "true") {
-      window.location.href = "login.html";
-    }
-    function logout() {
-      localStorage.removeItem("isLoggedIn");
-      window.location.href = "login.html";
-    }
-  </script>
+.page-heading {
+  margin-bottom: 25px;
+}
+
+.page-heading .eyebrow {
+  font-size: 11px;
+  color: var(--primary);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+.page-heading h1 {
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -.5px;
+}
+
+.page-heading p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+/* FORM CARD */
+.form-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 8px 30px rgba(45,35,90,.045);
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding-bottom: 23px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 25px;
+}
+
+.card-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: #f0edff;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.card-heading h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.card-heading p {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+/* FORM */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555168;
+}
+
+.required {
+  color: #e65b76;
+}
+
+input {
+  width: 100%;
+  height: 47px;
+  border: 1px solid var(--border);
+  background: #fcfbfe;
+  border-radius: 9px;
+  padding: 0 13px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: .2s;
+}
+
+input:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(116,96,220,.10);
+}
+
+input::placeholder {
+  color: #b3b0c0;
+}
+
+input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+/* CURRENCY INPUT */
+.currency-input {
+  position: relative;
+}
+
+.currency-input span {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #89869b;
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.currency-input input {
+  padding-left: 34px;
+}
+
+/* BUTTON */
+.form-footer {
+  margin-top: 28px;
+  padding-top: 23px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-primary {
+  width: 100%;
+  height: 49px;
+  background: linear-gradient(135deg, #8873ec, #6252c9);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s;
+  box-shadow: 0 5px 13px rgba(105,85,210,.20);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(105,85,210,.27);
+}
+
+.btn-primary:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.form-note {
+  text-align: center;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 13px;
+}
+
+/* STATUS */
+#formStatus {
+  display: none;
+  padding: 12px;
+  margin-top: 18px;
+  border-radius: 9px;
+  font-size: 12px;
+  text-align: center;
+}
+
+#formStatus.success {
+  display: block;
+  background: #eaf8ef;
+  color: #27824b;
+}
+
+#formStatus.error {
+  display: block;
+  background: #fff0f0;
+  color: #c43e50;
+}
+
+/* MOBILE */
+@media(max-width: 1050px) {
+  .navbar {
+    flex-wrap: wrap;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 15px;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 11px 13px;
+    font-size: 13px;
+  }
+
+  .logout-btn {
+    margin: 8px 0 0;
+  }
+}
+
+@media(max-width: 600px) {
+  .navbar {
+    padding: 12px 18px;
+  }
+
+  .brand-name {
+    font-size: 15px;
+  }
+
+  .add-order-page {
+    padding: 30px 15px 45px;
+  }
+
+  .page-heading h1 {
+    font-size: 23px;
+  }
+
+  .form-card {
+    padding: 21px 17px;
+    border-radius: 14px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+
+  .form-group.full-width {
+    grid-column: auto;
+  }
+}
+</style>
+
+<script>
+if (localStorage.getItem("isLoggedIn") !== "true") {
+  window.location.href = "login.html";
+}
+
+function logout() {
+  localStorage.removeItem("isLoggedIn");
+  window.location.href = "login.html";
+}
+</script>
 </head>
 
 <body>
 
 <!-- NAVBAR -->
-<div class="navbar">
+<nav class="navbar">
   <div class="nav-left">
-    <img src="logo.png" height="50" width="50">
+    <img src="logo.png" alt="theCutiesLoop Logo">
     <div class="brand-name">theCutiesLoop Admin</div>
   </div>
 
-  <div class="nav-links">
-    <a href="add-expense.html">Add Expense</a>
+  <button class="menu-toggle" id="menuToggle"
+    type="button" aria-label="Toggle navigation"
+    aria-expanded="false">☰</button>
+
+  <div class="nav-links" id="navLinks">
+    <a href="add-expense.html" class="active">Add Expense</a>
     <a href="expenses.html">View Expenses</a>
     <a href="index.html">Add Order</a>
     <a href="orders.html">View Orders</a>
     <a href="customers.html">Customers</a>
     <a href="dashboard.html">Dashboard</a>
-    <button onclick="logout()" class="logout-btn">Logout</button>
+    <button onclick="logout()" class="logout-btn">Logout ↗</button>
   </div>
-</div>
+</nav>
 
 <!-- PAGE -->
-<div class="add-order-page">
+<main class="add-order-page">
   <div class="page-container">
-    <div class="form-card">
-      <h2>Add Expense</h2>
+
+    <div class="page-heading">
+      <div class="eyebrow">Business Management / Expenses</div>
+      <h1>Add New Expense</h1>
+      <p>Keep track of your business purchases and expenses.</p>
+    </div>
+
+    <section class="form-card">
+
+      <div class="card-heading">
+        <div class="card-icon">🧾</div>
+        <div>
+          <h2>Expense Details</h2>
+          <p>Enter the details of your purchase below.</p>
+        </div>
+      </div>
 
       <form id="expenseForm">
-        <div class="form-group">
-          <label>Purchased By</label>
-          <input type="text" id="purchasedBy" required>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="purchasedBy">
+              Purchased By <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="purchasedBy"
+              placeholder="e.g. Saniya"
+              autocomplete="name"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="expenseDate">
+              Purchase Date <span class="required">*</span>
+            </label>
+            <input
+              type="date"
+              id="expenseDate"
+              required>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="item">
+              Item / Reason <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="item"
+              placeholder="e.g. Cotton yarn, packaging material, delivery..."
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="itemPrice">
+              Item Price <span class="required">*</span>
+            </label>
+            <div class="currency-input">
+              <span>₹</span>
+              <input
+                type="number"
+                id="itemPrice"
+                placeholder="0.00"
+                min="0.01"
+                step="0.01"
+                required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="totalAmount">
+              Total Amount <span class="required">*</span>
+            </label>
+            <div class="currency-input">
+              <span>₹</span>
+              <input
+                type="number"
+                id="totalAmount"
+                placeholder="0.00"
+                min="0.01"
+                step="0.01"
+                required>
+            </div>
+          </div>
+
         </div>
 
-        <div class="form-group">
-          <label>Date</label>
-          <input type="date" id="expenseDate" required>
+        <div class="form-footer">
+          <button type="submit" class="btn-primary" id="submitBtn">
+            + &nbsp; Add Expense
+          </button>
+
+          <p class="form-note">
+            Make sure all expense details are correct before submitting.
+          </p>
         </div>
 
-        <div class="form-group">
-          <label>Item / Reason</label>
-          <input type="text" id="item" required>
-        </div>
+        <div id="formStatus" role="status" aria-live="polite"></div>
 
-        <div class="form-group">
-          <label>Item Price</label>
-          <input type="number" id="itemPrice" required>
-        </div>
-
-        <div class="form-group">
-          <label>Total Amount</label>
-          <input type="number" id="totalAmount" required>
-        </div>
-
-        <button class="btn-primary">Add Expense</button>
       </form>
-    </div>
+    </section>
+
   </div>
-</div>
+</main>
 
 <script>
+// MOBILE NAVIGATION
+document.getElementById("menuToggle").addEventListener("click", function() {
+  const nav = document.getElementById("navLinks");
+  const isOpen = nav.classList.toggle("show");
+
+  this.setAttribute("aria-expanded", String(isOpen));
+  this.textContent = isOpen ? "✕" : "☰";
+});
+
+// DEFAULT DATE
+document.getElementById("expenseDate").value =
+  new Date().toLocaleDateString("en-CA");
+
+// BACKEND - PRESERVED
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpeGwOgNEkM_MD6whqERthEe4G7LokqF75BVnYIUj8A30jFmq7YQmFGT66Utpfc_Q2/exec";
 
-document.getElementById("expenseForm").addEventListener("submit", async e => {
+const expenseForm = document.getElementById("expenseForm");
+
+expenseForm.addEventListener("submit", async e => {
   e.preventDefault();
+
+  const submitBtn = document.getElementById("submitBtn");
+  const status = document.getElementById("formStatus");
+
+  if (!expenseForm.reportValidity()) return;
 
   const params = new URLSearchParams({
     action: "addExpense",
-    purchasedBy: purchasedBy.value,
-    date: expenseDate.value,
-    item: item.value,
-    itemPrice: itemPrice.value,
-    total: totalAmount.value
+    purchasedBy: document.getElementById("purchasedBy").value.trim(),
+    date: document.getElementById("expenseDate").value,
+    item: document.getElementById("item").value.trim(),
+    itemPrice: document.getElementById("itemPrice").value,
+    total: document.getElementById("totalAmount").value
   });
 
-  await fetch(`${SCRIPT_URL}?${params}`, { mode: "no-cors" });
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Adding Expense...";
+  status.className = "";
+  status.style.display = "none";
 
-  alert("✅ Expense added");
-  e.target.reset();
+  try {
+    await fetch(`${SCRIPT_URL}?${params}`, {
+      mode: "no-cors"
+    });
+
+    status.textContent = "✓ Expense submitted successfully!";
+    status.className = "success";
+
+    expenseForm.reset();
+
+    document.getElementById("expenseDate").value =
+      new Date().toLocaleDateString("en-CA");
+
+  } catch (error) {
+    status.textContent =
+      "Unable to submit expense. Please check your connection and try again.";
+    status.className = "error";
+
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "+  Add Expense";
+  }
 });
 </script>
 
