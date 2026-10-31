@@ -1,299 +1,1121 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Crochet Admin – View Orders</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>theCutiesLoop | View Orders</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    /* ================= NAVBAR ================= */
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 30px;
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      font-family: 'Poppins', sans-serif;
-    }
+<style>
+:root {
+  --primary: #7254d8;
+  --primary-dark: #5940b5;
+  --light-purple: #f3efff;
+  --bg: #f7f6fb;
+  --text: #292638;
+  --muted: #777387;
+  --border: #e8e5ef;
+  --white: #fff;
+  --success: #16834a;
+  --danger: #dc3545;
+  --shadow: 0 8px 30px rgba(44,34,83,.07);
+}
 
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .brand-icon { font-size: 22px; }
-    .brand-name {
-      font-size: 18px;
-      font-weight: 600;
-      color: #4f46e5;
-    }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+}
 
-    .nav-links a {
-      margin-left: 20px;
-      text-decoration: none;
-      font-size: 14px;
-      color: #444;
-      font-weight: 500;
-    }
+/* NAVBAR */
 
-    .nav-links a:hover { color: #4f46e5; }
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 4%;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0,0,0,.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
 
-    /* ================= PAGE ================= */
-    .orders-page {
-      font-family: 'Poppins', sans-serif;
-      background: #f5f7fb;
-      min-height: calc(100vh - 64px);
-      padding: 30px;
-    }
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
 
-    .orders-container {
-      max-width: 1150px;
-      margin: auto;
-      background: #ffffff;
-      padding: 25px;
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-    }
+.brand-logo {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
 
-    .orders-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
+.brand-name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--primary);
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
 
-    th {
-      background: #f0f1ff;
-      padding: 12px;
-      font-size: 13px;
-      color: #4f46e5;
-      text-align: left;
-    }
+.nav-links a {
+  text-decoration: none;
+  color: #514d60;
+  font-size: 12px;
+  font-weight: 500;
+}
 
-    td {
-      padding: 12px;
-      font-size: 13px;
-      border-bottom: 1px solid #eee;
-      color: #444;
-      vertical-align: top;
-    }
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--primary);
+}
 
-    tr:hover { background: #fafafa; }
-
-    .view-btn {
-      background: #e0e7ff;
-      color: #3730a3;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    .delete-btn {
-      background: #ef4444;
-      color: #fff;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .items-row {
-      display: none;
-      background: #fafafa;
-    }
-
-    .items-box {
-      padding: 15px 25px;
-    }
-
-    .items-box table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .items-box th {
-      background: #f8fafc;
-      color: #555;
-      font-size: 12px;
-    }
-
-    .items-box td {
-      font-size: 12px;
-    }
-
-    .logout-btn {
-  background: crimson;
-  color: white;
+.logout-btn {
+  background: #fff0f1;
+  color: var(--danger);
   border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+/* PAGE */
+
+.orders-page {
+  padding: 32px 4% 55px;
+  min-height: calc(100vh - 70px);
+}
+
+.page-heading {
+  margin-bottom: 24px;
+}
+
+.page-heading h1 {
+  font-size: 25px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.page-heading p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 6px 0 0;
+}
+
+/* SUMMARY CARDS */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 23px;
+}
+
+.stat-card {
+  background: white;
+  padding: 19px;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid #f0edf6;
+}
+
+.stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.stat-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: var(--light-purple);
+  font-size: 17px;
+}
+
+.stat-value {
+  font-size: 23px;
+  font-weight: 600;
+  margin-top: 12px;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.stat-note {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* MAIN CARD */
+
+.orders-container {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.orders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.orders-title h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.orders-title p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  width: 280px;
+  height: 41px;
+  padding: 10px 13px 10px 36px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+input, select {
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(114,84,216,.08);
+}
+
+/* FILTERS */
+
+.filter-panel {
+  background: #faf9fd;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 17px;
+  margin-bottom: 20px;
+}
+
+.filter-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 13px;
+}
+
+.filter-heading strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.filter-group label {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.filter-group input,
+.filter-group select {
+  width: 100%;
+  height: 39px;
+  padding: 8px 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  font-size: 11px;
+  min-width: 0;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+  grid-column: span 5;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 9px 15px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
 }
 
-  </style>
-  <script>
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-secondary {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: var(--light-purple);
+}
+
+/* TABLE */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 850px;
+}
+
+thead th {
+  background: #f5f2ff;
+  padding: 14px 13px;
+  color: var(--primary-dark);
+  font-size: 11px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 14px 13px;
+  border-bottom: 1px solid #f0eef4;
+  color: #4d495a;
+  font-size: 11px;
+  vertical-align: middle;
+}
+
+tbody tr.main-order-row:hover {
+  background: #faf9fd;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.order-id {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.customer-name {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.amount {
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.mode-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.mode-online {
+  background: #eaf2ff;
+  color: #3565b4;
+}
+
+.mode-stall {
+  background: #e9f8ef;
+  color: #21804a;
+}
+
+.view-btn {
+  background: var(--light-purple);
+  color: var(--primary-dark);
+  border: none;
+  padding: 7px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.view-btn:hover {
+  background: #e8e0ff;
+}
+
+.delete-btn {
+  background: #fff0f1;
+  color: var(--danger);
+  border: none;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #ffe0e3;
+}
+
+/* EXPANDED ITEMS */
+
+.items-row {
+  display: none;
+  background: #faf9fd;
+}
+
+.items-row > td {
+  padding: 15px 22px;
+}
+
+.items-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.items-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin: 0 0 10px;
+}
+
+.items-box table {
+  min-width: 0;
+}
+
+.items-box th {
+  background: #f7f5fc;
+  color: #777387;
+  font-size: 10px;
+  padding: 10px;
+}
+
+.items-box td {
+  padding: 10px;
+  font-size: 11px;
+}
+
+.items-box .item-subtotal {
+  font-weight: 600;
+}
+
+/* STATES */
+
+.state-message {
+  text-align: center;
+  padding: 40px 15px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.state-message .state-icon {
+  font-size: 30px;
+  margin-bottom: 9px;
+}
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 15px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.refresh-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.refresh-btn:hover {
+  background: var(--light-purple);
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 950px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+
+  .filter-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+
+  .filter-buttons {
+    grid-column: span 2;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media(max-width: 550px) {
+  .orders-page {
+    padding: 22px 10px 40px;
+  }
+
+  .orders-container {
+    padding: 15px 10px;
+  }
+
+  .page-heading h1 {
+    font-size: 21px;
+  }
+
+  .stats-grid {
+    gap: 9px;
+  }
+
+  .stat-card {
+    padding: 13px;
+  }
+
+  .stat-value {
+    font-size: 19px;
+  }
+
+  .search-box,
+  .search-box input {
+    width: 100%;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .filter-buttons {
+    grid-column: span 2;
+  }
+
+  .nav-links {
+    gap: 10px;
+  }
+
+  .orders-header {
+    align-items: flex-start;
+  }
+}
+</style>
+
+<script>
 if (localStorage.getItem("isLoggedIn") !== "true") {
   window.location.href = "login.html";
 }
-</script>
-<script>
+
 function logout() {
   localStorage.removeItem("isLoggedIn");
   window.location.href = "login.html";
 }
 </script>
-
 </head>
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
-<div class="navbar">
+<!-- NAVBAR -->
+
+<nav class="navbar">
   <div class="nav-left">
-  <img src="logo.png" alt="Business Logo" class="brand-logo" height="50px" width="50px">
-  <div class="brand-text">
+    <img src="logo.png" alt="Business Logo" class="brand-logo">
     <div class="brand-name">theCutiesLoop Admin</div>
   </div>
-</div>
 
   <div class="nav-links">
     <a href="add-expense.html">Add Expense</a>
     <a href="expenses.html">View Expenses</a>
     <a href="index.html">Add Order</a>
-    <a href="orders.html">View Orders</a>
+    <a href="orders.html" class="active">View Orders</a>
     <a href="customers.html">Customers</a>
     <a href="dashboard.html">Dashboard</a>
     <button onclick="logout()" class="logout-btn">Logout</button>
   </div>
-</div>
+</nav>
 
-<!-- ================= ORDERS PAGE ================= -->
-<div class="orders-page">
-  <div class="orders-container">
+<!-- PAGE -->
+
+<main class="orders-page">
+
+  <div class="page-heading">
+    <h1>Orders Management 🧶</h1>
+    <p>Track, search and manage all your customer orders.</p>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+
+  <section class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <span class="stat-label">Total Orders</span>
+        <span class="stat-icon">📦</span>
+      </div>
+      <div class="stat-value" id="totalOrders">—</div>
+      <div class="stat-note">All recorded orders</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <span class="stat-label">Total Revenue</span>
+        <span class="stat-icon">💰</span>
+      </div>
+      <div class="stat-value" id="totalRevenue">—</div>
+      <div class="stat-note">Combined order value</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <span class="stat-label">Online Orders</span>
+        <span class="stat-icon">💻</span>
+      </div>
+      <div class="stat-value" id="onlineOrders">—</div>
+      <div class="stat-note">Orders through online mode</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-top">
+        <span class="stat-label">Stall Orders</span>
+        <span class="stat-icon">🏪</span>
+      </div>
+      <div class="stat-value" id="stallOrders">—</div>
+      <div class="stat-note">Orders through stalls</div>
+    </div>
+
+  </section>
+
+  <!-- ORDERS CARD -->
+
+  <section class="orders-container">
 
     <div class="orders-header">
-  <h2>Orders</h2>
 
-  <input
-    type="text"
-    id="searchInput"
-    placeholder="Search by customer or item..."
-    style="
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      font-size: 13px;
-      width: 280px;
-      font-family: Poppins, sans-serif;
-    "
-    oninput="filterOrders()"
-  />
-</div>
-<!-- ================= FILTERS ================= -->
-<div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
-  
-  <label>From</label><input type="date" id="fromDate" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
-  <label>To</label><input type="date" id="toDate" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
+      <div class="orders-title">
+        <h2>All Orders</h2>
+        <p id="resultCount">Loading orders...</p>
+      </div>
 
-  <label>Mode</label><select id="modeFilter" style="padding:8px;border-radius:8px;border:1px solid #ddd;">
-    <option value="">All Modes</option>
-    <option value="Online">Online</option>
-    <option value="Stall">Stall</option>
-  </select>
+      <div class="header-actions">
 
-  <input type="number" id="minAmount" placeholder="Min ₹"
-         style="width:100px;padding:8px;border-radius:8px;border:1px solid #ddd;">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search customer, order ID or item..."
+          >
+        </div>
 
-  <input type="number" id="maxAmount" placeholder="Max ₹"
-         style="width:100px;padding:8px;border-radius:8px;border:1px solid #ddd;">
+        <button class="refresh-btn" id="refreshBtn">
+          ↻ Refresh
+        </button>
 
-  <button onclick="applyFilters()"
-          style="padding:8px 14px;border-radius:8px;border:none;
-                 background:#4f46e5;color:white;cursor:pointer;">
-    Apply
-  </button>
+      </div>
 
-  <button onclick="clearFilters()"
-          style="padding:8px 14px;border-radius:8px;border:1px solid #ddd;
-                 background:#fff;cursor:pointer;">
-    Clear
-  </button>
-</div>
+    </div>
 
+    <!-- FILTER PANEL -->
 
-    <table id="ordersTable">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Order ID</th>
-          <th>Customer</th>
-          <th>Total (₹)</th>
-          <th>Purchase Mode</th>
-          <th>Items</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="filter-panel">
 
-  </div>
-</div>
+      <div class="filter-heading">
+        <strong>⌕ Filter Orders</strong>
+        <span style="font-size:10px;color:#777387">
+          Narrow down your results
+        </span>
+      </div>
+
+      <div class="filter-grid">
+
+        <div class="filter-group">
+          <label for="fromDate">From Date</label>
+          <input type="date" id="fromDate">
+        </div>
+
+        <div class="filter-group">
+          <label for="toDate">To Date</label>
+          <input type="date" id="toDate">
+        </div>
+
+        <div class="filter-group">
+          <label for="modeFilter">Purchase Mode</label>
+          <select id="modeFilter">
+            <option value="">All Modes</option>
+            <option value="Online">Online</option>
+            <option value="Stall">Stall</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="minAmount">Minimum Amount (₹)</label>
+          <input type="number" id="minAmount" min="0" placeholder="Min amount">
+        </div>
+
+        <div class="filter-group">
+          <label for="maxAmount">Maximum Amount (₹)</label>
+          <input type="number" id="maxAmount" min="0" placeholder="Max amount">
+        </div>
+
+        <div class="filter-buttons">
+          <button class="btn btn-secondary" id="clearBtn">
+            Clear Filters
+          </button>
+          <button class="btn btn-primary" id="applyBtn">
+            Apply Filters
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-wrapper">
+
+      <table id="ordersTable">
+
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Total Amount</th>
+            <th>Purchase Mode</th>
+            <th>Items</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody id="ordersBody">
+          <tr>
+            <td colspan="7">
+              <div class="state-message">
+                <div class="state-icon">⏳</div>
+                Loading your orders...
+              </div>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="table-footer">
+      <span id="footerCount">Fetching records...</span>
+      <span>theCutiesLoop Admin</span>
+    </div>
+
+  </section>
+
+</main>
 
 <script>
-let ALL_ORDERS = [];
-let ALL_ITEMS_MAP = {};
+
+/* =================================
+   CONFIGURATION
+================================= */
 
 const API_KEY = "AIzaSyBOYSx1ViWXNl8OJG0s1aQDjGJm6A8r9dE";
 const SPREADSHEET_ID = "10Z1De-hhJkihZsncW15xlz-VihhGodcWP1eGWWJ7bNU";
 
 const ORDERS_RANGE = "Orders!A2:Z";
-const ITEMS_RANGE  = "Order Items!A2:E";
+const ITEMS_RANGE = "Order Items!A2:E";
+
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbwqYxeCKpWYTaAJjlzkgJL-M61LxVZ1Eqz65gX3e5D1itJ6o59nHnbYuJdleGSoL_ng/exec";
+
+let ALL_ORDERS = [];
+let ALL_ITEMS_MAP = {};
+let expandedOrders = new Set();
+let loading = false;
+
+/* =================================
+   HELPERS
+================================= */
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function formatMoney(value) {
+  const amount = Number(value);
+  return "₹" + (Number.isFinite(amount) ? amount : 0)
+    .toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+}
+
+function getOrderId(row) {
+  return String(row[0] ?? "");
+}
+
+/* =================================
+   FETCH GOOGLE SHEETS
+================================= */
 
 async function fetchSheet(range) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
+
+  const url =
+    `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Google Sheets request failed: " + response.status);
+  }
+
+  const data = await response.json();
+
+  if (data.error) {
+    throw new Error(data.error.message || "Google Sheets API error");
+  }
+
   return data.values || [];
 }
 
+/* =================================
+   FETCH ORDERS
+================================= */
+
 async function fetchOrders() {
-  const ordersData = await fetchSheet(ORDERS_RANGE);
-  const itemsData  = await fetchSheet(ITEMS_RANGE);
 
-  const itemsMap = {};
-  itemsData.forEach(row => {
-    const [orderId, item, qty, price] = row;
-    if (!itemsMap[orderId]) itemsMap[orderId] = [];
-    itemsMap[orderId].push({
-      item,
-      qty: Number(qty),
-      price: Number(price)
+  if (loading) return;
+
+  loading = true;
+
+  const refreshBtn = document.getElementById("refreshBtn");
+  refreshBtn.disabled = true;
+  refreshBtn.textContent = "Loading...";
+
+  document.getElementById("ordersBody").innerHTML = `
+    <tr>
+      <td colspan="7">
+        <div class="state-message">
+          <div class="state-icon">⏳</div>
+          Fetching orders...
+        </div>
+      </td>
+    </tr>
+  `;
+
+  try {
+
+    const [ordersData, itemsData] = await Promise.all([
+      fetchSheet(ORDERS_RANGE),
+      fetchSheet(ITEMS_RANGE)
+    ]);
+
+    const itemsMap = {};
+
+    itemsData.forEach(row => {
+
+      const [orderId, item, qty, price] = row;
+
+      if (!itemsMap[orderId]) {
+        itemsMap[orderId] = [];
+      }
+
+      itemsMap[orderId].push({
+        item,
+        qty: Number(qty),
+        price: Number(price)
+      });
+
     });
-  });
 
-  ALL_ITEMS_MAP = itemsMap;
-  ALL_ORDERS = ordersData;
+    ALL_ITEMS_MAP = itemsMap;
 
-  renderOrders(ALL_ORDERS);
+    // Preserve the original row index for stable expansion.
+    ALL_ORDERS = ordersData.map((row, index) => ({
+      row,
+      index
+    }));
+
+    updateSummary();
+    applyFilters();
+
+  } catch(error) {
+
+    console.error(error);
+
+    document.getElementById("ordersBody").innerHTML = `
+      <tr>
+        <td colspan="7">
+          <div class="state-message">
+            <div class="state-icon">⚠️</div>
+            Unable to load orders. Please check your connection and API access.
+          </div>
+        </td>
+      </tr>
+    `;
+
+    document.getElementById("resultCount").textContent =
+      "Could not load records";
+
+  } finally {
+
+    loading = false;
+    refreshBtn.disabled = false;
+    refreshBtn.textContent = "↻ Refresh";
+
+  }
+
 }
 
+/* =================================
+   SUMMARY CARDS
+================================= */
+
+function updateSummary() {
+
+  const totalOrders = ALL_ORDERS.length;
+
+  let revenue = 0;
+  let online = 0;
+  let stall = 0;
+
+  ALL_ORDERS.forEach(({row}) => {
+
+    revenue += Number(row[6]) || 0;
+
+    const mode = String(row[5] || "").trim().toLowerCase();
+
+    if (mode === "online") online++;
+    if (mode === "stall") stall++;
+
+  });
+
+  document.getElementById("totalOrders").textContent =
+    totalOrders.toLocaleString("en-IN");
+
+  document.getElementById("totalRevenue").textContent =
+    formatMoney(revenue);
+
+  document.getElementById("onlineOrders").textContent =
+    online.toLocaleString("en-IN");
+
+  document.getElementById("stallOrders").textContent =
+    stall.toLocaleString("en-IN");
+
+}
+
+/* =================================
+   SEARCH + FILTER
+================================= */
+
+function applyFilters() {
+
+  const query = document.getElementById("searchInput")
+    .value.trim().toLowerCase();
+
+  const fromDate = document.getElementById("fromDate").value;
+  const toDate = document.getElementById("toDate").value;
+  const mode = document.getElementById("modeFilter").value;
+
+  const minValue = document.getElementById("minAmount").value;
+  const maxValue = document.getElementById("maxAmount").value;
+
+  const minAmount = minValue === "" ? -Infinity : Number(minValue);
+  const maxAmount = maxValue === "" ? Infinity : Number(maxValue);
+
+  if (
+    minAmount < 0 || maxAmount < 0 ||
+    minAmount > maxAmount
+  ) {
+
+    document.getElementById("resultCount").textContent =
+      "Please check the amount range.";
+
+    return;
+  }
+
+  if (fromDate && toDate && fromDate > toDate) {
+
+    document.getElementById("resultCount").textContent =
+      "From Date cannot be after To Date.";
+
+    return;
+  }
+
+  const filtered = ALL_ORDERS.filter(({row}) => {
+
+    const orderId = String(row[0] || "").toLowerCase();
+    const customer = String(row[2] || "").toLowerCase();
+    const contact = String(row[3] || "").toLowerCase();
+    const date = String(row[4] || "").slice(0, 10);
+    const purchaseMode = String(row[5] || "").trim();
+    const total = Number(row[6]) || 0;
+
+    const items = ALL_ITEMS_MAP[row[0]] || [];
+
+    const itemText = items.map(item => item.item || "")
+      .join(" ").toLowerCase();
+
+    const searchMatch =
+      !query ||
+      orderId.includes(query) ||
+      customer.includes(query) ||
+      contact.includes(query) ||
+      itemText.includes(query);
+
+    const dateMatch =
+      (!fromDate || date >= fromDate) &&
+      (!toDate || date <= toDate);
+
+    const modeMatch = !mode || purchaseMode === mode;
+
+    const amountMatch =
+      total >= minAmount && total <= maxAmount;
+
+    return searchMatch && dateMatch && modeMatch && amountMatch;
+
+  });
+
+  renderOrders(filtered);
+
+}
+
+/* =================================
+   RENDER ORDERS
+================================= */
+
 function renderOrders(data) {
-  const tbody = document.querySelector("#ordersTable tbody");
+
+  const tbody = document.getElementById("ordersBody");
   tbody.innerHTML = "";
 
-  data.forEach((row, index) => {
+  document.getElementById("resultCount").textContent =
+    `${data.length} order${data.length !== 1 ? "s" : ""} found`;
+
+  document.getElementById("footerCount").textContent =
+    `Showing ${data.length} of ${ALL_ORDERS.length} orders`;
+
+  if (data.length === 0) {
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7">
+          <div class="state-message">
+            <div class="state-icon">🧶</div>
+            <strong>No orders found</strong>
+            <p>Try changing your search or filters.</p>
+          </div>
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  data.forEach(({row, index}) => {
+
     const [
       orderId,
       customerId,
@@ -306,165 +1128,229 @@ function renderOrders(data) {
 
     const items = ALL_ITEMS_MAP[orderId] || [];
 
+    const expanded = expandedOrders.has(index);
+
+    const safeId = escapeHTML(orderId);
+    const safeDate = escapeHTML(date || "");
+    const safeCustomer = escapeHTML(customerName || "Unknown");
+    const safeMode = escapeHTML(mode || "—");
+
+    const modeClass =
+      String(mode).trim().toLowerCase() === "online"
+        ? "mode-online"
+        : "mode-stall";
+
     const mainRow = document.createElement("tr");
+    mainRow.className = "main-order-row";
+
     mainRow.innerHTML = `
-      <td>${date || ""}</td>
-      <td>${orderId}</td>
-      <td>${customerName}</td>
-      <td>₹${total}</td>
-      <td>${mode}</td>
+      <td>${safeDate}</td>
+
       <td>
-        <button class="view-btn" onclick="toggleItems(${index})">
-          View Items (${items.length})
+        <span class="order-id">#${safeId}</span>
+      </td>
+
+      <td>
+        <div class="customer-name">${safeCustomer}</div>
+        <div style="font-size:10px;color:#999;margin-top:3px">
+          ${escapeHTML(contact || "")}
+        </div>
+      </td>
+
+      <td>
+        <span class="amount">${formatMoney(total)}</span>
+      </td>
+
+      <td>
+        <span class="mode-badge ${modeClass}">
+          ${safeMode}
+        </span>
+      </td>
+
+      <td>
+        <button class="view-btn"
+                data-action="toggle"
+                data-index="${index}">
+          ${expanded ? "Hide Items −" : "View Items +"}
+          (${items.length})
         </button>
       </td>
+
       <td>
-        <button class="delete-btn" onclick="deleteOrder('${orderId}')">Delete</button>
+        <button class="delete-btn"
+                data-action="delete"
+                data-order-id="${safeId}">
+          Delete
+        </button>
       </td>
     `;
 
     const itemsRow = document.createElement("tr");
     itemsRow.className = "items-row";
     itemsRow.id = `items-${index}`;
+    itemsRow.style.display = expanded ? "table-row" : "none";
+
+    const itemRows = items.length
+      ? items.map(item => `
+          <tr>
+            <td>${escapeHTML(item.item || "")}</td>
+            <td>${escapeHTML(item.qty)}</td>
+            <td>${formatMoney(item.price)}</td>
+            <td class="item-subtotal">
+              ${formatMoney((Number(item.qty) || 0) *
+                (Number(item.price) || 0))}
+            </td>
+          </tr>
+        `).join("")
+      : `<tr><td colspan="4">No items recorded for this order.</td></tr>`;
+
     itemsRow.innerHTML = `
       <td colspan="7">
         <div class="items-box">
+
+          <h4 class="items-title">
+            Items in Order #${safeId}
+          </h4>
+
           <table>
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+
             <tbody>
-              ${
-                items.length === 0
-                  ? `<tr><td colspan="4">No items</td></tr>`
-                  : items.map(it => `
-                    <tr>
-                      <td>${it.item}</td>
-                      <td>${it.qty}</td>
-                      <td>${it.price}</td>
-                      <td>${it.qty * it.price}</td>
-                    </tr>
-                  `).join("")
-              }
+              ${itemRows}
             </tbody>
           </table>
+
         </div>
       </td>
     `;
 
     tbody.appendChild(mainRow);
     tbody.appendChild(itemsRow);
+
   });
+
 }
 
-function toggleItems(index) {
-  const row = document.getElementById(`items-${index}`);
-  row.style.display = row.style.display === "table-row" ? "none" : "table-row";
-}
+/* =================================
+   TABLE ACTIONS
+================================= */
 
-/* ================= DELETE ================= */
+document.getElementById("ordersBody")
+  .addEventListener("click", function(e) {
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqYxeCKpWYTaAJjlzkgJL-M61LxVZ1Eqz65gX3e5D1itJ6o59nHnbYuJdleGSoL_ng/exec";
+    const button = e.target.closest("button[data-action]");
+
+    if (!button) return;
+
+    const action = button.dataset.action;
+
+    if (action === "toggle") {
+
+      const index = Number(button.dataset.index);
+
+      if (expandedOrders.has(index)) {
+        expandedOrders.delete(index);
+      } else {
+        expandedOrders.add(index);
+      }
+
+      applyFilters();
+
+    }
+
+    if (action === "delete") {
+
+      deleteOrder(button.dataset.orderId);
+
+    }
+
+  });
+
+/* =================================
+   DELETE ORDER
+================================= */
 
 async function deleteOrder(orderId) {
-  if (!confirm("Delete this order?")) return;
+
+  if (!confirm(
+    `Are you sure you want to delete order ${orderId}?\n\nThis action cannot be undone.`
+  )) return;
 
   try {
-    await fetch(
-      `${SCRIPT_URL}?action=deleteOrder&orderId=${orderId}`,
-      {
-        method: "POST",
-        mode: "no-cors"   // 🔑 avoids CORS error
-      }
+
+    const url = new URL(SCRIPT_URL);
+
+    url.searchParams.set("action", "deleteOrder");
+    url.searchParams.set("orderId", orderId);
+
+    await fetch(url.toString(), {
+      method: "POST",
+      mode: "no-cors"
+    });
+
+    alert(
+      "Delete request sent. Refreshing the order list. Please verify the result."
     );
-  } catch (e) {
-    // ignore — delete already happens server-side
+
+    expandedOrders.clear();
+    await fetchOrders();
+
+  } catch(error) {
+
+    console.error(error);
+
+    alert("Unable to send the delete request. Please try again.");
+
   }
 
-  // 🔄 FORCE FULL PAGE REFRESH
-  window.location.href = window.location.href.split('?')[0] + '?nocache=' + Date.now();
 }
 
-/* ================= SEARCH ================= */
+/* =================================
+   EVENT LISTENERS
+================================= */
 
-function filterOrders() {
-  const query = document.getElementById("searchInput").value.toLowerCase();
-  const rows = document.querySelectorAll("#ordersTable tbody tr");
+document.getElementById("searchInput")
+  .addEventListener("input", applyFilters);
 
-  for (let i = 0; i < rows.length; i += 2) {
-    const mainRow = rows[i];
-    const itemsRow = rows[i + 1];
+document.getElementById("applyBtn")
+  .addEventListener("click", applyFilters);
 
-    const text =
-      mainRow.innerText.toLowerCase() +
-      itemsRow.innerText.toLowerCase();
+document.getElementById("clearBtn")
+  .addEventListener("click", function() {
 
-    const match = text.includes(query);
-    mainRow.style.display = match ? "" : "none";
-    itemsRow.style.display = match ? "" : "none";
-  }
-}
+    document.getElementById("searchInput").value = "";
+    document.getElementById("fromDate").value = "";
+    document.getElementById("toDate").value = "";
+    document.getElementById("modeFilter").value = "";
+    document.getElementById("minAmount").value = "";
+    document.getElementById("maxAmount").value = "";
 
-/* ================= FILTERS ================= */
+    applyFilters();
 
-function applyFilters() {
-  const fromDate = document.getElementById("fromDate").value;
-  const toDate = document.getElementById("toDate").value;
-  const mode = document.getElementById("modeFilter").value;
-  const minAmt = Number(document.getElementById("minAmount").value || 0);
-  const maxAmt = Number(document.getElementById("maxAmount").value || Infinity);
-
-  const filtered = ALL_ORDERS.filter(row => {
-    const date = row[4];
-    const purchaseMode = row[5];
-    const total = Number(row[6]);
-
-    if (fromDate && date < fromDate) return false;
-    if (toDate && date > toDate) return false;
-    if (mode && purchaseMode !== mode) return false;
-    if (total < minAmt || total > maxAmt) return false;
-
-    return true;
   });
 
-  renderOrders(filtered);
-}
+document.getElementById("refreshBtn")
+  .addEventListener("click", function() {
 
-function clearFilters() {
-  document.getElementById("fromDate").value = "";
-  document.getElementById("toDate").value = "";
-  document.getElementById("modeFilter").value = "";
-  document.getElementById("minAmount").value = "";
-  document.getElementById("maxAmount").value = "";
+    expandedOrders.clear();
+    fetchOrders();
 
-  renderOrders(ALL_ORDERS);
-}
+  });
+
+/* =================================
+   INITIALIZE
+================================= */
 
 window.addEventListener("DOMContentLoaded", fetchOrders);
-</script>
 
+</script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
