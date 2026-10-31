@@ -1,220 +1,426 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Crochet Admin – Add Order</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>theCutiesLoop | Add Order</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    /* ================= AUTOCOMPLETE ================= */
+<style>
+:root {
+  --primary: #7254d8;
+  --primary-dark: #5940b5;
+  --light-purple: #f3efff;
+  --bg: #f7f6fb;
+  --text: #292638;
+  --muted: #777387;
+  --border: #e8e5ef;
+  --white: #ffffff;
+  --danger: #dc3545;
+  --shadow: 0 8px 30px rgba(44, 34, 83, 0.07);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* NAVBAR */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 4%;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #514d60;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: var(--primary);
+}
+
+.logout-btn {
+  background: #fff0f1;
+  color: var(--danger);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+/* PAGE */
+
+.add-order-page {
+  padding: 35px 16px 60px;
+  min-height: calc(100vh - 70px);
+}
+
+.page-heading {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.page-heading h1 {
+  font-size: 25px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.page-heading p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.form-card {
+  background: var(--white);
+  width: 100%;
+  max-width: 760px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.section-heading {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 22px 0 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 17px;
+  min-width: 0;
+}
+
+label {
+  font-size: 12px;
+  color: #595568;
+  font-weight: 500;
+  margin-bottom: 7px;
+}
+
+input, select {
+  width: 100%;
+  min-width: 0;
+  height: 43px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: white;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(114,84,216,0.09);
+}
+
+/* AUTOCOMPLETE */
+
+.autocomplete-wrapper {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
 .suggestions-box {
   position: absolute;
-  top: 42px;
+  top: calc(100% + 5px);
   left: 0;
   right: 0;
-  background: #fff;
+  background: white;
   border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-  max-height: 200px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.13);
+  max-height: 190px;
   overflow-y: auto;
   z-index: 1000;
   display: none;
+  border: 1px solid var(--border);
 }
 
 .suggestion-item {
-  padding: 10px 12px;
+  padding: 10px 13px;
   cursor: pointer;
-  font-size: 13px;
-  border-bottom: 1px solid #eee;
+  font-size: 12px;
+  border-bottom: 1px solid #f0eef5;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
 }
 
 .suggestion-item:hover {
-  background: #f3f4ff;
+  background: var(--light-purple);
 }
 
 .suggestion-name {
   font-weight: 500;
-  color: #333;
 }
 
 .suggestion-contact {
-  font-size: 12px;
-  color: #777;
+  font-size: 11px;
+  color: var(--muted);
 }
 
-    /* ================= NAVBAR STYLES ================= */
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 30px;
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      font-family: 'Poppins', sans-serif;
-    }
+/* ITEM SECTION */
 
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-icon {
-      font-size: 22px;
-    }
-
-    .brand-name {
-      font-size: 18px;
-      font-weight: 600;
-      color: #4f46e5;
-    }
-
-    .nav-links a {
-      margin-left: 20px;
-      text-decoration: none;
-      font-size: 14px;
-      color: #444;
-      font-weight: 500;
-    }
-
-    .nav-links a:hover {
-      color: #4f46e5;
-    }
-
-    /* ================= ADD ORDER PAGE ONLY ================= */
-    .add-order-page {
-      font-family: 'Poppins', sans-serif;
-      background: #f5f7fb;
-      min-height: calc(100vh - 64px);
-      padding-top: 30px;
-    }
-
-    .add-order-page .page-container {
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .add-order-page .form-card {
-      background: #ffffff;
-      width: 100%;
-      max-width: 420px;
-      padding: 30px;
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-    }
-
-    .add-order-page h2 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: #333;
-      font-weight: 600;
-    }
-
-    .add-order-page .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 16px;
-    }
-
-    .add-order-page label {
-      font-size: 13px;
-      color: #555;
-      margin-bottom: 6px;
-    }
-
-    .add-order-page input,
-    .add-order-page select {
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-    }
-
-    .add-order-page input:focus,
-    .add-order-page select:focus {
-      outline: none;
-      border-color: #8b5cf6;
-    }
-
-    .add-order-page .btn-primary {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #8b5cf6, #6366f1);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .add-order-page .btn-primary:hover {
-      opacity: 0.95;
-    }
-
-    .add-order-page .item-row {
+.items-header {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: minmax(0, 2fr) minmax(65px, 0.65fr) minmax(90px, 1fr) 35px;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  padding: 0 3px;
 }
 
-.add-order-page .item-row input {
-  padding: 8px;
+.items-header span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(65px, 0.65fr) minmax(90px, 1fr) 35px;
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.item-row input {
+  height: 42px;
+  font-size: 12px;
+  padding: 9px;
+}
+
+.remove-item-btn {
+  width: 35px;
+  height: 42px;
+  border: 1px solid #ffe0e2;
+  background: #fff5f5;
+  color: var(--danger);
   border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 13px;
-  width: 100px;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.remove-item-btn:hover {
+  background: #ffe5e7;
 }
 
 .add-item-btn {
-  background: transparent;
-  border: 1px dashed #8b5cf6;
-  color: #8b5cf6;
-  padding: 8px;
   width: 100%;
-  border-radius: 8px;
+  padding: 11px;
+  border: 1px dashed var(--primary);
+  background: var(--light-purple);
+  color: var(--primary);
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  margin-bottom: 15px;
+  margin: 3px 0 22px;
 }
 
-    .logout-btn {
-  background: crimson;
-  color: white;
+.add-item-btn:hover {
+  background: #eae3ff;
+}
+
+/* TOTAL */
+
+.total-box {
+  background: #f8f6ff;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e9e2ff;
+  margin-bottom: 18px;
+}
+
+.total-box label {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.total-box input {
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  background: white;
+}
+
+/* BUTTON */
+
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #8b68ec, #6550cb);
   border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 10px;
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  margin-top: 8px;
+  transition: 0.2s;
 }
 
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(114,84,216,0.2);
+}
 
-  </style>
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
 
-  <script>
-    if (localStorage.getItem("isLoggedIn") !== "true") {
-      window.location.href = "login.html";
-    }
+.status-message {
+  display: none;
+  padding: 12px;
+  margin-top: 15px;
+  border-radius: 9px;
+  font-size: 12px;
+}
 
-    function logout() {
-      localStorage.removeItem("isLoggedIn");
-      window.location.href = "login.html";
-    }
-  </script>
+.status-message.error {
+  display: block;
+  background: #fff0f0;
+  color: #bd3030;
+}
+
+.status-message.success {
+  display: block;
+  background: #effaf2;
+  color: #237b40;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+  .navbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav-links {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .add-order-page {
+    padding: 20px 10px 40px;
+  }
+
+  .form-card {
+    padding: 18px 13px;
+    border-radius: 13px;
+  }
+
+  .page-heading h1 {
+    font-size: 21px;
+  }
+
+  .items-header,
+  .item-row {
+    grid-template-columns: minmax(0, 1.5fr) 58px minmax(75px, 0.9fr) 30px;
+    gap: 5px;
+  }
+
+  .item-row input {
+    padding: 7px 5px;
+    font-size: 11px;
+  }
+
+  .remove-item-btn {
+    width: 30px;
+  }
+
+  .nav-links {
+    gap: 10px;
+  }
+}
+</style>
+
+<script>
+if (localStorage.getItem("isLoggedIn") !== "true") {
+  window.location.href = "login.html";
+}
+
+function logout() {
+  localStorage.removeItem("isLoggedIn");
+  window.location.href = "login.html";
+}
+</script>
 </head>
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
-<div class="navbar">
+<!-- NAVBAR -->
+
+<nav class="navbar">
   <div class="nav-left">
-  <img src="logo.png" alt="Business Logo" class="brand-logo" height="50px" width="50px">
-  <div class="brand-text">
+    <img src="logo.png" alt="Logo" class="brand-logo">
     <div class="brand-name">theCutiesLoop Admin</div>
   </div>
-</div>
 
   <div class="nav-links">
     <a href="add-expense.html">Add Expense</a>
@@ -225,287 +431,555 @@
     <a href="dashboard.html">Dashboard</a>
     <button onclick="logout()" class="logout-btn">Logout</button>
   </div>
-</div>
+</nav>
 
-<div class="add-order-page">
-  <div class="page-container">
-    <div class="form-card">
-      <h2>Add New Order</h2>
+<!-- PAGE -->
 
-      <form id="orderForm">
+<main class="add-order-page">
 
-        <div class="form-group">
-          <label>Customer Name</label>
-          <div style="position: relative;">
-  <input type="text" id="customerName" autocomplete="off" required>
-  <div id="customerSuggestions" class="suggestions-box"></div>
-</div>
-
-        </div>
-
-        <div class="form-group">
-          <label>Contact Number</label>
-          <input type="tel" id="contact">
-        </div>
-
-        <h3 style="margin: 20px 0 10px; font-size: 14px; color:#4f46e5;">
-          Items Purchased
-        </h3>
-
-        <div id="itemsContainer">
-          <div class="item-row">
-            <div style="position: relative;">
-  <input type="text" placeholder="Item Name" required class="item-name" autocomplete="off">
-  <div class="suggestions-box item-suggestions"></div>
-</div>
-
-            <input type="number" placeholder="Qty" min="1" required class="item-qty">
-            <input type="number" placeholder="Price" required class="item-price">
-          </div>
-        </div>
-
-        <button type="button" class="add-item-btn" onclick="addItemRow()">
-          + Add Item
-        </button>
-
-        <div class="form-group">
-          <label>Total Order Amount</label>
-          <input type="number" id="total" required>
-        </div>
-
-        <div class="form-group">
-          <label>Date of Purchase</label>
-          <input type="date" id="date" required>
-        </div>
-
-        <div class="form-group">
-          <label>Purchase Mode</label>
-          <select id="mode" required>
-            <option value="">Select</option>
-            <option>Stall</option>
-            <option>Online</option>
-          </select>
-        </div>
-
-        <button type="submit" class="btn-primary">Add Order</button>
-      </form>
-
-    </div>
+  <div class="page-heading">
+    <h1>Add New Order 🧶</h1>
+    <p>Record a new customer order for theCutiesLoop</p>
   </div>
-</div>
+
+  <div class="form-card">
+
+    <form id="orderForm">
+
+      <!-- CUSTOMER -->
+
+      <h3 class="section-heading">Customer Details</h3>
+
+      <div class="form-group">
+        <label for="customerName">Customer Name *</label>
+        <div class="autocomplete-wrapper">
+          <input type="text" id="customerName"
+                 placeholder="Enter customer name"
+                 autocomplete="off" required>
+          <div id="customerSuggestions" class="suggestions-box"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="contact">Contact Number</label>
+        <input type="tel" id="contact"
+               placeholder="Enter contact number">
+      </div>
+
+      <!-- ITEMS -->
+
+      <h3 class="section-heading">Items Purchased</h3>
+
+      <div class="items-header">
+        <span>Item Name</span>
+        <span>Qty</span>
+        <span>Price (₹)</span>
+        <span></span>
+      </div>
+
+      <div id="itemsContainer"></div>
+
+      <button type="button" class="add-item-btn" id="addItemBtn">
+        + Add Another Item
+      </button>
+
+      <!-- TOTAL -->
+
+      <div class="total-box">
+        <div class="form-group" style="margin:0">
+          <label for="total">Total Order Amount (₹)</label>
+          <input type="number" id="total"
+                 min="0" step="0.01"
+                 placeholder="0.00" required>
+        </div>
+      </div>
+
+      <!-- ORDER DETAILS -->
+
+      <h3 class="section-heading">Order Details</h3>
+
+      <div class="form-group">
+        <label for="date">Date of Purchase *</label>
+        <input type="date" id="date" required>
+      </div>
+
+      <div class="form-group">
+        <label for="mode">Purchase Mode *</label>
+        <select id="mode" required>
+          <option value="">Select purchase mode</option>
+          <option value="Stall">Stall</option>
+          <option value="Online">Online</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-primary" id="submitBtn">
+        Add Order
+      </button>
+
+      <div id="statusMessage" class="status-message"
+           role="status" aria-live="polite"></div>
+
+    </form>
+
+  </div>
+</main>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwSkuL7B22bOXB1jCy9KOaWKT8Z6pecj1WkH6UEFCiBI9hXrY8jd31z85Q8Ve7AqRk/exec";
 
-/* ================= AUTO TOTAL CALC ================= */
+/* =================================
+   CONFIGURATION
+================================= */
 
-function calculateTotal() {
-  let total = 0;
-  document.querySelectorAll(".item-row").forEach(row => {
-    const qty = Number(row.querySelector(".item-qty").value || 0);
-    const price = Number(row.querySelector(".item-price").value || 0);
-    total += qty * price;
-  });
-  document.getElementById("total").value = total;
-}
-
-/* ================= ADD ITEM ================= */
-
-function addItemRow() {
-  const container = document.getElementById("itemsContainer");
-  const row = document.createElement("div");
-  row.className = "item-row";
-  row.innerHTML = `
-    <input type="text" placeholder="Item Name" required class="item-name" style="width:150px;">
-    <input type="number" placeholder="Qty" min="1" required class="item-qty">
-    <input type="number" placeholder="Price" required class="item-price">
-  `;
-  container.appendChild(row);
-}
-
-/* 🔁 Recalculate on any qty / price change */
-document.addEventListener("input", function (e) {
-  if (e.target.classList.contains("item-qty") ||
-      e.target.classList.contains("item-price")) {
-    calculateTotal();
-  }
-});
-
-/* ================= ITEMS COLLECT ================= */
-
-function getItemsData() {
-  const rows = document.querySelectorAll("#itemsContainer .item-row");
-  const items = [];
-
-  rows.forEach(r => {
-    items.push({
-      name: r.querySelector(".item-name").value,
-      qty: r.querySelector(".item-qty").value,
-      price: r.querySelector(".item-price").value
-    });
-  });
-
-  return items;
-}
-
-  /* ================= CUSTOMER AUTOCOMPLETE ================= */
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbwSkuL7B22bOXB1jCy9KOaWKT8Z6pecj1WkH6UEFCiBI9hXrY8jd31z85Q8Ve7AqRk/exec";
 
 const customerInput = document.getElementById("customerName");
 const contactInput = document.getElementById("contact");
-const suggestionsBox = document.getElementById("customerSuggestions");
+const customerSuggestions = document.getElementById("customerSuggestions");
+const itemsContainer = document.getElementById("itemsContainer");
+const totalInput = document.getElementById("total");
+const orderForm = document.getElementById("orderForm");
+const submitBtn = document.getElementById("submitBtn");
+const statusMessage = document.getElementById("statusMessage");
 
-let debounceTimer = null;
+let customerTimer = null;
+const itemTimers = new WeakMap();
+const itemRequests = new WeakMap();
+let customerRequest = 0;
 
-customerInput.addEventListener("input", function () {
-  const query = this.value.trim();
+/* =================================
+   INITIALIZATION
+================================= */
 
-  contactInput.value = ""; // clear contact if typing again
-  suggestionsBox.style.display = "none";
+function initializeForm() {
+  document.getElementById("date").value =
+    new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString().slice(0, 10);
 
-  if (query.length < 2) return;
+  itemsContainer.innerHTML = "";
+  addItemRow();
+}
 
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => {
-    fetch(`${SCRIPT_URL}?action=searchCustomers&query=${encodeURIComponent(query)}`)
-      .then(res => res.json())
-      .then(showCustomerSuggestions)
-      .catch(err => console.error(err));
-  }, 300);
-});
+initializeForm();
 
-function showCustomerSuggestions(customers) {
-  suggestionsBox.innerHTML = "";
+/* =================================
+   ADD ITEM ROW
+================================= */
 
-  if (!customers.length) {
-    suggestionsBox.style.display = "none";
+function addItemRow() {
+
+  const row = document.createElement("div");
+  row.className = "item-row";
+
+  row.innerHTML = `
+    <div class="autocomplete-wrapper">
+      <input type="text"
+             placeholder="Item name"
+             class="item-name"
+             autocomplete="off"
+             required>
+      <div class="suggestions-box item-suggestions"></div>
+    </div>
+
+    <input type="number"
+           placeholder="Qty"
+           class="item-qty"
+           min="1"
+           step="1"
+           required>
+
+    <input type="number"
+           placeholder="Price"
+           class="item-price"
+           min="0"
+           step="0.01"
+           required>
+
+    <button type="button"
+            class="remove-item-btn"
+            title="Remove item"
+            aria-label="Remove item">×</button>
+  `;
+
+  itemsContainer.appendChild(row);
+
+  row.querySelector(".item-name").focus();
+
+  calculateTotal();
+}
+
+/* =================================
+   REMOVE ITEM
+================================= */
+
+itemsContainer.addEventListener("click", function(e) {
+
+  if (!e.target.classList.contains("remove-item-btn")) return;
+
+  const rows = itemsContainer.querySelectorAll(".item-row");
+
+  if (rows.length === 1) {
+    alert("At least one item is required.");
     return;
   }
 
-  customers.forEach(c => {
-    const div = document.createElement("div");
-    div.className = "suggestion-item";
-    div.innerHTML = `
-      <div class="suggestion-name">${c.name}</div>
-      <div class="suggestion-contact">${c.contact || "No contact"}</div>
-    `;
+  const row = e.target.closest(".item-row");
+  clearTimeout(itemTimers.get(row.querySelector(".item-name")));
+  row.remove();
 
-    div.onclick = () => {
-      customerInput.value = c.name;
-      contactInput.value = c.contact || "";
-      suggestionsBox.style.display = "none";
-    };
-
-    suggestionsBox.appendChild(div);
-  });
-
-  suggestionsBox.style.display = "block";
-}
-
-/* Hide suggestions on outside click */
-document.addEventListener("click", function (e) {
-  if (!suggestionsBox.contains(e.target) && e.target !== customerInput) {
-    suggestionsBox.style.display = "none";
-  }
+  calculateTotal();
 });
 
-/* ================= ITEM AUTOCOMPLETE ================= */
+document.getElementById("addItemBtn")
+  .addEventListener("click", addItemRow);
 
-let itemDebounce = null;
+/* =================================
+   AUTOMATIC TOTAL
+================================= */
 
-document.addEventListener("input", function (e) {
+function calculateTotal() {
+
+  let total = 0;
+
+  itemsContainer.querySelectorAll(".item-row").forEach(row => {
+
+    const qty = Number(row.querySelector(".item-qty").value || 0);
+    const price = Number(row.querySelector(".item-price").value || 0);
+
+    total += qty * price;
+
+  });
+
+  totalInput.value = total.toFixed(2);
+}
+
+itemsContainer.addEventListener("input", function(e) {
+
+  if (
+    e.target.classList.contains("item-qty") ||
+    e.target.classList.contains("item-price")
+  ) {
+    calculateTotal();
+  }
+
+});
+
+/* =================================
+   GET ITEMS DATA
+================================= */
+
+function getItemsData() {
+
+  return [...itemsContainer.querySelectorAll(".item-row")].map(row => {
+
+    return {
+      name: row.querySelector(".item-name").value.trim(),
+      qty: row.querySelector(".item-qty").value,
+      price: row.querySelector(".item-price").value
+    };
+
+  });
+
+}
+
+/* =================================
+   CUSTOMER AUTOCOMPLETE
+================================= */
+
+customerInput.addEventListener("input", function() {
+
+  const query = this.value.trim();
+  const requestId = ++customerRequest;
+
+  contactInput.value = "";
+  customerSuggestions.style.display = "none";
+
+  clearTimeout(customerTimer);
+
+  if (query.length < 2) return;
+
+  customerTimer = setTimeout(async () => {
+
+    try {
+
+      const response = await fetch(
+        `${SCRIPT_URL}?action=searchCustomers&query=${encodeURIComponent(query)}`
+      );
+
+      const customers = await response.json();
+
+      if (requestId !== customerRequest) return;
+
+      showCustomerSuggestions(customers);
+
+    } catch(error) {
+      console.error("Customer search error:", error);
+    }
+
+  }, 300);
+
+});
+
+function showCustomerSuggestions(customers) {
+
+  customerSuggestions.innerHTML = "";
+
+  if (!Array.isArray(customers) || customers.length === 0) {
+    customerSuggestions.style.display = "none";
+    return;
+  }
+
+  customers.forEach(customer => {
+
+    const div = document.createElement("div");
+    div.className = "suggestion-item";
+
+    const name = document.createElement("div");
+    name.className = "suggestion-name";
+    name.textContent = customer.name || "";
+
+    const contact = document.createElement("div");
+    contact.className = "suggestion-contact";
+    contact.textContent = customer.contact || "No contact";
+
+    div.append(name, contact);
+
+    div.addEventListener("click", () => {
+
+      customerInput.value = customer.name || "";
+      contactInput.value = customer.contact || "";
+
+      customerSuggestions.style.display = "none";
+
+    });
+
+    customerSuggestions.appendChild(div);
+
+  });
+
+  customerSuggestions.style.display = "block";
+}
+
+/* =================================
+   ITEM AUTOCOMPLETE
+================================= */
+
+itemsContainer.addEventListener("input", function(e) {
+
   if (!e.target.classList.contains("item-name")) return;
 
   const input = e.target;
-  const box = input.nextElementSibling;
+  const row = input.closest(".item-row");
+  const box = row.querySelector(".item-suggestions");
   const query = input.value.trim();
 
+  clearTimeout(itemTimers.get(input));
+
+  const requestId = (itemRequests.get(input) || 0) + 1;
+  itemRequests.set(input, requestId);
+
   box.style.display = "none";
+
   if (query.length < 2) return;
 
-  clearTimeout(itemDebounce);
-  itemDebounce = setTimeout(() => {
-    fetch(`${SCRIPT_URL}?action=getItemNames&query=${encodeURIComponent(query)}`)
-      .then(res => res.json())
-      .then(items => showItemSuggestions(items, input, box))
-      .catch(err => console.error(err));
+  const timer = setTimeout(async () => {
+
+    try {
+
+      const response = await fetch(
+        `${SCRIPT_URL}?action=getItemNames&query=${encodeURIComponent(query)}`
+      );
+
+      const items = await response.json();
+
+      if (
+        !input.isConnected ||
+        itemRequests.get(input) !== requestId ||
+        input.value.trim() !== query
+      ) return;
+
+      showItemSuggestions(items, input, box);
+
+    } catch(error) {
+      console.error("Item search error:", error);
+    }
+
   }, 300);
+
+  itemTimers.set(input, timer);
+
 });
 
 function showItemSuggestions(items, input, box) {
+
   box.innerHTML = "";
 
-  if (!items.length) {
+  if (!Array.isArray(items) || items.length === 0) {
     box.style.display = "none";
     return;
   }
 
-  items.forEach(name => {
+  items.forEach(item => {
+
     const div = document.createElement("div");
     div.className = "suggestion-item";
-    div.textContent = name;
+    div.textContent = item;
 
-    div.onclick = () => {
-      input.value = name;
+    div.addEventListener("click", () => {
+
+      input.value = item;
       box.style.display = "none";
-    };
+
+    });
 
     box.appendChild(div);
+
   });
 
   box.style.display = "block";
 }
 
-/* Hide item suggestions on outside click */
-document.addEventListener("click", function (e) {
+/* =================================
+   CLOSE AUTOCOMPLETE
+================================= */
+
+document.addEventListener("click", function(e) {
+
+  if (!customerSuggestions.contains(e.target) &&
+      e.target !== customerInput) {
+
+    customerSuggestions.style.display = "none";
+
+  }
+
   document.querySelectorAll(".item-suggestions").forEach(box => {
-    if (!box.contains(e.target)) {
+
+    if (!box.parentElement.contains(e.target)) {
       box.style.display = "none";
     }
+
   });
+
 });
 
+/* =================================
+   STATUS MESSAGE
+================================= */
 
-/* ================= FORM SUBMIT ================= */
+function showMessage(message, type) {
 
-document.getElementById("orderForm").addEventListener("submit", async function(e) {
+  statusMessage.textContent = message;
+  statusMessage.className = "status-message " + type;
+
+}
+
+/* =================================
+   FORM VALIDATION
+================================= */
+
+function validateItems() {
+
+  const rows = [...itemsContainer.querySelectorAll(".item-row")];
+
+  for (const row of rows) {
+
+    const name = row.querySelector(".item-name").value.trim();
+    const qty = Number(row.querySelector(".item-qty").value);
+    const price = Number(row.querySelector(".item-price").value);
+
+    if (!name || !Number.isInteger(qty) || qty < 1 ||
+        !Number.isFinite(price) || price < 0 ||
+        row.querySelector(".item-price").value === "") {
+
+      return false;
+
+    }
+
+  }
+
+  return rows.length > 0;
+}
+
+/* =================================
+   SUBMIT ORDER
+================================= */
+
+orderForm.addEventListener("submit", async function(e) {
+
   e.preventDefault();
 
+  if (!validateItems()) {
+
+    showMessage(
+      "Please check every item name, quantity and price.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (Number(totalInput.value) < 0 ||
+      totalInput.value.trim() === "") {
+
+    showMessage("Please enter a valid total amount.", "error");
+    return;
+
+  }
+
   const params = new URLSearchParams({
+
     action: "addOrder",
-    customerName: customerName.value,
-    contact: contact.value,
-    date: date.value,
-    purchaseMode: mode.value,
-    total: total.value, // ✅ editable & auto-calculated
+    customerName: customerInput.value.trim(),
+    contact: contactInput.value.trim(),
+    date: document.getElementById("date").value,
+    purchaseMode: document.getElementById("mode").value,
+    total: totalInput.value,
     items: JSON.stringify(getItemsData())
+
   });
 
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+
   try {
+
+    /*
+      Keeping the existing Apps Script GET integration.
+      no-cors means the browser cannot read the server response.
+    */
+
     await fetch(`${SCRIPT_URL}?${params.toString()}`, {
       method: "GET",
       mode: "no-cors"
     });
 
-    alert("✅ Order added successfully!");
-    this.reset();
-    document.getElementById("itemsContainer").innerHTML = `
-      <div class="item-row">
-        <input type="text" placeholder="Item Name" required class="item-name" style="width:150px;">
-        <input type="number" placeholder="Qty" min="1" required class="item-qty">
-        <input type="number" placeholder="Price" required class="item-price">
-      </div>
-    `;
-  } catch (err) {
-    alert("❌ Failed to add order");
+    showMessage(
+      "Request sent. Please verify the order in View Orders before submitting it again.",
+      "success"
+    );
+
+    orderForm.reset();
+    initializeForm();
+
+  } catch(error) {
+
+    console.error("Order submission error:", error);
+
+    showMessage(
+      "Unable to send the order. Please check your internet connection and try again.",
+      "error"
+    );
+
+  } finally {
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Add Order";
+
   }
+
 });
+
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
