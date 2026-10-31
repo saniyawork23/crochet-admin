@@ -35,18 +35,21 @@ body {
 
 /* NAVBAR */
 
+
+/* ===== NAVBAR ===== */
+
 .navbar {
-  min-height: 75px;
-  background: var(--white);
-  padding: 12px 4%;
+  min-height: 76px;
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  box-shadow: 0 2px 12px rgba(30,30,60,.05);
+  padding: 12px 4%;
+  box-shadow: 0 2px 12px rgba(40,30,80,.05);
   position: sticky;
   top: 0;
   z-index: 100;
+  gap: 15px;
 }
 
 .nav-left {
@@ -56,7 +59,7 @@ body {
   flex-shrink: 0;
 }
 
-.brand-logo {
+.nav-left img {
   width: 46px;
   height: 46px;
   object-fit: contain;
@@ -65,47 +68,104 @@ body {
 .brand-name {
   font-size: 17px;
   font-weight: 700;
-  color: var(--primary);
-}
-
-.brand-subtitle {
-  font-size: 10px;
-  color: var(--muted);
+  color: #7460dc;
+  white-space: nowrap;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
   gap: 5px;
-  flex-wrap: wrap;
 }
 
 .nav-links a {
   text-decoration: none;
-  color: #68677a;
+  color: #656176;
   font-size: 12px;
   font-weight: 500;
-  padding: 9px 11px;
+  padding: 10px 11px;
   border-radius: 8px;
   transition: .2s;
+  white-space: nowrap;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
-  background: var(--primary-light);
-  color: var(--primary);
+  color: #7460dc;
+  background: #f1efff;
 }
 
 .logout-btn {
-  background: #fff0f0;
-  color: var(--danger);
   border: none;
-  padding: 9px 13px;
+  background: #fff0f1;
+  color: #dc4560;
+  padding: 9px 15px;
   border-radius: 8px;
-  cursor: pointer;
   font-family: inherit;
   font-size: 12px;
   font-weight: 600;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: .2s;
+  white-space: nowrap;
+}
+
+.logout-btn:hover {
+  background: #ffe0e5;
+}
+
+.menu-toggle {
+  display: none;
+  background: #f1efff;
+  border: none;
+  color: #7460dc;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* RESPONSIVE NAVBAR */
+
+@media(max-width: 1050px) {
+  .navbar {
+    flex-wrap: wrap;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 15px;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 11px 13px;
+    font-size: 13px;
+  }
+
+  .logout-btn {
+    margin: 8px 0 0;
+  }
+}
+
+@media(max-width: 600px) {
+  .navbar {
+    padding: 12px 18px;
+  }
+
+  .brand-name {
+    font-size: 15px;
+  }
 }
 
 /* PAGE */
@@ -475,25 +535,29 @@ function logout() {
 
 <!-- NAVBAR -->
 
+
 <nav class="navbar">
   <div class="nav-left">
-    <img src="logo.png" alt="Business Logo" class="brand-logo">
-    <div>
-      <div class="brand-name">theCutiesLoop Admin</div>
-      <div class="brand-subtitle">Business Management Panel</div>
-    </div>
+    <img src="logo.png" alt="theCutiesLoop Logo">
+    <div class="brand-name">theCutiesLoop Admin</div>
   </div>
 
-  <div class="nav-links">
+  <button class="menu-toggle" id="menuToggle"
+    type="button"
+    aria-label="Toggle navigation"
+    aria-expanded="false">☰</button>
+
+  <div class="nav-links" id="navLinks">
     <a href="add-expense.html">Add Expense</a>
     <a href="expenses.html">View Expenses</a>
     <a href="index.html">Add Order</a>
     <a href="orders.html" class="active">View Orders</a>
     <a href="customers.html">Customers</a>
     <a href="dashboard.html">Dashboard</a>
-    <button onclick="logout()" class="logout-btn">Logout</button>
+    <button onclick="logout()" class="logout-btn">Logout ↗</button>
   </div>
 </nav>
+
 
 <!-- PAGE -->
 
@@ -914,6 +978,16 @@ function filterOrders() {
 function applyFilters() {
   filterOrders();
 }
+
+  
+// MOBILE NAVIGATION
+document.getElementById("menuToggle").addEventListener("click", function() {
+  const nav = document.getElementById("navLinks");
+  const isOpen = nav.classList.toggle("show");
+
+  this.setAttribute("aria-expanded", String(isOpen));
+  this.textContent = isOpen ? "✕" : "☰";
+});
 
 function clearFilters() {
 
