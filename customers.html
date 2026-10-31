@@ -1,110 +1,418 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Crochet Admin – Customers</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>theCutiesLoop – Customers</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    /* ================= NAVBAR ================= */
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 30px;
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      font-family: 'Poppins', sans-serif;
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-icon { font-size: 22px; }
-
-    .brand-name {
-      font-size: 18px;
-      font-weight: 600;
-      color: #4f46e5;
-    }
-
-    .nav-links a {
-      margin-left: 20px;
-      text-decoration: none;
-      font-size: 14px;
-      color: #444;
-      font-weight: 500;
-    }
-
-    .nav-links a:hover { color: #4f46e5; }
-
-    /* ================= PAGE ================= */
-    .customers-page {
-      font-family: 'Poppins', sans-serif;
-      background: #f5f7fb;
-      min-height: calc(100vh - 64px);
-      padding: 30px;
-    }
-
-    .customers-container {
-      max-width: 1100px;
-      margin: auto;
-      background: #ffffff;
-      padding: 25px;
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-    }
-
-    .customers-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th {
-      background: #f0f1ff;
-      padding: 12px;
-      font-size: 13px;
-      color: #4f46e5;
-      text-align: left;
-    }
-
-    td {
-      padding: 12px;
-      font-size: 13px;
-      border-bottom: 1px solid #eee;
-      color: #444;
-    }
-
-    tr:hover { background: #fafafa; }
-
-    .logout-btn {
-  background: crimson;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
+<style>
+:root {
+  --primary: #6256d9;
+  --primary-light: #f0efff;
+  --background: #f7f8fc;
+  --text: #25243a;
+  --muted: #85849a;
+  --border: #eeedf4;
+  --white: #ffffff;
+  --success: #16865b;
+  --shadow: 0 5px 24px rgba(37, 36, 58, 0.05);
 }
 
-  </style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  <script>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--background);
+  color: var(--text);
+}
+
+/* NAVBAR */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 4%;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 20px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.brand-subtitle {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #666579;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.logout-btn {
+  background: #fff0f0;
+  color: #d64545;
+  border: none;
+  padding: 9px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.logout-btn:hover {
+  background: #ffe1e1;
+}
+
+/* PAGE */
+
+.customers-page {
+  padding: 35px 4%;
+  min-height: calc(100vh - 70px);
+}
+
+.page-container {
+  max-width: 1400px;
+  margin: auto;
+}
+
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.page-heading h1 {
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.page-heading p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* SUMMARY CARDS */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--white);
+  padding: 21px;
+  border-radius: 13px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 25px;
+  font-weight: 700;
+  margin-top: 10px;
+  color: var(--text);
+}
+
+.stat-icon {
+  font-size: 21px;
+  margin-bottom: 10px;
+}
+
+/* TABLE CONTAINER */
+
+.customers-container {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.customers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+.customers-header h2 {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.customer-count {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  background: #fafaff;
+  border: 1px solid #e7e6f0;
+  border-radius: 9px;
+  padding: 0 12px;
+  width: 300px;
+}
+
+.search-wrapper:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(98, 86, 217, 0.09);
+}
+
+.search-icon {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 11px 9px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+}
+
+.clear-search {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 17px;
+  display: none;
+}
+
+/* TABLE */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 750px;
+}
+
+thead {
+  background: #f6f5ff;
+}
+
+th {
+  padding: 15px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+td {
+  padding: 15px 14px;
+  font-size: 12px;
+  border-bottom: 1px solid #f0eff4;
+  color: #555468;
+}
+
+tbody tr {
+  transition: background 0.2s;
+}
+
+tbody tr:hover {
+  background: #faf9ff;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.customer-id {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.customer-name {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.heart-value {
+  color: #e65c83;
+  font-weight: 600;
+}
+
+.purchase-value {
+  color: var(--success);
+  font-weight: 600;
+}
+
+/* STATES */
+
+.table-message {
+  text-align: center;
+  padding: 45px 15px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.loading-spinner {
+  width: 25px;
+  height: 25px;
+  border: 3px solid #e7e5ff;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.refresh-note {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 15px;
+}
+
+/* RESPONSIVENESS */
+
+@media(max-width: 1050px) {
+  .navbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav-links {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width: 600px) {
+  .customers-page {
+    padding: 22px 14px;
+  }
+
+  .page-heading {
+    align-items: flex-start;
+  }
+
+  .page-heading h1 {
+    font-size: 21px;
+  }
+
+  .stats-grid {
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 15px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  .customers-container {
+    padding: 16px;
+  }
+
+  .customers-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .search-wrapper {
+    width: 100%;
+  }
+
+  .brand-name {
+    font-size: 15px;
+  }
+}
+</style>
+
+<script>
 if (localStorage.getItem("isLoggedIn") !== "true") {
   window.location.href = "login.html";
 }
-</script>
-<script>
+
 function logout() {
   localStorage.removeItem("isLoggedIn");
   window.location.href = "login.html";
@@ -115,56 +423,141 @@ function logout() {
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
+<!-- NAVBAR -->
+
 <div class="navbar">
+
   <div class="nav-left">
-  <img src="logo.png" alt="Business Logo" class="brand-logo" height="50px" width="50px">
-  <div class="brand-text">
-    <div class="brand-name">theCutiesLoop Admin</div>
+    <img src="logo.png" alt="Business Logo" class="brand-logo">
+    <div>
+      <div class="brand-name">theCutiesLoop Admin</div>
+      <div class="brand-subtitle">BUSINESS MANAGEMENT</div>
+    </div>
   </div>
-</div>
 
   <div class="nav-links">
     <a href="add-expense.html">Add Expense</a>
     <a href="expenses.html">View Expenses</a>
     <a href="index.html">Add Order</a>
     <a href="orders.html">View Orders</a>
-    <a href="customers.html">Customers</a>
+    <a href="customers.html" class="active">Customers</a>
     <a href="dashboard.html">Dashboard</a>
     <button onclick="logout()" class="logout-btn">Logout</button>
   </div>
+
 </div>
 
-<!-- ================= CUSTOMERS PAGE ================= -->
+<!-- MAIN PAGE -->
+
 <div class="customers-page">
+
+<div class="page-container">
+
+  <div class="page-heading">
+    <div>
+      <h1>Customers 👥</h1>
+      <p>Manage your customer relationships and purchase history.</p>
+    </div>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-label">Total Customers</div>
+      <div class="stat-value" id="totalCustomers">—</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📦</div>
+      <div class="stat-label">Total Orders</div>
+      <div class="stat-value" id="totalOrders">—</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">❤️</div>
+      <div class="stat-label">Total Hearts</div>
+      <div class="stat-value" id="totalHearts">—</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-label">Total Revenue</div>
+      <div class="stat-value" id="totalRevenue">—</div>
+    </div>
+
+  </div>
+
+  <!-- CUSTOMER TABLE -->
+
   <div class="customers-container">
 
     <div class="customers-header">
-      <h2>Customers</h2>
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="Search name or contact..."
-        style="padding:8px 12px;border-radius:8px;border:1px solid #ddd;"
-        oninput="filterCustomers()"
-      />
+
+      <div>
+        <h2>Customer Directory</h2>
+        <div class="customer-count" id="customerCount">
+          Loading customers...
+        </div>
+      </div>
+
+      <div class="search-wrapper">
+        <span class="search-icon">⌕</span>
+
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search name or contact..."
+          oninput="filterCustomers()"
+        >
+
+        <button
+          class="clear-search"
+          id="clearSearch"
+          onclick="clearCustomerSearch()"
+          aria-label="Clear search"
+        >×</button>
+      </div>
+
     </div>
 
-    <table id="customersTable">
-      <thead>
-        <tr>
-          <th>Customer ID</th>
-          <th>Name</th>
-          <th>Contact</th>
-          <th>Total Orders</th>
-          <th>Hearts</th>
-          <th>Total Purchase (₹)</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-wrapper">
+
+      <table id="customersTable">
+
+        <thead>
+          <tr>
+            <th>Customer ID</th>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Total Orders</th>
+            <th>Hearts</th>
+            <th>Total Purchase (₹)</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td colspan="6" class="table-message">
+              <div class="loading-spinner"></div>
+              Fetching customer records...
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="refresh-note">
+      Customer records are synced from Google Sheets.
+    </div>
 
   </div>
+
+</div>
 </div>
 
 <script>
@@ -175,19 +568,69 @@ const CUSTOMERS_RANGE = "Customers!A2:F";
 let ALL_CUSTOMERS = [];
 
 async function fetchCustomers() {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${CUSTOMERS_RANGE}?key=${API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
 
-  ALL_CUSTOMERS = data.values || [];
-  renderCustomers(ALL_CUSTOMERS);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${CUSTOMERS_RANGE}?key=${API_KEY}`;
+
+  try {
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error("Unable to fetch customer records.");
+    }
+
+    const data = await res.json();
+
+    ALL_CUSTOMERS = data.values || [];
+
+    renderCustomers(ALL_CUSTOMERS);
+    updateCustomerStats();
+
+  } catch (error) {
+
+    console.error("Customer fetch error:", error);
+
+    document.querySelector("#customersTable tbody").innerHTML = `
+      <tr>
+        <td colspan="6" class="table-message">
+          Unable to load customer records. Please refresh the page.
+        </td>
+      </tr>
+    `;
+
+    document.getElementById("customerCount").textContent =
+      "Customer data unavailable";
+
+  }
+
 }
 
 function renderCustomers(customers) {
+
   const tbody = document.querySelector("#customersTable tbody");
+
   tbody.innerHTML = "";
 
+  if (!customers.length) {
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="table-message">
+          No customers found.
+        </td>
+      </tr>
+    `;
+
+    document.getElementById("customerCount").textContent =
+      "0 customers found";
+
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
   customers.forEach(row => {
+
     const [
       customerId,
       name,
@@ -198,25 +641,99 @@ function renderCustomers(customers) {
     ] = row;
 
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${customerId}</td>
-      <td>${name}</td>
-      <td>${contact}</td>
-      <td>${totalOrders}</td>
-      <td>${hearts}</td>
-      <td>₹${totalPurchase}</td>
-    `;
 
-    tbody.appendChild(tr);
+    const values = [
+      customerId,
+      name,
+      contact,
+      totalOrders,
+      hearts,
+      `₹${totalPurchase}`
+    ];
+
+    values.forEach((value, index) => {
+
+      const td = document.createElement("td");
+
+      td.textContent = value || (index === 0 ? "—" : "0");
+
+      if (index === 0) td.className = "customer-id";
+      if (index === 1) td.className = "customer-name";
+      if (index === 4) td.className = "heart-value";
+      if (index === 5) td.className = "purchase-value";
+
+      tr.appendChild(td);
+
+    });
+
+    fragment.appendChild(tr);
+
   });
+
+  tbody.appendChild(fragment);
+
+  document.getElementById("customerCount").textContent =
+    `Showing ${customers.length} customer${customers.length !== 1 ? "s" : ""}`;
+
+}
+
+function updateCustomerStats() {
+
+  const totalCustomers = ALL_CUSTOMERS.length;
+
+  const totalOrders = ALL_CUSTOMERS.reduce(
+    (sum, row) => sum + (Number(row[3]) || 0), 0
+  );
+
+  const totalHearts = ALL_CUSTOMERS.reduce(
+    (sum, row) => sum + (Number(row[4]) || 0), 0
+  );
+
+  const totalRevenue = ALL_CUSTOMERS.reduce(
+    (sum, row) => sum + (Number(row[5]) || 0), 0
+  );
+
+  document.getElementById("totalCustomers").textContent =
+    totalCustomers.toLocaleString("en-IN");
+
+  document.getElementById("totalOrders").textContent =
+    totalOrders.toLocaleString("en-IN");
+
+  document.getElementById("totalHearts").textContent =
+    totalHearts.toLocaleString("en-IN");
+
+  document.getElementById("totalRevenue").textContent =
+    "₹" + totalRevenue.toLocaleString("en-IN");
+
 }
 
 function filterCustomers() {
-  const q = document.getElementById("searchInput").value.toLowerCase();
-  const filtered = ALL_CUSTOMERS.filter(row =>
-    row[1].toLowerCase().includes(q) || row[2].toLowerCase().includes(q)
-  );
+
+  const q = document.getElementById("searchInput")
+    .value.trim().toLowerCase();
+
+  document.getElementById("clearSearch").style.display =
+    q ? "block" : "none";
+
+  const filtered = ALL_CUSTOMERS.filter(row => {
+
+    const name = String(row[1] || "").toLowerCase();
+    const contact = String(row[2] || "").toLowerCase();
+
+    return name.includes(q) || contact.includes(q);
+
+  });
+
   renderCustomers(filtered);
+
+}
+
+function clearCustomerSearch() {
+
+  document.getElementById("searchInput").value = "";
+
+  filterCustomers();
+
 }
 
 window.addEventListener("DOMContentLoaded", fetchCustomers);
@@ -224,6 +741,3 @@ window.addEventListener("DOMContentLoaded", fetchCustomers);
 
 </body>
 </html>
-
-
-
