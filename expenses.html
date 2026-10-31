@@ -1,193 +1,1040 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Crochet Admin – Expenses</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expenses | theCutiesLoop Admin</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #f5f7fb;
-      margin: 0;
-    }
+<style>
+:root {
+    --primary: #635bdb;
+    --primary-light: #eeedff;
+    --bg: #f7f8fc;
+    --white: #ffffff;
+    --text: #25243a;
+    --muted: #88899b;
+    --border: #ececf3;
+    --green: #159b68;
+    --green-bg: #e6f7ef;
+    --orange: #d98b22;
+    --orange-bg: #fff4df;
+    --shadow: 0 4px 20px rgba(40, 40, 80, 0.045);
+}
 
-    /* ================= NAVBAR STYLES ================= */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* NAVBAR */
+
+.navbar {
+    background: var(--white);
+    padding: 13px 4%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+.brand-name {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.brand-subtitle {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #626276;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.logout-btn {
+    background: #fff0f0;
+    color: #dc5555;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* MAIN */
+
+.container {
+    max-width: 1450px;
+    margin: auto;
+    padding: 35px 4%;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 28px;
+}
+
+.page-title {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.8px;
+}
+
+.page-description {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 7px;
+}
+
+.refresh-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.refresh-btn:hover {
+    background: #5048c6;
+    transform: translateY(-1px);
+}
+
+/* SUMMARY CARDS */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.summary-card {
+    background: var(--white);
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: 0.2s;
+}
+
+.summary-card:hover {
+    transform: translateY(-3px);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.card-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+
+.icon-purple {
+    background: #eeedff;
+}
+
+.icon-orange {
+    background: #fff3df;
+}
+
+.icon-green {
+    background: #e5f8ef;
+}
+
+.card-value {
+    font-size: 25px;
+    font-weight: 800;
+    margin-top: 15px;
+    letter-spacing: -0.7px;
+}
+
+.card-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+/* EXPENSE SECTION */
+
+.expense-panel {
+    background: var(--white);
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.panel-header {
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.panel-title {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.panel-subtitle {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    background: #fafaff;
+    border-radius: 9px;
+    width: 220px;
+    outline: none;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--text);
+}
+
+.search-box:focus {
+    border-color: var(--primary);
+}
+
+.filter-select {
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+}
+
+/* TABLE */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+thead {
+    background: #fafaff;
+}
+
+th {
+    padding: 16px 18px;
+    text-align: left;
+    font-size: 10px;
+    color: #89899c;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+td {
+    padding: 17px 18px;
+    font-size: 12px;
+    border-bottom: 1px solid #f0f0f5;
+    color: #55556a;
+    white-space: nowrap;
+}
+
+tbody tr {
+    transition: background 0.15s;
+}
+
+tbody tr:hover {
+    background: #fafaff;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.item-name {
+    font-weight: 700;
+    color: var(--text);
+}
+
+.price {
+    font-weight: 600;
+    color: #55556a;
+}
+
+.total-price {
+    font-weight: 800;
+    color: var(--text);
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.status-pending {
+    background: var(--orange-bg);
+    color: var(--orange);
+}
+
+.status-cleared {
+    background: var(--green-bg);
+    color: var(--green);
+}
+
+.clear-btn {
+    background: var(--green-bg);
+    color: var(--green);
+    border: none;
+    padding: 8px 13px;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.clear-btn:hover:not(:disabled) {
+    background: #c9f0dd;
+}
+
+.clear-btn:disabled {
+    background: #f1f1f5;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+/* STATES */
+
+.state-message {
+    text-align: center;
+    padding: 45px 15px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.state-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.error-text {
+    color: #d95353;
+}
+
+.panel-footer {
+    border-top: 1px solid var(--border);
+    padding: 15px 24px;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 1000px) {
     .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 30px;
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      font-family: 'Poppins', sans-serif;
+        align-items: flex-start;
+        flex-direction: column;
     }
 
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .nav-links {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 5px;
+    }
+}
+
+@media(max-width: 650px) {
+    .container {
+        padding: 25px 4%;
     }
 
-    .brand-icon {
-      font-size: 22px;
+    .page-title {
+        font-size: 22px;
     }
 
-    .brand-name {
-      font-size: 18px;
-      font-weight: 600;
-      color: #4f46e5;
+    .summary-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
 
-    .nav-links a {
-      margin-left: 20px;
-      text-decoration: none;
-      font-size: 14px;
-      color: #444;
-      font-weight: 500;
+    .summary-card {
+        padding: 18px;
     }
 
-    .nav-links a:hover {
-      color: #4f46e5;
+    .card-value {
+        font-size: 22px;
     }
 
-    table {
-      width: 90%;
-      margin: 30px auto;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      border-collapse: collapse;
+    .panel-header {
+        padding: 18px;
+        align-items: flex-start;
     }
 
-    th, td {
-      padding: 12px;
-      font-size: 14px;
-      border-bottom: 1px solid #eee;
-      text-align: center;
+    .controls {
+        width: 100%;
     }
 
-    th {
-      background: #f0f2ff;
-      color: #4f46e5;
+    .search-box {
+        width: 100%;
+        flex: 1;
     }
 
-    .status-pending {
-      color: orange;
-      font-weight: 500;
+    .filter-select {
+        flex: 1;
     }
 
-    .status-cleared {
-      color: green;
-      font-weight: 600;
+    .panel-footer {
+        padding: 14px 18px;
     }
-
-    .clear-btn {
-      background: #22c55e;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .clear-btn:disabled {
-      background: #aaa;
-      cursor: not-allowed;
-    }
-  </style>
+}
+</style>
 </head>
 
 <body>
 
-<div class="navbar">
-  <div class="nav-left">
-  <img src="logo.png" alt="Business Logo" class="brand-logo" height="50px" width="50px">
-  <div class="brand-text">
-    <div class="brand-name">theCutiesLoop Admin</div>
-  </div>
-</div>
+<!-- NAVIGATION -->
 
-  <div class="nav-links">
-    <a href="add-expense.html">Add Expense</a>
-    <a href="expenses.html">View Expenses</a>
-    <a href="index.html">Add Order</a>
-    <a href="orders.html">View Orders</a>
-    <a href="customers.html">Customers</a>
-    <a href="dashboard.html">Dashboard</a>
-    <button onclick="logout()" class="logout-btn">Logout</button>
-  </div>
-</div>
+<nav class="navbar">
 
-<table>
-  <thead>
-    <tr>
-      <th>Purchased By</th>
-      <th>Date</th>
-      <th>Item</th>
-      <th>Price</th>
-      <th>Total</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody id="expenseTable">
-    <!-- Filled from backend later -->
-    <tr>
-      <td>Saniya</td>
-      <td>2026-01-08</td>
-      <td>Yarn</td>
-      <td>250</td>
-      <td>250</td>
-      <td class="status-pending">Pending</td>
-      <td><button class="clear-btn">Cleared</button></td>
-    </tr>
-  </tbody>
-</table>
+    <div class="nav-left">
+        <img src="logo.png" alt="Business Logo" class="brand-logo">
+
+        <div>
+            <div class="brand-name">theCutiesLoop</div>
+            <div class="brand-subtitle">ADMINISTRATION PANEL</div>
+        </div>
+    </div>
+
+    <div class="nav-links">
+        <a href="add-expense.html">Add Expense</a>
+        <a href="expenses.html" class="active">View Expenses</a>
+        <a href="index.html">Add Order</a>
+        <a href="orders.html">View Orders</a>
+        <a href="customers.html">Customers</a>
+        <a href="dashboard.html">Dashboard</a>
+
+        <button onclick="logout()" class="logout-btn">
+            Logout
+        </button>
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h1 class="page-title">Expense Management</h1>
+
+            <div class="page-description">
+                Track purchases, monitor expenses and manage payments.
+            </div>
+        </div>
+
+        <button class="refresh-btn" id="refreshBtn" onclick="loadExpenses()">
+            ↻ &nbsp; Refresh Data
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY CARDS -->
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="card-top">
+                <div class="card-label">Total Expenses</div>
+                <div class="card-icon icon-purple">₹</div>
+            </div>
+
+            <div class="card-value" id="totalExpenses">₹0</div>
+
+            <div class="card-note">Total recorded expenditure</div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="card-top">
+                <div class="card-label">Pending Payments</div>
+                <div class="card-icon icon-orange">◷</div>
+            </div>
+
+            <div class="card-value" id="pendingExpenses">₹0</div>
+
+            <div class="card-note" id="pendingCount">0 pending transactions</div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="card-top">
+                <div class="card-label">Cleared Payments</div>
+                <div class="card-icon icon-green">✓</div>
+            </div>
+
+            <div class="card-value" id="clearedExpenses">₹0</div>
+
+            <div class="card-note" id="clearedCount">0 cleared transactions</div>
+
+        </div>
+
+    </section>
+
+
+    <!-- EXPENSE TABLE -->
+
+    <section class="expense-panel">
+
+        <div class="panel-header">
+
+            <div>
+                <div class="panel-title">All Expenses</div>
+                <div class="panel-subtitle">
+                    View and manage your business purchases.
+                </div>
+            </div>
+
+            <div class="controls">
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    class="search-box"
+                    placeholder="⌕ Search expenses..."
+                    aria-label="Search expenses"
+                >
+
+                <select id="statusFilter" class="filter-select" aria-label="Filter by status">
+                    <option value="All">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Cleared">Cleared</option>
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Purchased By</th>
+                        <th>Date</th>
+                        <th>Item</th>
+                        <th>Item Price</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="expenseTable">
+
+                    <tr>
+                        <td colspan="7">
+                            <div class="state-message">
+                                <div class="state-icon">⏳</div>
+                                Loading expenses...
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="panel-footer">
+
+            <span id="recordCount">Loading records...</span>
+
+            <span>theCutiesLoop © Expense Management</span>
+
+        </div>
+
+    </section>
+
+</main>
+
 
 <script>
+
+// EXISTING BACKEND CONFIGURATION
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpeGwOgNEkM_MD6whqERthEe4G7LokqF75BVnYIUj8A30jFmq7YQmFGT66Utpfc_Q2/exec";
+
 const table = document.getElementById("expenseTable");
 
-async function loadExpenses() {
-  const res = await fetch(`${SCRIPT_URL}?action=getExpenses`);
-  const data = await res.json();
+let allExpenses = [];
 
-  table.innerHTML = "";
+const clearingExpenses = new Set();
 
-  data.forEach(exp => {
-    const row = document.createElement("tr");
 
-    row.innerHTML = `
-      <td>${exp["Purchased By"]}</td>
-      <td>${exp.Date}</td>
-      <td>${exp.Item}</td>
-      <td>${exp["Item Price"]}</td>
-      <td>${exp.Total}</td>
-      <td class="${exp.Status === "Cleared" ? "status-cleared" : "status-pending"}">
-        ${exp.Status}
-      </td>
-      <td>
-        <button class="clear-btn"
-          ${exp.Status === "Cleared" ? "disabled" : ""}
-          onclick="clearExpense('${exp.ExpenseID}')">
-          Cleared
-        </button>
-      </td>
-    `;
-    table.appendChild(row);
-  });
+// CURRENCY FORMATTER
+
+function formatCurrency(value) {
+
+    const amount = Number(value) || 0;
+
+    return new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 2
+    }).format(amount);
+
 }
+
+
+// SAFE TEXT INSERTION
+
+function addCell(row, value, className = "") {
+
+    const cell = document.createElement("td");
+
+    cell.textContent = value ?? "";
+
+    if (className) {
+        cell.className = className;
+    }
+
+    row.appendChild(cell);
+
+    return cell;
+
+}
+
+
+// LOADING / ERROR STATES
+
+function showMessage(message, icon = "📋", isError = false) {
+
+    table.replaceChildren();
+
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+
+    cell.colSpan = 7;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "state-message";
+
+    const symbol = document.createElement("div");
+    symbol.className = "state-icon";
+    symbol.textContent = icon;
+
+    const text = document.createElement("div");
+    text.textContent = message;
+
+    if (isError) {
+        text.className = "error-text";
+    }
+
+    wrapper.append(symbol, text);
+    cell.appendChild(wrapper);
+    row.appendChild(cell);
+
+    table.appendChild(row);
+
+}
+
+
+// UPDATE SUMMARY
+
+function updateSummary(data) {
+
+    let total = 0;
+    let pending = 0;
+    let cleared = 0;
+
+    let pendingCount = 0;
+    let clearedCount = 0;
+
+    data.forEach(exp => {
+
+        const amount = Number(exp.Total) || 0;
+
+        total += amount;
+
+        if (exp.Status === "Cleared") {
+
+            cleared += amount;
+            clearedCount++;
+
+        } else {
+
+            pending += amount;
+            pendingCount++;
+
+        }
+
+    });
+
+    document.getElementById("totalExpenses").textContent =
+        formatCurrency(total);
+
+    document.getElementById("pendingExpenses").textContent =
+        formatCurrency(pending);
+
+    document.getElementById("clearedExpenses").textContent =
+        formatCurrency(cleared);
+
+    document.getElementById("pendingCount").textContent =
+        `${pendingCount} pending transactions`;
+
+    document.getElementById("clearedCount").textContent =
+        `${clearedCount} cleared transactions`;
+
+}
+
+
+// RENDER TABLE
+
+function renderExpenses() {
+
+    const search = document.getElementById("searchInput")
+        .value.toLowerCase().trim();
+
+    const statusFilter = document.getElementById("statusFilter").value;
+
+    const filtered = allExpenses.filter(exp => {
+
+        const purchaser = String(exp["Purchased By"] ?? "").toLowerCase();
+        const item = String(exp.Item ?? "").toLowerCase();
+
+        const matchesSearch =
+            purchaser.includes(search) || item.includes(search);
+
+        const matchesStatus =
+            statusFilter === "All" || exp.Status === statusFilter;
+
+        return matchesSearch && matchesStatus;
+
+    });
+
+    table.replaceChildren();
+
+    if (filtered.length === 0) {
+
+        showMessage(
+            allExpenses.length === 0
+                ? "No expenses recorded yet."
+                : "No expenses match your search.",
+            "📭"
+        );
+
+    } else {
+
+        const fragment = document.createDocumentFragment();
+
+        filtered.forEach(exp => {
+
+            const row = document.createElement("tr");
+
+            addCell(row, exp["Purchased By"] ?? "");
+
+            addCell(row, exp.Date ?? "");
+
+            addCell(row, exp.Item ?? "", "item-name");
+
+            addCell(row, formatCurrency(exp["Item Price"]), "price");
+
+            addCell(row, formatCurrency(exp.Total), "total-price");
+
+
+            // STATUS BADGE
+
+            const statusCell = document.createElement("td");
+
+            const badge = document.createElement("span");
+
+            badge.className =
+                exp.Status === "Cleared"
+                    ? "status status-cleared"
+                    : "status status-pending";
+
+            badge.textContent = exp.Status || "Pending";
+
+            statusCell.appendChild(badge);
+
+            row.appendChild(statusCell);
+
+
+            // ACTION BUTTON
+
+            const actionCell = document.createElement("td");
+
+            const button = document.createElement("button");
+
+            button.className = "clear-btn";
+
+            button.textContent =
+                exp.Status === "Cleared" ? "✓ Cleared" : "Mark Cleared";
+
+            button.disabled =
+                exp.Status === "Cleared" ||
+                clearingExpenses.has(String(exp.ExpenseID));
+
+            button.dataset.expenseId = exp.ExpenseID ?? "";
+
+            actionCell.appendChild(button);
+
+            row.appendChild(actionCell);
+
+            fragment.appendChild(row);
+
+        });
+
+        table.appendChild(fragment);
+
+    }
+
+    document.getElementById("recordCount").textContent =
+        `Showing ${filtered.length} of ${allExpenses.length} expenses`;
+
+}
+
+
+// LOAD EXPENSES FROM EXISTING BACKEND
+
+async function loadExpenses() {
+
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = "Loading...";
+
+    showMessage("Fetching your expense records...", "⏳");
+
+    try {
+
+        const res = await fetch(`${SCRIPT_URL}?action=getExpenses`);
+
+        if (!res.ok) {
+            throw new Error("Unable to connect to the server.");
+        }
+
+        const data = await res.json();
+
+        if (!Array.isArray(data)) {
+            throw new Error("Invalid expense data received.");
+        }
+
+        allExpenses = data;
+
+        updateSummary(allExpenses);
+
+        renderExpenses();
+
+    } catch (error) {
+
+        console.error("Expense loading error:", error);
+
+        showMessage(
+            "Unable to load expenses. Please check your connection and try again.",
+            "⚠️",
+            true
+        );
+
+        document.getElementById("recordCount").textContent =
+            "Unable to fetch records";
+
+    } finally {
+
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = "↻  Refresh Data";
+
+    }
+
+}
+
+
+// CLEAR EXPENSE
 
 async function clearExpense(id) {
-  await fetch(`${SCRIPT_URL}?action=clearExpense&expenseId=${id}`, {
-    mode: "no-cors"
-  });
-  loadExpenses();
+
+    if (!id || clearingExpenses.has(String(id))) return;
+
+    const confirmed = confirm(
+        "Are you sure you want to mark this expense as cleared?"
+    );
+
+    if (!confirmed) return;
+
+    const expenseId = String(id);
+
+    clearingExpenses.add(expenseId);
+
+    renderExpenses();
+
+    try {
+
+        await fetch(
+            `${SCRIPT_URL}?action=clearExpense&expenseId=${encodeURIComponent(expenseId)}`,
+            {
+                mode: "no-cors"
+            }
+        );
+
+        // Allow the existing backend time to process the update.
+        // The no-cors response cannot confirm whether the update succeeded.
+
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        await loadExpenses();
+
+    } catch (error) {
+
+        console.error("Expense update error:", error);
+
+        alert("Unable to send the update. Please refresh and check the status.");
+
+    } finally {
+
+        clearingExpenses.delete(expenseId);
+
+        renderExpenses();
+
+    }
+
 }
 
+
+// EVENT LISTENERS
+
+document.getElementById("searchInput")
+    .addEventListener("input", renderExpenses);
+
+document.getElementById("statusFilter")
+    .addEventListener("change", renderExpenses);
+
+
+// EVENT DELEGATION FOR ACTION BUTTONS
+
+table.addEventListener("click", function(event) {
+
+    const button = event.target.closest(".clear-btn");
+
+    if (!button || button.disabled) return;
+
+    clearExpense(button.dataset.expenseId);
+
+});
+
+
+// INITIAL LOAD
+
 loadExpenses();
+
 </script>
 
 </body>
