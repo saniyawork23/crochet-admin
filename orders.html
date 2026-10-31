@@ -818,8 +818,8 @@ function logout() {
 const API_KEY = "AIzaSyBOYSx1ViWXNl8OJG0s1aQDjGJm6A8r9dE";
 const SPREADSHEET_ID = "10Z1De-hhJkihZsncW15xlz-VihhGodcWP1eGWWJ7bNU";
 
-const ORDERS_RANGE = "Orders!A2:Z";
-const ITEMS_RANGE = "Order Items!A2:E";
+const ORDERS_RANGE = "'Orders'!A2:Z";
+const ITEMS_RANGE = "'Order Items'!A2:E";
 
 const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbwqYxeCKpWYTaAJjlzkgJL-M61LxVZ1Eqz65gX3e5D1itJ6o59nHnbYuJdleGSoL_ng/exec";
@@ -860,25 +860,45 @@ function getOrderId(row) {
    FETCH GOOGLE SHEETS
 ================================= */
 
+
 async function fetchSheet(range) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
 
-  const url =
-    `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
 
-  const response = await fetch(url);
+  try {
+    console.log("Fetching:", range);
 
-  if (!response.ok) {
-    throw new Error("Google Sheets request failed: " + response.status);
+    const res = await fetch(url, {
+      signal: controller.signal
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(
+        `Google Sheets API Error (${res.status}): ${
+          data.error?.message || "Unknown error"
+        }`
+      );
+    }
+
+    console.log(`Successfully fetched ${range}`);
+    console.log("Rows:", data.values?.length || 0);
+
+    return data.values || [];
+
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error(`Request timed out while fetching ${range}`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
   }
-
-  const data = await response.json();
-
-  if (data.error) {
-    throw new Error(data.error.message || "Google Sheets API error");
-  }
-
-  return data.values || [];
 }
+
 
 /* =================================
    FETCH ORDERS
@@ -941,31 +961,34 @@ async function fetchOrders() {
     updateSummary();
     applyFilters();
 
-  } catch(error) {
+} catch(error) {
 
-    console.error(error);
+  console.error("ORDER LOADING FAILED:", error);
 
-    document.getElementById("ordersBody").innerHTML = `
-      <tr>
-        <td colspan="7">
-          <div class="state-message">
-            <div class="state-icon">⚠️</div>
-            Unable to load orders. Please check your connection and API access.
-          </div>
-        </td>
-      </tr>
-    `;
+  document.getElementById("ordersBody").innerHTML = `
+    <tr>
+      <td colspan="7">
+        <div class="state-message">
+          <div class="state-icon">⚠️</div>
+          <strong>Unable to load orders</strong>
+          <p>${escapeHTML(error.message)}</p>
+          <button class="btn btn-primary"
+                  onclick="fetchOrders()">
+            Try Again
+          </button>
+        </div>
+      </td>
+    </tr>
+  `;
 
-    document.getElementById("resultCount").textContent =
-      "Could not load records";
+  document.getElementById("resultCount").textContent =
+    "Loading failed";
 
-  } finally {
-
-    loading = false;
-    refreshBtn.disabled = false;
-    refreshBtn.textContent = "↻ Refresh";
-
-  }
+} finally {
+  loading = false;
+  refreshBtn.disabled = false;
+  refreshBtn.textContent = "↻ Refresh";
+}
 
 }
 
