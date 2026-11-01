@@ -19,6 +19,9 @@
   --border: #ececf3;
   --danger: #dc505d;
   --success: #168c67;
+  --primary-dark: #5144c4;
+  --light-purple: #f1efff;
+  --shadow: 0 8px 28px rgba(40,30,80,.07);
 }
 
 * {
@@ -621,6 +624,7 @@ function logout() {
         type="number"
         id="discountValue"
         min="0"
+        max="100"
         step="0.01"
         placeholder="Enter discount"
         value="0"
@@ -729,8 +733,14 @@ function initializeForm() {
     new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString().slice(0, 10);
 
+  // Restore the default percentage mode after a form reset.
+  discountTypeInput.value = "percent";
+  discountValueInput.max = "100";
+  discountValueInput.placeholder = "Enter percentage";
+
   itemsContainer.innerHTML = "";
   addItemRow();
+  calculateTotal();
 }
 
 initializeForm();
@@ -841,7 +851,13 @@ function calculateTotal() {
 
   }
 
-  const finalTotal = Math.max(0, subtotal - discountAmount);
+  subtotal = Math.round((subtotal + Number.EPSILON) * 100) / 100;
+  discountAmount = Math.round((discountAmount + Number.EPSILON) * 100) / 100;
+
+  const finalTotal = Math.max(
+    0,
+    Math.round((subtotal - discountAmount + Number.EPSILON) * 100) / 100
+  );
 
   subtotalInput.value = subtotal.toFixed(2);
   discountAmountDisplay.textContent =
@@ -850,6 +866,16 @@ function calculateTotal() {
   totalInput.value = finalTotal.toFixed(2);
 
 }
+
+/* Recalculate whenever quantity or price changes. */
+itemsContainer.addEventListener("input", function(e) {
+  if (
+    e.target.classList.contains("item-qty") ||
+    e.target.classList.contains("item-price")
+  ) {
+    calculateTotal();
+  }
+});
 
 /* =================================
    GET ITEMS DATA
@@ -1105,12 +1131,27 @@ orderForm.addEventListener("submit", async function(e) {
     return;
   }
 
-  if (Number(totalInput.value) < 0 ||
+  if (!Number.isFinite(Number(totalInput.value)) ||
+      Number(totalInput.value) < 0 ||
       totalInput.value.trim() === "") {
 
     showMessage("Please enter a valid total amount.", "error");
     return;
 
+  }
+
+  const discountValue = Number(discountValueInput.value || 0);
+
+  if (!Number.isFinite(discountValue) || discountValue < 0) {
+    showMessage("Please enter a valid non-negative discount.", "error");
+    discountValueInput.focus();
+    return;
+  }
+
+  if (discountTypeInput.value === "percent" && discountValue > 100) {
+    showMessage("Percentage discount cannot exceed 100%.", "error");
+    discountValueInput.focus();
+    return;
   }
 
   const params = new URLSearchParams({
@@ -1175,7 +1216,17 @@ orderForm.addEventListener("submit", async function(e) {
 
 discountValueInput.addEventListener("input", calculateTotal);
 
-discountTypeInput.addEventListener("change", calculateTotal);
+discountTypeInput.addEventListener("change", function() {
+  if (discountTypeInput.value === "percent") {
+    discountValueInput.max = "100";
+    discountValueInput.placeholder = "Enter percentage";
+  } else {
+    discountValueInput.removeAttribute("max");
+    discountValueInput.placeholder = "Enter amount";
+  }
+
+  calculateTotal();
+});
 
 
 // MOBILE NAVIGATION
