@@ -242,6 +242,50 @@ input:focus, select:focus {
   box-shadow: 0 0 0 3px rgba(114,84,216,0.09);
 }
 
+textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: white;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(114,84,216,0.09);
+}
+
+.discount-row {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  gap: 10px;
+}
+
+.total-summary {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.discount-summary {
+  color: var(--success);
+}
+
+.final-total {
+  border-top: 1px solid #e9e2ff;
+  padding-top: 12px;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
 /* AUTOCOMPLETE */
 
 .autocomplete-wrapper {
@@ -560,17 +604,64 @@ function logout() {
         + Add Another Item
       </button>
 
-      <!-- TOTAL -->
+      <!-- ORDER TOTAL & DISCOUNT -->
 
-      <div class="total-box">
-        <div class="form-group" style="margin:0">
-          <label for="total">Total Order Amount (₹)</label>
-          <input type="number" id="total"
-                 min="0" step="0.01"
-                 placeholder="0.00" required>
-        </div>
-      </div>
+<div class="total-box">
 
+  <div class="form-group">
+    <label>Subtotal (₹)</label>
+    <input type="number" id="subtotal" value="0.00" readonly>
+  </div>
+
+  <div class="form-group">
+    <label for="discountValue">Discount</label>
+
+    <div class="discount-row">
+      <input
+        type="number"
+        id="discountValue"
+        min="0"
+        step="0.01"
+        placeholder="Enter discount"
+        value="0"
+      >
+
+      <select id="discountType">
+        <option value="percent">%</option>
+        <option value="rupees">₹</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="total-summary discount-summary">
+    <span>Discount Applied</span>
+    <span id="discountAmount">₹0.00</span>
+  </div>
+
+  <div class="form-group final-total" style="margin:0">
+    <label for="total">Final Total (₹)</label>
+    <input
+      type="number"
+      id="total"
+      min="0"
+      step="0.01"
+      value="0.00"
+      readonly
+      required
+    >
+  </div>
+
+</div>
+
+<!-- SPECIAL NOTE -->
+
+<div class="form-group">
+  <label for="notes">Special Note (Optional)</label>
+  <textarea
+    id="notes"
+    placeholder="E.g. Customisation details, delivery instructions, gift wrapping..."
+  ></textarea>
+</div>
       <!-- ORDER DETAILS -->
 
       <h3 class="section-heading">Order Details</h3>
@@ -618,6 +709,11 @@ const totalInput = document.getElementById("total");
 const orderForm = document.getElementById("orderForm");
 const submitBtn = document.getElementById("submitBtn");
 const statusMessage = document.getElementById("statusMessage");
+const subtotalInput = document.getElementById("subtotal");
+const discountValueInput = document.getElementById("discountValue");
+const discountTypeInput = document.getElementById("discountType");
+const discountAmountDisplay = document.getElementById("discountAmount");
+const notesInput = document.getElementById("notes");
 
 let customerTimer = null;
 const itemTimers = new WeakMap();
@@ -716,30 +812,44 @@ document.getElementById("addItemBtn")
 
 function calculateTotal() {
 
-  let total = 0;
+  let subtotal = 0;
 
   itemsContainer.querySelectorAll(".item-row").forEach(row => {
 
     const qty = Number(row.querySelector(".item-qty").value || 0);
     const price = Number(row.querySelector(".item-price").value || 0);
 
-    total += qty * price;
+    subtotal += qty * price;
 
   });
 
-  totalInput.value = total.toFixed(2);
-}
+  const discountValue = Math.max(
+    0,
+    Number(discountValueInput.value || 0)
+  );
 
-itemsContainer.addEventListener("input", function(e) {
+  let discountAmount = 0;
 
-  if (
-    e.target.classList.contains("item-qty") ||
-    e.target.classList.contains("item-price")
-  ) {
-    calculateTotal();
+  if (discountTypeInput.value === "percent") {
+
+    const percentage = Math.min(discountValue, 100);
+    discountAmount = subtotal * percentage / 100;
+
+  } else {
+
+    discountAmount = Math.min(discountValue, subtotal);
+
   }
 
-});
+  const finalTotal = Math.max(0, subtotal - discountAmount);
+
+  subtotalInput.value = subtotal.toFixed(2);
+  discountAmountDisplay.textContent =
+    "₹" + discountAmount.toFixed(2);
+
+  totalInput.value = finalTotal.toFixed(2);
+
+}
 
 /* =================================
    GET ITEMS DATA
@@ -1005,15 +1115,22 @@ orderForm.addEventListener("submit", async function(e) {
 
   const params = new URLSearchParams({
 
-    action: "addOrder",
-    customerName: customerInput.value.trim(),
-    contact: contactInput.value.trim(),
-    date: document.getElementById("date").value,
-    purchaseMode: document.getElementById("mode").value,
-    total: totalInput.value,
-    items: JSON.stringify(getItemsData())
+  action: "addOrderWithDiscount",
 
-  });
+  customerName: customerInput.value.trim(),
+  contact: contactInput.value.trim(),
+
+  date: document.getElementById("date").value,
+  purchaseMode: document.getElementById("mode").value,
+
+  total: totalInput.value,
+  discountGiven: discountAmountDisplay.textContent.replace("₹", ""),
+
+  notes: notesInput.value.trim(),
+
+  items: JSON.stringify(getItemsData())
+
+});
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
@@ -1055,6 +1172,10 @@ orderForm.addEventListener("submit", async function(e) {
   }
 
 });
+
+discountValueInput.addEventListener("input", calculateTotal);
+
+discountTypeInput.addEventListener("change", calculateTotal);
 
 
 // MOBILE NAVIGATION
