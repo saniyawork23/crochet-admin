@@ -440,6 +440,69 @@ td {
   border-top: none;
 }
 
+/* ORDER FINANCIAL SUMMARY */
+
+.order-summary {
+  max-width: 850px;
+  margin-top: 18px;
+  padding: 16px 18px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.order-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 7px 0;
+  font-size: 12px;
+  color: #666579;
+}
+
+.order-summary-row.discount {
+  color: var(--success);
+}
+
+.order-summary-row.final-total {
+  border-top: 1px solid var(--border);
+  margin-top: 7px;
+  padding-top: 13px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.order-summary-row .summary-value {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.order-note {
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid var(--border);
+}
+
+.order-note-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 7px;
+}
+
+.order-note-content {
+  background: #f8f7ff;
+  padding: 11px 13px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #555469;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+
 /* EMPTY AND LOADING */
 
 .empty-state {
@@ -768,14 +831,16 @@ function renderOrders(data) {
   data.forEach((row, index) => {
 
     const [
-      orderId,
-      customerId,
-      customerName,
-      contact,
-      date,
-      mode,
-      total
-    ] = row;
+  orderId,
+  customerId,
+  customerName,
+  contact,
+  date,
+  mode,
+  total,
+  discountGiven,
+  notes
+] = row;
 
     const items = ALL_ITEMS_MAP[orderId] || [];
 
@@ -813,36 +878,92 @@ function renderOrders(data) {
       </td>
     `;
 
-    itemsRow.innerHTML = `
-      <td colspan="7">
-        <div class="items-box">
-          <table>
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${
-                items.length === 0
-                  ? `<tr><td colspan="4">No items found.</td></tr>`
-                  : items.map(it => `
-                    <tr>
-                      <td>${escapeHTML(it.item || "")}</td>
-                      <td>${formatAmount(it.qty)}</td>
-                      <td>₹${formatAmount(it.price)}</td>
-                      <td>₹${formatAmount(it.qty * it.price)}</td>
-                    </tr>
-                  `).join("")
-              }
-            </tbody>
-          </table>
+    // Calculate the original subtotal from individual order items.
+const itemsSubtotal = items.reduce((sum, it) => {
+  return sum + (
+    (Number(it.qty) || 0) * (Number(it.price) || 0)
+  );
+}, 0);
+
+// Read discount and final amount from Google Sheets.
+const discount = Math.max(0, Number(discountGiven) || 0);
+const finalTotal = Number(total) || 0;
+
+itemsRow.innerHTML = `
+  <td colspan="7">
+    <div class="items-box">
+
+      <!-- EXISTING ITEMS TABLE -->
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${
+            items.length === 0
+              ? `<tr><td colspan="4">No items found.</td></tr>`
+              : items.map(it => `
+                <tr>
+                  <td>${escapeHTML(it.item || "")}</td>
+                  <td>${formatAmount(it.qty)}</td>
+                  <td>₹${formatAmount(it.price)}</td>
+                  <td>₹${formatAmount(it.qty * it.price)}</td>
+                </tr>
+              `).join("")
+          }
+        </tbody>
+      </table>
+
+      <!-- ORDER FINANCIAL SUMMARY -->
+      <div class="order-summary">
+
+        <div class="order-summary-row">
+          <span>Items Subtotal</span>
+          <span class="summary-value">
+            ₹${formatAmount(itemsSubtotal)}
+          </span>
         </div>
-      </td>
-    `;
+
+        <div class="order-summary-row discount">
+          <span>Discount Given</span>
+          <span class="summary-value">
+            − ₹${formatAmount(discount)}
+          </span>
+        </div>
+
+        <div class="order-summary-row final-total">
+          <span>Total After Discount</span>
+          <span class="summary-value">
+            ₹${formatAmount(finalTotal)}
+          </span>
+        </div>
+
+        ${
+          String(notes || "").trim()
+            ? `
+              <div class="order-note">
+                <div class="order-note-label">
+                  Special Note
+                </div>
+                <div class="order-note-content">
+                  ${escapeHTML(notes)}
+                </div>
+              </div>
+            `
+            : ""
+        }
+
+      </div>
+
+    </div>
+  </td>
+`;
 
     fragment.appendChild(mainRow);
     fragment.appendChild(itemsRow);
