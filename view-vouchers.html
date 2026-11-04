@@ -1,0 +1,1195 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>theCutiesLoop – View Vouchers</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #6254d9;
+      --primary-light: #f0efff;
+      --background: #f7f7fc;
+      --white: #ffffff;
+      --text: #29283a;
+      --muted: #85849a;
+      --border: #e9e8f1;
+      --green: #168653;
+      --green-bg: #e8f7ef;
+      --red: #d94b5b;
+      --red-bg: #fff0f1;
+      --orange: #bd791b;
+      --orange-bg: #fff5e5;
+      --shadow: 0 4px 18px rgba(38, 34, 90, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--background);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    /* NAVIGATION */
+    .navbar {
+      background: var(--white);
+      padding: 15px 4%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #68677a;
+      font-size: 12px;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--primary);
+    }
+
+    .logout {
+      border: none;
+      background: var(--red-bg);
+      color: var(--red);
+      padding: 8px 13px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* PAGE */
+    .container {
+      width: 92%;
+      max-width: 1450px;
+      margin: 30px auto;
+    }
+
+    .page-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .page-heading h1 {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .page-heading p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 9px;
+      padding: 10px 16px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5143c5;
+    }
+
+    .btn-light {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    /* SUMMARY CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .stat-card .stat-number {
+      font-size: 25px;
+      font-weight: 700;
+      margin-top: 7px;
+    }
+
+    .stat-card.total .stat-number { color: var(--primary); }
+    .stat-card.active .stat-number { color: var(--green); }
+    .stat-card.used .stat-number { color: #4776bd; }
+    .stat-card.expired .stat-number { color: var(--red); }
+
+    /* TABLE PANEL */
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .panel-header p {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .search-box input,
+    .filter-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 12px;
+      outline: none;
+      background: white;
+      color: var(--text);
+    }
+
+    .search-box input:focus,
+    .filter-select:focus {
+      border-color: var(--primary);
+    }
+
+    .filter-select {
+      width: 155px;
+      cursor: pointer;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1120px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background: #faf9ff;
+      color: #77758c;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 14px 13px;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 15px 13px;
+      border-top: 1px solid #f0eff5;
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: #fcfbff;
+    }
+
+    .beneficiary-name {
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .secondary {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    .coupon {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 4px 7px;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status-active {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .status-used {
+      background: #edf3ff;
+      color: #4776bd;
+    }
+
+    .status-expired {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    .action-btn {
+      border: none;
+      border-radius: 7px;
+      padding: 7px 10px;
+      background: var(--green-bg);
+      color: var(--green);
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .action-btn:hover {
+      background: #d5f0e2;
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .used-details {
+      color: #4776bd;
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    .empty-state,
+    .loading-state {
+      padding: 45px 15px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .table-footer {
+      padding: 13px 18px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(25, 23, 48, 0.48);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal h2 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .modal-description {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .voucher-summary {
+      background: #f8f7ff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px;
+      margin-bottom: 18px;
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    .modal-error {
+      color: var(--red);
+      font-size: 11px;
+      margin-top: 8px;
+      min-height: 16px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: #29283a;
+      color: white;
+      padding: 12px 17px;
+      border-radius: 9px;
+      font-size: 12px;
+      z-index: 200;
+      box-shadow: var(--shadow);
+      display: none;
+      max-width: min(90vw, 380px);
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    @media (max-width: 900px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .navbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .container {
+        width: 94%;
+        margin: 20px auto;
+      }
+
+      .stats-grid {
+        gap: 9px;
+      }
+
+      .stat-card {
+        padding: 13px;
+      }
+
+      .stat-card .stat-number {
+        font-size: 21px;
+      }
+
+      .page-heading h1 {
+        font-size: 21px;
+      }
+
+      .toolbar > * {
+        width: 100%;
+      }
+
+      .filter-select {
+        width: 100%;
+      }
+
+      .modal {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="brand">theCutiesLoop ♡</div>
+
+    <div class="nav-links">
+      <a href="add-expense.html">Add Expense</a>
+      <a href="view-expenses.html">View Expenses</a>
+      <a href="add-order.html">Add Order</a>
+      <a href="view-orders.html">View Orders</a>
+      <a href="customers.html">Customers</a>
+      <a href="add-vouchers.html">Add Vouchers</a>
+      <a href="view-vouchers.html" class="active">View Vouchers</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+
+    <button class="logout" onclick="logout()">Logout</button>
+  </nav>
+
+  <main class="container">
+
+    <div class="page-heading">
+      <div>
+        <h1>Voucher Management 🎟️</h1>
+        <p>View beneficiaries, track voucher validity and manage redemptions.</p>
+      </div>
+
+      <button class="btn btn-primary" id="refreshBtn" onclick="loadData()">
+        ↻ Refresh Vouchers
+      </button>
+    </div>
+
+    <section class="stats-grid">
+      <div class="stat-card total">
+        <div class="stat-label">Total Vouchers</div>
+        <div class="stat-number" id="totalCount">—</div>
+      </div>
+
+      <div class="stat-card active">
+        <div class="stat-label">Active Vouchers</div>
+        <div class="stat-number" id="activeCount">—</div>
+      </div>
+
+      <div class="stat-card used">
+        <div class="stat-label">Used Vouchers</div>
+        <div class="stat-number" id="usedCount">—</div>
+      </div>
+
+      <div class="stat-card expired">
+        <div class="stat-label">Expired Vouchers</div>
+        <div class="stat-number" id="expiredCount">—</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>All Registered Beneficiaries</h2>
+        <p>Search and manage all vouchers registered under your collaboration campaigns.</p>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search name, Instagram ID, voucher ID or coupon code..."
+              oninput="renderTable()"
+            >
+          </div>
+
+          <select id="statusFilter" class="filter-select" onchange="renderTable()">
+            <option value="all">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Used">Used</option>
+            <option value="Expired">Expired</option>
+          </select>
+
+          <select id="campaignFilter" class="filter-select" onchange="renderTable()">
+            <option value="all">All Campaigns</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Beneficiary</th>
+              <th>Instagram ID</th>
+              <th>Voucher ID</th>
+              <th>Registration Date</th>
+              <th>Expiry Date</th>
+              <th>Campaign</th>
+              <th>Organization</th>
+              <th>Coupon Code</th>
+              <th>Status</th>
+              <th>Redemption / Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="voucherTableBody">
+            <tr>
+              <td colspan="10" class="loading-state">Loading vouchers...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer" id="tableFooter">
+        Loading records...
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MARK AS USED MODAL -->
+  <div class="modal-overlay" id="usedModal">
+    <div class="modal">
+      <h2>Mark Voucher as Used</h2>
+
+      <p class="modal-description">
+        Enter the Order ID associated with this beneficiary's purchase.
+        The system will verify the Order ID before updating the voucher status.
+      </p>
+
+      <div class="voucher-summary" id="modalVoucherSummary"></div>
+
+      <label class="form-label" for="orderIdInput">Order ID</label>
+
+      <input
+        type="text"
+        id="orderIdInput"
+        class="form-control"
+        placeholder="Enter the Order ID"
+        autocomplete="off"
+      >
+
+      <div class="modal-error" id="modalError"></div>
+
+      <div class="modal-actions">
+        <button class="btn btn-light" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" id="confirmUsedBtn" onclick="confirmMarkUsed()">
+          Verify & Mark Used
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ================================================
+    // CONFIGURATION
+    // ================================================
+
+    const SCRIPT_URL =
+      "https://script.google.com/macros/s/AKfycby7AiZ6OQJ6c9IptEwOoR4CIUQ2GcyQC3IiISVJzbO3qhvRemTN3NK5ROodWh7oWb1m/exec";
+
+    let vouchers = [];
+    let campaigns = [];
+    let selectedVoucher = null;
+
+    // ================================================
+    // AUTHENTICATION
+    // ================================================
+
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      window.location.href = "login.html";
+    }
+
+    // ================================================
+    // JSON REQUEST HANDLER
+    // ================================================
+
+    async function callScript(params) {
+      if (!SCRIPT_URL || SCRIPT_URL.includes("PASTE_YOUR")) {
+        throw new Error("Please configure your Google Apps Script URL.");
+      }
+
+      const response = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+        body: new URLSearchParams(params).toString()
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (!result || result.success !== true) {
+        throw new Error(result?.message || "The request could not be completed.");
+      }
+
+      return result;
+    }
+
+    // ================================================
+    // LOAD VOUCHERS AND CAMPAIGNS
+    // ================================================
+
+    async function loadData() {
+      const refreshBtn = document.getElementById("refreshBtn");
+      const tableBody = document.getElementById("voucherTableBody");
+
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = "Loading...";
+
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="10" class="loading-state">Loading vouchers...</td>
+        </tr>
+      `;
+
+      try {
+        const [voucherResult, campaignResult] = await Promise.all([
+          callScript({ action: "getVouchers" }),
+          callScript({ action: "getCampaigns" })
+        ]);
+
+        vouchers = Array.isArray(voucherResult.vouchers)
+          ? voucherResult.vouchers
+          : [];
+
+        campaigns = Array.isArray(campaignResult.campaigns)
+          ? campaignResult.campaigns
+          : [];
+
+        populateCampaignFilter();
+        updateStats();
+        renderTable();
+
+      } catch (error) {
+        console.error("Error loading voucher data:", error);
+
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="10" class="empty-state">
+              Unable to load vouchers. ${escapeHTML(error.message)}
+            </td>
+          </tr>
+        `;
+
+        showToast(error.message || "Unable to load vouchers.");
+
+      } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = "↻ Refresh Vouchers";
+      }
+    }
+
+    // ================================================
+    // CAMPAIGN HELPERS
+    // ================================================
+
+    function getCampaign(campaignId) {
+      return campaigns.find(c =>
+        String(c.campaignId || "").trim() === String(campaignId || "").trim()
+      );
+    }
+
+    function getCampaignName(voucher) {
+      const campaign = getCampaign(voucher.campaignId);
+
+      if (campaign) {
+        return campaign.eventName || campaign.couponCode || voucher.campaignId || "—";
+      }
+
+      return voucher.campaignId || "—";
+    }
+
+    function populateCampaignFilter() {
+      const select = document.getElementById("campaignFilter");
+      const currentValue = select.value;
+
+      select.innerHTML = '<option value="all">All Campaigns</option>';
+
+      campaigns.forEach(campaign => {
+        const option = document.createElement("option");
+        option.value = campaign.campaignId || "";
+        option.textContent =
+          `${campaign.eventName || campaign.campaignId} – ${campaign.organizationName || ""}`;
+        select.appendChild(option);
+      });
+
+      if ([...select.options].some(o => o.value === currentValue)) {
+        select.value = currentValue;
+      }
+    }
+
+    // ================================================
+    // STATUS HELPERS
+    // ================================================
+
+    function getVoucherStatus(voucher) {
+      const storedStatus = String(voucher.status || "").trim().toLowerCase();
+
+      if (storedStatus === "used") return "Used";
+
+      if (storedStatus === "expired") return "Expired";
+
+      if (storedStatus !== "active") {
+        return voucher.status || "Unknown";
+      }
+
+      const expiry = parseDate(voucher.expiryDate);
+
+      if (expiry && expiry < startOfToday()) {
+        return "Expired";
+      }
+
+      return "Active";
+    }
+
+    function parseDate(value) {
+      if (!value) return null;
+
+      if (value instanceof Date && !isNaN(value)) {
+        return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+      }
+
+      const text = String(value).trim();
+
+      // Handle yyyy-MM-dd without browser timezone shifting.
+      const iso = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+      if (iso) {
+        return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+      }
+
+      const parsed = new Date(text);
+
+      if (isNaN(parsed)) return null;
+
+      return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+    }
+
+    function startOfToday() {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    function formatDate(value) {
+      const date = parseDate(value);
+
+      if (!date) return "—";
+
+      return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    // ================================================
+    // SUMMARY CARDS
+    // ================================================
+
+    function updateStats() {
+      const counts = {
+        Active: 0,
+        Used: 0,
+        Expired: 0
+      };
+
+      vouchers.forEach(voucher => {
+        const status = getVoucherStatus(voucher);
+
+        if (Object.prototype.hasOwnProperty.call(counts, status)) {
+          counts[status]++;
+        }
+      });
+
+      document.getElementById("totalCount").textContent = vouchers.length;
+      document.getElementById("activeCount").textContent = counts.Active;
+      document.getElementById("usedCount").textContent = counts.Used;
+      document.getElementById("expiredCount").textContent = counts.Expired;
+    }
+
+    // ================================================
+    // RENDER TABLE
+    // ================================================
+
+    function renderTable() {
+      const search = document.getElementById("searchInput")
+        .value.trim().toLowerCase();
+
+      const statusFilter = document.getElementById("statusFilter").value;
+      const campaignFilter = document.getElementById("campaignFilter").value;
+
+      const filtered = vouchers.filter(voucher => {
+        const status = getVoucherStatus(voucher);
+
+        const campaignName = getCampaignName(voucher);
+
+        const searchableText = [
+          voucher.beneficiaryName,
+          voucher.instagramId,
+          voucher.voucherId,
+          voucher.couponCode,
+          voucher.organizationName,
+          voucher.campaignId,
+          campaignName
+        ].join(" ").toLowerCase();
+
+        const matchesSearch = !search || searchableText.includes(search);
+        const matchesStatus = statusFilter === "all" || status === statusFilter;
+        const matchesCampaign =
+          campaignFilter === "all" ||
+          String(voucher.campaignId || "") === campaignFilter;
+
+        return matchesSearch && matchesStatus && matchesCampaign;
+      });
+
+      const tbody = document.getElementById("voucherTableBody");
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" class="empty-state">
+              No vouchers found matching your search.
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = filtered.map(voucher => {
+          const status = getVoucherStatus(voucher);
+          const statusClass = {
+            Active: "status-active",
+            Used: "status-used",
+            Expired: "status-expired"
+          }[status] || "";
+
+          const campaignName = getCampaignName(voucher);
+
+          let actionContent = "";
+
+          if (status === "Active") {
+            actionContent = `
+              <button
+                class="action-btn"
+                onclick="openUsedModal('${escapeAttribute(voucher.voucherId)}')"
+              >
+                ✓ Mark as Used
+              </button>
+            `;
+          } else if (status === "Used") {
+            actionContent = `
+              <div class="used-details">
+                Order: ${escapeHTML(voucher.orderId || "—")}<br>
+                Date: ${escapeHTML(formatDate(voucher.usedDate))}
+              </div>
+            `;
+          } else if (status === "Expired") {
+            actionContent = `
+              <span class="secondary">Not redeemable</span>
+            `;
+          } else {
+            actionContent = `<span class="secondary">—</span>`;
+          }
+
+          return `
+            <tr>
+              <td>
+                <div class="beneficiary-name">
+                  ${escapeHTML(voucher.beneficiaryName || "—")}
+                </div>
+                <div class="secondary">
+                  ${escapeHTML(voucher.voucherId || "")}
+                </div>
+              </td>
+
+              <td>${escapeHTML(voucher.instagramId || "—")}</td>
+
+              <td>${escapeHTML(voucher.voucherId || "—")}</td>
+
+              <td>${escapeHTML(formatDate(voucher.registrationDate))}</td>
+
+              <td>${escapeHTML(formatDate(voucher.expiryDate))}</td>
+
+              <td>
+                <div>${escapeHTML(campaignName)}</div>
+                <div class="secondary">
+                  ${escapeHTML(voucher.campaignId || "")}
+                </div>
+              </td>
+
+              <td>${escapeHTML(voucher.organizationName || "—")}</td>
+
+              <td>
+                <span class="coupon">
+                  ${escapeHTML(voucher.couponCode || "—")}
+                </span>
+              </td>
+
+              <td>
+                <span class="status ${statusClass}">
+                  ${escapeHTML(status)}
+                </span>
+              </td>
+
+              <td>${actionContent}</td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      document.getElementById("tableFooter").textContent =
+        `Showing ${filtered.length} of ${vouchers.length} voucher(s)`;
+    }
+
+    // ================================================
+    // MARK AS USED MODAL
+    // ================================================
+
+    function openUsedModal(voucherId) {
+      selectedVoucher = vouchers.find(v =>
+        String(v.voucherId || "") === String(voucherId || "")
+      );
+
+      if (!selectedVoucher) {
+        showToast("Voucher not found. Please refresh the page.");
+        return;
+      }
+
+      if (getVoucherStatus(selectedVoucher) !== "Active") {
+        showToast("Only active vouchers can be marked as used.");
+        return;
+      }
+
+      document.getElementById("modalVoucherSummary").innerHTML = `
+        <strong>Beneficiary:</strong>
+        ${escapeHTML(selectedVoucher.beneficiaryName || "—")}<br>
+
+        <strong>Instagram:</strong>
+        ${escapeHTML(selectedVoucher.instagramId || "—")}<br>
+
+        <strong>Voucher ID:</strong>
+        ${escapeHTML(selectedVoucher.voucherId || "—")}<br>
+
+        <strong>Organization:</strong>
+        ${escapeHTML(selectedVoucher.organizationName || "—")}
+      `;
+
+      document.getElementById("orderIdInput").value = "";
+      document.getElementById("modalError").textContent = "";
+      document.getElementById("usedModal").classList.add("show");
+
+      setTimeout(() => {
+        document.getElementById("orderIdInput").focus();
+      }, 100);
+    }
+
+    function closeModal() {
+      document.getElementById("usedModal").classList.remove("show");
+      selectedVoucher = null;
+    }
+
+    // ================================================
+    // VERIFY ORDER AND UPDATE VOUCHER
+    // ================================================
+
+    async function confirmMarkUsed() {
+      if (!selectedVoucher) {
+        document.getElementById("modalError").textContent =
+          "Please select a voucher again.";
+        return;
+      }
+
+      const orderId = document.getElementById("orderIdInput")
+        .value.trim();
+
+      const errorBox = document.getElementById("modalError");
+      const confirmBtn = document.getElementById("confirmUsedBtn");
+
+      errorBox.textContent = "";
+
+      if (!orderId) {
+        errorBox.textContent = "Please enter an Order ID.";
+        return;
+      }
+
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = "Verifying...";
+
+      try {
+        const result = await callScript({
+          action: "updateVoucherStatus",
+          voucherId: selectedVoucher.voucherId,
+          orderId: orderId
+        });
+
+        closeModal();
+        showToast(result.message || "Voucher marked as used successfully.");
+
+        await loadData();
+
+      } catch (error) {
+        console.error("Voucher redemption error:", error);
+
+        errorBox.textContent =
+          error.message || "Unable to update voucher status.";
+
+      } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = "Verify & Mark Used";
+      }
+    }
+
+    // ================================================
+    // HTML SAFETY HELPERS
+    // ================================================
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function escapeAttribute(value) {
+      return escapeHTML(value);
+    }
+
+    // ================================================
+    // TOAST
+    // ================================================
+
+    let toastTimer;
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(toastTimer);
+
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3500);
+    }
+
+    // Close modal if the dark background is clicked.
+    document.getElementById("usedModal").addEventListener("click", event => {
+      if (event.target.id === "usedModal") {
+        closeModal();
+      }
+    });
+
+    // Allow Enter key to submit the Order ID.
+    document.getElementById("orderIdInput").addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        confirmMarkUsed();
+      }
+    });
+
+    // Initial load.
+    loadData();
+  </script>
+
+</body>
+</html>
