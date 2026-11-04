@@ -1286,55 +1286,6 @@ async function callScript(params) {
 
 }
 
-    function cleanup() {
-
-      clearTimeout(timeout);
-
-      delete window[callbackName];
-
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-
-    }
-
-
-    window[callbackName] = function(response) {
-
-      cleanup();
-
-      if (!response || response.success !== true) {
-
-        reject(new Error(
-          response?.message || "The request could not be completed."
-        ));
-
-        return;
-      }
-
-      resolve(response);
-
-    };
-
-
-    script.onerror = function() {
-
-      cleanup();
-
-      reject(new Error(
-        "Unable to connect to Google Apps Script."
-      ));
-
-    };
-
-
-    script.src = SCRIPT_URL + "?" + query.toString();
-
-    document.body.appendChild(script);
-
-  });
-
-
 
 // ================================================
 // CAMPAIGN FORM SUBMISSION
