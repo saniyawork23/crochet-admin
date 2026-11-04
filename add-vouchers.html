@@ -1237,47 +1237,54 @@ function clearStatus(elementId) {
 
 
 // ================================================
-// JSONP REQUEST HANDLER
+// JSON REQUEST HANDLER
 // ================================================
 
-// JSONP is used so the page can read Apps Script responses
-// without depending on browser CORS access.
+async function callScript(params) {
 
-function callScript(params) {
+  if (!SCRIPT_URL || SCRIPT_URL.includes("PASTE_YOUR")) {
+    throw new Error("Please configure your Google Apps Script URL.");
+  }
 
-  return new Promise((resolve, reject) => {
+  try {
 
-    if (
-      !SCRIPT_URL ||
-      SCRIPT_URL.includes("PASTE_YOUR")
-    ) {
-      reject(new Error("Please configure your Google Apps Script URL."));
-      return;
-    }
-
-    const callbackName =
-      "voucherCallback_" +
-      Date.now() +
-      "_" +
-      Math.random().toString(36).substring(2, 8);
-
-    const query = new URLSearchParams({
-      ...params,
-      callback: callbackName
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+      },
+      body: new URLSearchParams(params).toString()
     });
 
-    const script = document.createElement("script");
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
 
-    const timeout = setTimeout(() => {
+    const result = await response.json();
 
-      cleanup();
+    if (!result || result.success !== true) {
+      throw new Error(
+        result?.message || "The request could not be completed."
+      );
+    }
 
-      reject(new Error(
-        "The server did not respond. Please check your Apps Script deployment and JSONP configuration."
-      ));
+    return result;
 
-    }, 20000);
+  } catch (error) {
 
+    console.error("Apps Script request failed:", error);
+
+    if (error instanceof SyntaxError) {
+      throw new Error("Invalid JSON response from Google Apps Script.");
+    }
+
+    throw new Error(
+      error.message || "Unable to connect to Google Apps Script."
+    );
+
+  }
+
+}
 
     function cleanup() {
 
