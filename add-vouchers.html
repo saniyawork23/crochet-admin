@@ -1,0 +1,1824 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>theCutiesLoop – Add Vouchers</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --primary: #7460dc;
+  --primary-dark: #5b48bd;
+  --primary-light: #f0edff;
+  --bg: #f7f6fc;
+  --text: #29263a;
+  --muted: #89869b;
+  --border: #eae8f2;
+  --white: #ffffff;
+  --success: #27824b;
+  --danger: #dc4560;
+  --shadow: 0 5px 24px rgba(37,36,58,.05);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar {
+  min-height: 76px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 4%;
+  box-shadow: 0 2px 12px rgba(40,30,80,.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 15px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.nav-left img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #656176;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 10px 11px;
+  border-radius: 8px;
+  transition: .2s;
+  white-space: nowrap;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--primary);
+  background: #f1efff;
+}
+
+.logout-btn {
+  border: none;
+  background: #fff0f1;
+  color: #dc4560;
+  padding: 9px 15px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: .2s;
+}
+
+.logout-btn:hover {
+  background: #ffe0e5;
+}
+
+.menu-toggle {
+  display: none;
+  background: #f1efff;
+  border: none;
+  color: var(--primary);
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* ================= PAGE ================= */
+
+.voucher-page {
+  min-height: calc(100vh - 76px);
+  padding: 38px 20px 60px;
+}
+
+.page-container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.page-heading {
+  margin-bottom: 28px;
+}
+
+.page-heading .eyebrow {
+  font-size: 11px;
+  color: var(--primary);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+.page-heading h1 {
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -.5px;
+}
+
+.page-heading p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+/* ================= ACTION CARDS ================= */
+
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.action-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: .2s;
+  width: 100%;
+}
+
+.action-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 9px 25px rgba(105,85,210,.10);
+}
+
+.action-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  background: var(--primary-light);
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  margin-bottom: 15px;
+}
+
+.action-card h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.action-card p {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+  line-height: 1.7;
+}
+
+.action-arrow {
+  display: block;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 18px;
+}
+
+/* ================= FORM CARD ================= */
+
+.form-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 8px 30px rgba(45,35,90,.045);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding-bottom: 23px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 25px;
+}
+
+.card-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: var(--primary-light);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.card-heading h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.card-heading p {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.back-btn {
+  margin-left: auto;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--muted);
+  padding: 8px 13px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.back-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* ================= FORM ELEMENTS ================= */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555168;
+}
+
+.required {
+  color: #e65b76;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-width: 0;
+  height: 47px;
+  border: 1px solid var(--border);
+  background: #fcfbfe;
+  border-radius: 9px;
+  padding: 0 13px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: .2s;
+}
+
+textarea {
+  height: 95px;
+  padding: 12px 13px;
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(116,96,220,.10);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #b3b0c0;
+}
+
+input:disabled,
+input:read-only {
+  background: #f3f2f8;
+  color: #77748a;
+  cursor: not-allowed;
+}
+
+select {
+  cursor: pointer;
+}
+
+select:disabled {
+  cursor: not-allowed;
+  opacity: .7;
+}
+
+.field-hint {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: -2px;
+}
+
+/* ================= INFO BOX ================= */
+
+.info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px 15px;
+  border-radius: 10px;
+  background: #f5f3ff;
+  border: 1px solid #e8e3ff;
+  margin-top: 22px;
+}
+
+.info-box .info-icon {
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.info-box p {
+  color: #69618f;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* ================= BUTTONS ================= */
+
+.form-footer {
+  margin-top: 28px;
+  padding-top: 23px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-primary {
+  width: 100%;
+  height: 49px;
+  background: linear-gradient(135deg, #8873ec, #6252c9);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s;
+  box-shadow: 0 5px 13px rgba(105,85,210,.20);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(105,85,210,.27);
+}
+
+.btn-primary:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.form-note {
+  text-align: center;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 13px;
+}
+
+/* ================= STATUS ================= */
+
+.form-status {
+  display: none;
+  padding: 12px;
+  margin-top: 18px;
+  border-radius: 9px;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.form-status.success {
+  display: block;
+  background: #eaf8ef;
+  color: #27824b;
+}
+
+.form-status.error {
+  display: block;
+  background: #fff0f0;
+  color: #c43e50;
+}
+
+.form-status.info {
+  display: block;
+  background: #f1efff;
+  color: var(--primary-dark);
+}
+
+/* ================= EMPTY CAMPAIGN STATE ================= */
+
+.empty-campaign {
+  padding: 18px;
+  text-align: center;
+  background: #faf9ff;
+  border: 1px dashed #d8d2f4;
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.text-link {
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width: 1050px) {
+  .navbar {
+    flex-wrap: wrap;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 15px;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 11px 13px;
+    font-size: 13px;
+  }
+
+  .logout-btn {
+    margin: 8px 0 0;
+  }
+}
+
+@media(max-width: 600px) {
+  .navbar {
+    padding: 12px 18px;
+  }
+
+  .brand-name {
+    font-size: 15px;
+  }
+
+  .voucher-page {
+    padding: 30px 15px 45px;
+  }
+
+  .page-heading h1 {
+    font-size: 23px;
+  }
+
+  .action-grid {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .action-card {
+    padding: 20px;
+  }
+
+  .form-card {
+    padding: 21px 17px;
+    border-radius: 14px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+
+  .form-group.full-width {
+    grid-column: auto;
+  }
+
+  .card-heading {
+    flex-wrap: wrap;
+  }
+
+  .back-btn {
+    margin-left: 0;
+  }
+}
+</style>
+
+<script>
+if (localStorage.getItem("isLoggedIn") !== "true") {
+  window.location.href = "login.html";
+}
+
+function logout() {
+  localStorage.removeItem("isLoggedIn");
+  window.location.href = "login.html";
+}
+</script>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+  <div class="nav-left">
+    <img src="logo.png" alt="theCutiesLoop Logo">
+    <div class="brand-name">theCutiesLoop Admin</div>
+  </div>
+
+  <button class="menu-toggle"
+    id="menuToggle"
+    type="button"
+    aria-label="Toggle navigation"
+    aria-expanded="false">☰</button>
+
+  <div class="nav-links" id="navLinks">
+    <a href="add-expense.html">Add Expense</a>
+    <a href="expenses.html">View Expenses</a>
+    <a href="index.html">Add Order</a>
+    <a href="orders.html">View Orders</a>
+    <a href="customers.html">Customers</a>
+    <a href="add-vouchers.html" class="active">Add Vouchers</a>
+    <a href="vouchers.html">View Vouchers</a>
+    <a href="dashboard.html">Dashboard</a>
+    <button onclick="logout()" class="logout-btn">Logout ↗</button>
+  </div>
+
+</nav>
+
+<!-- ================= MAIN PAGE ================= -->
+
+<main class="voucher-page">
+
+<div class="page-container">
+
+  <div class="page-heading">
+    <div class="eyebrow">Business Management / Vouchers</div>
+    <h1>Voucher Management</h1>
+    <p>Create collaboration campaigns and register eligible beneficiaries for discount vouchers.</p>
+  </div>
+
+  <!-- ================= MAIN OPTIONS ================= -->
+
+  <section id="mainOptions">
+
+    <div class="action-grid">
+
+      <button type="button"
+        class="action-card"
+        onclick="openForm('campaign')">
+
+        <div class="action-icon">🤝</div>
+
+        <h2>Add New Campaign</h2>
+
+        <p>
+          Create a new collaboration with an organization,
+          NGO, college or event and generate its coupon code.
+        </p>
+
+        <span class="action-arrow">+ Create Campaign →</span>
+
+      </button>
+
+      <button type="button"
+        class="action-card"
+        onclick="openForm('voucher')">
+
+        <div class="action-icon">🎟️</div>
+
+        <h2>Add New Voucher</h2>
+
+        <p>
+          Register an individual beneficiary under an existing
+          campaign and issue their 60-day discount voucher.
+        </p>
+
+        <span class="action-arrow">+ Register Beneficiary →</span>
+
+      </button>
+
+    </div>
+
+    <div class="info-box">
+      <span class="info-icon">💡</span>
+      <p>
+        <strong>How it works:</strong>
+        First create a campaign for an organization or event.
+        Then register individual beneficiaries under that campaign.
+        Each beneficiary receives their own 60-day voucher validity.
+      </p>
+    </div>
+
+  </section>
+
+
+  <!-- ================= CAMPAIGN FORM ================= -->
+
+  <section id="campaignSection" class="form-card hidden">
+
+    <div class="card-heading">
+
+      <div class="card-icon">🤝</div>
+
+      <div>
+        <h2>Create New Campaign</h2>
+        <p>Enter the collaboration and promotional offer details.</p>
+      </div>
+
+      <button type="button"
+        class="back-btn"
+        onclick="goBack()">← Back</button>
+
+    </div>
+
+    <form id="campaignForm">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="organizationName">
+            Organization Name <span class="required">*</span>
+          </label>
+
+          <input
+            type="text"
+            id="organizationName"
+            placeholder="e.g. Rotaract Mumbai"
+            maxlength="100"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="eventName">
+            Event Name
+          </label>
+
+          <input
+            type="text"
+            id="eventName"
+            placeholder="e.g. MHC"
+            maxlength="100">
+        </div>
+
+        <div class="form-group">
+          <label for="couponCode">
+            Coupon Code <span class="required">*</span>
+          </label>
+
+          <input
+            type="text"
+            id="couponCode"
+            placeholder="e.g. MHC10"
+            maxlength="30"
+            pattern="[A-Za-z0-9_-]+"
+            title="Only letters, numbers, hyphens and underscores are allowed."
+            style="text-transform:uppercase"
+            required>
+
+          <span class="field-hint">
+            This code will be shared by all beneficiaries of this campaign.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="discountPercentage">
+            Discount Percentage <span class="required">*</span>
+          </label>
+
+          <input
+            type="number"
+            id="discountPercentage"
+            value="10"
+            min="1"
+            max="100"
+            step="1"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="campaignStartDate">
+            Campaign Start Date <span class="required">*</span>
+          </label>
+
+          <input
+            type="date"
+            id="campaignStartDate"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="campaignEndDate">
+            Campaign End Date <span class="required">*</span>
+          </label>
+
+          <input
+            type="date"
+            id="campaignEndDate"
+            required>
+
+          <span class="field-hint">
+            Last date for registering beneficiaries, not voucher expiry.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="minimumPurchase">
+            Minimum Purchase (₹) <span class="required">*</span>
+          </label>
+
+          <input
+            type="number"
+            id="minimumPurchase"
+            value="300"
+            min="0"
+            step="1"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="campaignStatus">
+            Campaign Status <span class="required">*</span>
+          </label>
+
+          <select id="campaignStatus" required>
+            <option value="Active" selected>Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="campaignNotes">
+            Special Notes
+          </label>
+
+          <textarea
+            id="campaignNotes"
+            placeholder="Add campaign details, collaboration terms or internal notes..."
+            maxlength="500"></textarea>
+        </div>
+
+      </div>
+
+      <div class="info-box">
+        <span class="info-icon">📌</span>
+        <p>
+          The campaign end date determines the last date on which
+          new beneficiaries can be registered. Existing beneficiaries
+          retain their individual 60-day validity even after the
+          campaign registration period ends.
+        </p>
+      </div>
+
+      <div class="form-footer">
+
+        <button type="submit"
+          class="btn-primary"
+          id="campaignSubmitBtn">
+          + Create Campaign
+        </button>
+
+        <p class="form-note">
+          Please verify the coupon code and campaign dates before submitting.
+        </p>
+
+      </div>
+
+      <div id="campaignStatusMessage"
+        class="form-status"
+        role="status"
+        aria-live="polite"></div>
+
+    </form>
+
+  </section>
+
+
+  <!-- ================= VOUCHER FORM ================= -->
+
+  <section id="voucherSection" class="form-card hidden">
+
+    <div class="card-heading">
+
+      <div class="card-icon">🎟️</div>
+
+      <div>
+        <h2>Register New Beneficiary</h2>
+        <p>Register a member and issue their collaboration discount voucher.</p>
+      </div>
+
+      <button type="button"
+        class="back-btn"
+        onclick="goBack()">← Back</button>
+
+    </div>
+
+    <form id="voucherForm">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="beneficiaryName">
+            Beneficiary Name <span class="required">*</span>
+          </label>
+
+          <input
+            type="text"
+            id="beneficiaryName"
+            placeholder="Enter full name"
+            maxlength="100"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="instagramId">
+            Instagram ID <span class="required">*</span>
+          </label>
+
+          <input
+            type="text"
+            id="instagramId"
+            placeholder="e.g. @username"
+            maxlength="50"
+            required>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="campaignSelect">
+            Select Campaign <span class="required">*</span>
+          </label>
+
+          <select id="campaignSelect" required disabled>
+            <option value="">Loading campaigns...</option>
+          </select>
+
+          <span class="field-hint">
+            Only active campaigns within their registration period are available.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="voucherOrganization">
+            Organization Name
+          </label>
+
+          <input
+            type="text"
+            id="voucherOrganization"
+            placeholder="Automatically populated"
+            readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="voucherCouponCode">
+            Coupon Code
+          </label>
+
+          <input
+            type="text"
+            id="voucherCouponCode"
+            placeholder="Automatically populated"
+            readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="registrationDate">
+            Registration Date <span class="required">*</span>
+          </label>
+
+          <input
+            type="date"
+            id="registrationDate"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="expiryDate">
+            Expiry Date
+          </label>
+
+          <input
+            type="date"
+            id="expiryDate"
+            readonly>
+
+          <span class="field-hint">
+            Automatically calculated as registration date + 60 days.
+          </span>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="voucherNotes">
+            Special Notes
+          </label>
+
+          <textarea
+            id="voucherNotes"
+            placeholder="e.g. Referred by event coordinator, MHC volunteer, etc."
+            maxlength="500"></textarea>
+        </div>
+
+      </div>
+
+      <div class="info-box">
+        <span class="info-icon">🎁</span>
+        <p>
+          <strong>Voucher validity:</strong>
+          Every beneficiary receives a 10% discount voucher valid
+          for 60 days from their registration date.
+          Each voucher can be redeemed only once.
+        </p>
+      </div>
+
+      <div class="form-footer">
+
+        <button type="submit"
+          class="btn-primary"
+          id="voucherSubmitBtn"
+          disabled>
+          + Register Beneficiary
+        </button>
+
+        <p class="form-note">
+          Verify the beneficiary's Instagram details before registration.
+        </p>
+
+      </div>
+
+      <div id="voucherStatusMessage"
+        class="form-status"
+        role="status"
+        aria-live="polite"></div>
+
+    </form>
+
+    <div id="noCampaignMessage" class="empty-campaign hidden">
+      No active campaigns are currently available for registration.
+      <br>
+      <button class="text-link"
+        type="button"
+        onclick="openForm('campaign')">
+        Create a new campaign
+      </button>
+    </div>
+
+  </section>
+
+</div>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+// ================================================
+// CONFIGURATION
+// ================================================
+
+// Replace this with your deployed Google Apps Script URL.
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwUN8FvCsfJasxK4hPo5oCJ4TMSkPPn-eg9AoNeytoUAGK8pXj1di2zzjt0PDDZv2A/exec";
+
+// Campaign and voucher validity.
+const VOUCHER_VALIDITY_DAYS = 60;
+
+// Store campaigns loaded from Google Sheets.
+let campaigns = [];
+
+
+// ================================================
+// MOBILE NAVIGATION
+// ================================================
+
+document.getElementById("menuToggle").addEventListener("click", function() {
+
+  const nav = document.getElementById("navLinks");
+  const isOpen = nav.classList.toggle("show");
+
+  this.setAttribute("aria-expanded", String(isOpen));
+  this.textContent = isOpen ? "✕" : "☰";
+
+});
+
+
+// ================================================
+// PAGE NAVIGATION
+// ================================================
+
+function openForm(type) {
+
+  document.getElementById("mainOptions").classList.add("hidden");
+  document.getElementById("campaignSection").classList.add("hidden");
+  document.getElementById("voucherSection").classList.add("hidden");
+
+  if (type === "campaign") {
+
+    document.getElementById("campaignSection").classList.remove("hidden");
+
+  } else {
+
+    document.getElementById("voucherSection").classList.remove("hidden");
+
+    loadCampaigns();
+
+  }
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+function goBack() {
+
+  document.getElementById("campaignSection").classList.add("hidden");
+  document.getElementById("voucherSection").classList.add("hidden");
+  document.getElementById("mainOptions").classList.remove("hidden");
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+// ================================================
+// DATE HELPERS
+// ================================================
+
+function getToday() {
+
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+
+}
+
+
+function addDaysToDate(dateString, days) {
+
+  if (!dateString) return "";
+
+  const parts = dateString.split("-").map(Number);
+
+  const date = new Date(
+    parts[0],
+    parts[1] - 1,
+    parts[2]
+  );
+
+  date.setDate(date.getDate() + days);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+
+}
+
+
+// ================================================
+// DEFAULT VALUES
+// ================================================
+
+document.getElementById("campaignStartDate").value = getToday();
+
+document.getElementById("registrationDate").value = getToday();
+
+
+// ================================================
+// VOUCHER EXPIRY CALCULATION
+// ================================================
+
+function updateExpiryDate() {
+
+  const registrationDate =
+    document.getElementById("registrationDate").value;
+
+  const expiryDate =
+    document.getElementById("expiryDate");
+
+  expiryDate.value = addDaysToDate(
+    registrationDate,
+    VOUCHER_VALIDITY_DAYS
+  );
+
+}
+
+
+document.getElementById("registrationDate")
+  .addEventListener("change", updateExpiryDate);
+
+updateExpiryDate();
+
+
+// ================================================
+// UNIQUE ID GENERATION
+// ================================================
+
+function generateID(prefix) {
+
+  const date = getToday().replace(/-/g, "");
+
+  const random = Math.random()
+    .toString(36)
+    .substring(2, 8)
+    .toUpperCase();
+
+  return `${prefix}-${date}-${random}`;
+
+}
+
+
+// ================================================
+// STATUS MESSAGE
+// ================================================
+
+function showStatus(elementId, message, type) {
+
+  const element = document.getElementById(elementId);
+
+  element.textContent = message;
+  element.className = "form-status " + type;
+
+}
+
+
+function clearStatus(elementId) {
+
+  const element = document.getElementById(elementId);
+
+  element.textContent = "";
+  element.className = "form-status";
+
+}
+
+
+// ================================================
+// JSONP REQUEST HANDLER
+// ================================================
+
+// JSONP is used so the page can read Apps Script responses
+// without depending on browser CORS access.
+
+function callScript(params) {
+
+  return new Promise((resolve, reject) => {
+
+    if (
+      !SCRIPT_URL ||
+      SCRIPT_URL.includes("PASTE_YOUR")
+    ) {
+      reject(new Error("Please configure your Google Apps Script URL."));
+      return;
+    }
+
+    const callbackName =
+      "voucherCallback_" +
+      Date.now() +
+      "_" +
+      Math.random().toString(36).substring(2, 8);
+
+    const query = new URLSearchParams({
+      ...params,
+      callback: callbackName
+    });
+
+    const script = document.createElement("script");
+
+    const timeout = setTimeout(() => {
+
+      cleanup();
+
+      reject(new Error(
+        "The server did not respond. Please check your Apps Script deployment and JSONP configuration."
+      ));
+
+    }, 20000);
+
+
+    function cleanup() {
+
+      clearTimeout(timeout);
+
+      delete window[callbackName];
+
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+
+    }
+
+
+    window[callbackName] = function(response) {
+
+      cleanup();
+
+      if (!response || response.success !== true) {
+
+        reject(new Error(
+          response?.message || "The request could not be completed."
+        ));
+
+        return;
+      }
+
+      resolve(response);
+
+    };
+
+
+    script.onerror = function() {
+
+      cleanup();
+
+      reject(new Error(
+        "Unable to connect to Google Apps Script."
+      ));
+
+    };
+
+
+    script.src = SCRIPT_URL + "?" + query.toString();
+
+    document.body.appendChild(script);
+
+  });
+
+}
+
+
+// ================================================
+// CAMPAIGN FORM SUBMISSION
+// ================================================
+
+document.getElementById("campaignForm")
+  .addEventListener("submit", async function(e) {
+
+  e.preventDefault();
+
+  const form = this;
+
+  if (!form.reportValidity()) return;
+
+
+  const submitBtn =
+    document.getElementById("campaignSubmitBtn");
+
+  const startDate =
+    document.getElementById("campaignStartDate").value;
+
+  const endDate =
+    document.getElementById("campaignEndDate").value;
+
+  const couponCode =
+    document.getElementById("couponCode").value.trim().toUpperCase();
+
+
+  if (endDate < startDate) {
+
+    showStatus(
+      "campaignStatusMessage",
+      "Campaign end date cannot be earlier than the start date.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const payload = {
+
+    action: "addCampaign",
+
+    campaignId: generateID("CMP"),
+
+    organizationName:
+      document.getElementById("organizationName").value.trim(),
+
+    eventName:
+      document.getElementById("eventName").value.trim(),
+
+    couponCode: couponCode,
+
+    discountPercentage:
+      document.getElementById("discountPercentage").value,
+
+    campaignStartDate: startDate,
+
+    campaignEndDate: endDate,
+
+    minimumPurchase:
+      document.getElementById("minimumPurchase").value,
+
+    campaignStatus:
+      document.getElementById("campaignStatus").value,
+
+    specialNotes:
+      document.getElementById("campaignNotes").value.trim()
+
+  };
+
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Creating Campaign...";
+
+  clearStatus("campaignStatusMessage");
+
+
+  try {
+
+    const response = await callScript(payload);
+
+    showStatus(
+      "campaignStatusMessage",
+      response.message || "Campaign created successfully!",
+      "success"
+    );
+
+    form.reset();
+
+    document.getElementById("campaignStartDate").value = getToday();
+
+    document.getElementById("discountPercentage").value = 10;
+
+    document.getElementById("minimumPurchase").value = 300;
+
+    document.getElementById("campaignStatus").value = "Active";
+
+
+  } catch(error) {
+
+    showStatus(
+      "campaignStatusMessage",
+      error.message,
+      "error"
+    );
+
+  } finally {
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "+ Create Campaign";
+
+  }
+
+});
+
+
+// ================================================
+// LOAD CAMPAIGNS FROM GOOGLE SHEETS
+// ================================================
+
+async function loadCampaigns() {
+
+  const select =
+    document.getElementById("campaignSelect");
+
+  const submitBtn =
+    document.getElementById("voucherSubmitBtn");
+
+  const emptyMessage =
+    document.getElementById("noCampaignMessage");
+
+
+  select.disabled = true;
+  submitBtn.disabled = true;
+
+  emptyMessage.classList.add("hidden");
+
+  select.innerHTML =
+    '<option value="">Loading campaigns...</option>';
+
+
+  try {
+
+    const response = await callScript({
+      action: "getCampaigns"
+    });
+
+    campaigns = response.campaigns || [];
+
+
+    // Only show active campaigns whose registration
+    // dates include today.
+
+    const today = getToday();
+
+    const availableCampaigns = campaigns.filter(campaign => {
+
+      const status =
+        String(campaign.campaignStatus || "").toLowerCase();
+
+      const startDate =
+        campaign.campaignStartDate || "";
+
+      const endDate =
+        campaign.campaignEndDate || "";
+
+      return (
+        status === "active" &&
+        startDate <= today &&
+        endDate >= today
+      );
+
+    });
+
+
+    select.innerHTML =
+      '<option value="">Select a campaign</option>';
+
+
+    availableCampaigns.forEach(campaign => {
+
+      const option = document.createElement("option");
+
+      option.value = campaign.campaignId;
+
+      option.textContent =
+        `${campaign.organizationName} - ${campaign.eventName || campaign.couponCode} (${campaign.couponCode})`;
+
+      select.appendChild(option);
+
+    });
+
+
+    select.disabled = false;
+
+
+    if (availableCampaigns.length === 0) {
+
+      select.disabled = true;
+      submitBtn.disabled = true;
+
+      emptyMessage.classList.remove("hidden");
+
+    }
+
+  } catch(error) {
+
+    select.innerHTML =
+      '<option value="">Unable to load campaigns</option>';
+
+    showStatus(
+      "voucherStatusMessage",
+      error.message,
+      "error"
+    );
+
+  }
+
+}
+
+
+// ================================================
+// CAMPAIGN SELECTION
+// ================================================
+
+document.getElementById("campaignSelect")
+  .addEventListener("change", function() {
+
+  const campaignId = this.value;
+
+  const campaign = campaigns.find(
+    item => String(item.campaignId) === String(campaignId)
+  );
+
+
+  document.getElementById("voucherOrganization").value =
+    campaign ? campaign.organizationName : "";
+
+  document.getElementById("voucherCouponCode").value =
+    campaign ? campaign.couponCode : "";
+
+
+  document.getElementById("voucherSubmitBtn").disabled =
+    !campaign;
+
+  clearStatus("voucherStatusMessage");
+
+});
+
+
+// ================================================
+// VOUCHER FORM SUBMISSION
+// ================================================
+
+document.getElementById("voucherForm")
+  .addEventListener("submit", async function(e) {
+
+  e.preventDefault();
+
+  const form = this;
+
+  if (!form.reportValidity()) return;
+
+
+  const submitBtn =
+    document.getElementById("voucherSubmitBtn");
+
+
+  const campaignId =
+    document.getElementById("campaignSelect").value;
+
+
+  const campaign = campaigns.find(
+    item => String(item.campaignId) === String(campaignId)
+  );
+
+
+  if (!campaign) {
+
+    showStatus(
+      "voucherStatusMessage",
+      "Please select a valid campaign.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  // Revalidate campaign availability at submission time.
+
+  const today = getToday();
+
+  if (
+    String(campaign.campaignStatus).toLowerCase() !== "active" ||
+    campaign.campaignStartDate > today ||
+    campaign.campaignEndDate < today
+  ) {
+
+    showStatus(
+      "voucherStatusMessage",
+      "This campaign is no longer available for registration.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const registrationDate =
+    document.getElementById("registrationDate").value;
+
+  const expiryDate =
+    addDaysToDate(registrationDate, VOUCHER_VALIDITY_DAYS);
+
+
+  if (registrationDate > today) {
+
+    showStatus(
+      "voucherStatusMessage",
+      "Registration date cannot be in the future.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if (
+    registrationDate < campaign.campaignStartDate ||
+    registrationDate > campaign.campaignEndDate
+  ) {
+
+    showStatus(
+      "voucherStatusMessage",
+      "The selected registration date falls outside the campaign period.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const instagramId =
+    document.getElementById("instagramId").value
+      .trim()
+      .replace(/^@+/, "");
+
+
+  const payload = {
+
+    action: "addVoucher",
+
+    voucherId: generateID("VCH"),
+
+    beneficiaryName:
+      document.getElementById("beneficiaryName").value.trim(),
+
+    instagramId: instagramId,
+
+    organizationName:
+      campaign.organizationName,
+
+    campaignId:
+      campaign.campaignId,
+
+    couponCode:
+      campaign.couponCode,
+
+    registrationDate:
+      registrationDate,
+
+    expiryDate:
+      expiryDate,
+
+    status:
+      "Active",
+
+    usedDate:
+      "",
+
+    orderId:
+      "",
+
+    specialNotes:
+      document.getElementById("voucherNotes").value.trim()
+
+  };
+
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Registering Beneficiary...";
+
+  clearStatus("voucherStatusMessage");
+
+
+  try {
+
+    const response = await callScript(payload);
+
+
+    showStatus(
+      "voucherStatusMessage",
+      response.message || "Beneficiary registered successfully!",
+      "success"
+    );
+
+
+    form.reset();
+
+    document.getElementById("registrationDate").value = getToday();
+
+    updateExpiryDate();
+
+    document.getElementById("campaignSelect").value = "";
+
+    document.getElementById("voucherOrganization").value = "";
+
+    document.getElementById("voucherCouponCode").value = "";
+
+    submitBtn.disabled = true;
+
+
+  } catch(error) {
+
+    showStatus(
+      "voucherStatusMessage",
+      error.message,
+      "error"
+    );
+
+  } finally {
+
+    submitBtn.textContent = "+ Register Beneficiary";
+
+  }
+
+});
+
+
+// ================================================
+// COUPON CODE FORMATTING
+// ================================================
+
+document.getElementById("couponCode")
+  .addEventListener("input", function() {
+
+  const cursorPosition = this.selectionStart;
+
+  this.value = this.value.toUpperCase();
+
+  this.setSelectionRange(cursorPosition, cursorPosition);
+
+});
+
+
+// ================================================
+// CAMPAIGN END DATE VALIDATION
+// ================================================
+
+document.getElementById("campaignStartDate")
+  .addEventListener("change", function() {
+
+  const endDate =
+    document.getElementById("campaignEndDate");
+
+  endDate.min = this.value;
+
+  if (endDate.value && endDate.value < this.value) {
+    endDate.value = "";
+  }
+
+});
+
+
+// ================================================
+// INITIAL SETUP
+// ================================================
+
+// Keep expiry updated when the page loads.
+updateExpiryDate();
+
+</script>
+
+</body>
+</html>
