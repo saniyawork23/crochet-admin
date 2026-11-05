@@ -148,8 +148,9 @@
   }
 
   .nav-links.show {
-    display: flex;
-  }
+  display: flex;
+  width: 100%;
+}
 
   .nav-links a {
     padding: 11px 13px;
@@ -781,6 +782,29 @@
       localStorage.removeItem("isLoggedIn");
       window.location.href = "login.html";
     }
+
+    // ================================================
+// RESPONSIVE NAVBAR TOGGLE
+// ================================================
+
+const menuToggle = document.getElementById("menuToggle");
+const navLinks = document.getElementById("navLinks");
+
+menuToggle.addEventListener("click", () => {
+  const isOpen = navLinks.classList.toggle("show");
+
+  menuToggle.setAttribute("aria-expanded", isOpen);
+  menuToggle.textContent = isOpen ? "✕" : "☰";
+});
+
+// Close the menu after clicking a navigation link.
+navLinks.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => {
+    navLinks.classList.remove("show");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.textContent = "☰";
+  });
+});
 
     // ================================================
     // JSON REQUEST HANDLER
