@@ -1081,7 +1081,7 @@ async function downloadCoupon(voucherId) {
     ctx.textBaseline = "alphabetic";
 
     // Helper to fit text within available space.
-    function drawFittedText(text, x, y, maxWidth, fontSize = 21) {
+    function drawFittedText(text, x, y, maxWidth, fontSize = 19) {
 
       let size = fontSize;
 
@@ -1130,8 +1130,8 @@ async function downloadCoupon(voucherId) {
 
     drawFittedText(
       expiryDate,
-      545,
-      330,
+      540,
+      325,
       145,
       19
     );
