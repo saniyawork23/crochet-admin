@@ -596,6 +596,24 @@
         padding: 20px;
       }
     }
+
+    /* COUPON DOWNLOAD BUTTON */
+
+.row-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.coupon-download-btn {
+  background: #f0efff;
+  color: #6254d9;
+}
+
+.coupon-download-btn:hover {
+  background: #e3e0ff;
+}
   </style>
 </head>
 
@@ -992,7 +1010,174 @@ navLinks.querySelectorAll("a").forEach(link => {
         year: "numeric"
       });
     }
+// ================================================
+// COUPON IMAGE GENERATOR
+// ================================================
 
+const COUPON_TEMPLATE_URL = "coupon-template.png";
+
+async function downloadCoupon(voucherId) {
+
+  const voucher = vouchers.find(v =>
+    String(v.voucherId || "") === String(voucherId || "")
+  );
+
+  if (!voucher) {
+    showToast("Voucher not found. Please refresh the page.");
+    return;
+  }
+
+  try {
+
+    showToast("Generating personalised coupon...");
+
+    // Load the coupon background template.
+    const template = new Image();
+
+    template.src = COUPON_TEMPLATE_URL;
+
+    await new Promise((resolve, reject) => {
+      template.onload = resolve;
+      template.onerror = () => reject(
+        new Error("Unable to load coupon-template.png. Please check its location.")
+      );
+    });
+
+    // Wait for web fonts to become available.
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+
+    // Create canvas using original template dimensions.
+    const canvas = document.createElement("canvas");
+
+    canvas.width = template.naturalWidth;
+    canvas.height = template.naturalHeight;
+
+    const ctx = canvas.getContext("2d");
+
+    // Draw the original template.
+    ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
+
+    // Get beneficiary details.
+    const beneficiaryName = String(
+      voucher.beneficiaryName || "—"
+    );
+
+    const instagramId = String(
+      voucher.instagramId || ""
+    ).replace(/^@+/, "");
+
+    const couponCode = String(
+      voucher.couponCode ||
+      getCampaign(voucher.campaignId)?.couponCode ||
+      "—"
+    );
+
+    const expiryDate = formatDate(voucher.expiryDate);
+
+    // Text styling.
+    ctx.fillStyle = "#29283a";
+    ctx.textBaseline = "alphabetic";
+
+    // Helper to fit text within available space.
+    function drawFittedText(text, x, y, maxWidth, fontSize = 21) {
+
+      let size = fontSize;
+
+      ctx.font = `500 ${size}px Poppins, sans-serif`;
+
+      while (ctx.measureText(text).width > maxWidth && size > 12) {
+        size -= 1;
+        ctx.font = `500 ${size}px Poppins, sans-serif`;
+      }
+
+      ctx.fillText(text, x, y, maxWidth);
+    }
+
+    // --------------------------------------------
+    // BENEFICIARY DETAILS
+    // Coordinates based on the 872 × 580 template.
+    // --------------------------------------------
+
+    // Name
+    drawFittedText(
+      beneficiaryName,
+      160,
+      269,
+      340
+    );
+
+    // Coupon Code
+    drawFittedText(
+      couponCode,
+      250,
+      307,
+      250
+    );
+
+    // Instagram ID
+    drawFittedText(
+      instagramId ? "@" + instagramId : "—",
+      210,
+      343,
+      290
+    );
+
+    // --------------------------------------------
+    // EXPIRY DATE
+    // --------------------------------------------
+
+    drawFittedText(
+      expiryDate,
+      680,
+      405,
+      145,
+      19
+    );
+
+    // --------------------------------------------
+    // DOWNLOAD PNG
+    // --------------------------------------------
+
+    canvas.toBlob(blob => {
+
+      if (!blob) {
+        showToast("Unable to generate coupon image.");
+        return;
+      }
+
+      const downloadURL = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      const safeName = beneficiaryName
+        .replace(/[^a-z0-9]/gi, "_")
+        .replace(/_+/g, "_");
+
+      link.href = downloadURL;
+      link.download = `theCutiesLoop_Coupon_${safeName}.png`;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(downloadURL);
+
+      showToast("Personalised coupon downloaded successfully!");
+
+    }, "image/png");
+
+  } catch (error) {
+
+    console.error("Coupon generation error:", error);
+
+    showToast(
+      error.message || "Unable to generate coupon."
+    );
+
+  }
+}
     // ================================================
     // SUMMARY CARDS
     // ================================================
@@ -1076,6 +1261,16 @@ navLinks.querySelectorAll("a").forEach(link => {
 
           let actionContent = "";
 
+          const downloadButton = `
+  <button
+    class="action-btn coupon-download-btn"
+    onclick="downloadCoupon('${escapeAttribute(voucher.voucherId)}')"
+    title="Download personalised coupon"
+  >
+    ↓ Download Coupon
+  </button>
+`;
+
           if (status === "Active") {
             actionContent = `
               <button
@@ -1140,7 +1335,12 @@ navLinks.querySelectorAll("a").forEach(link => {
                 </span>
               </td>
 
-              <td>${actionContent}</td>
+              <td>
+  <div class="row-actions">
+    ${downloadButton}
+    ${actionContent}
+  </div>
+</td>
             </tr>
           `;
         }).join("");
