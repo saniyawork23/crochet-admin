@@ -1014,7 +1014,7 @@ navLinks.querySelectorAll("a").forEach(link => {
 // COUPON IMAGE GENERATOR
 // ================================================
 
-const COUPON_TEMPLATE_URL = "coupon-template.png";
+const COUPON_TEMPLATE_URL = "coupon-template-new.png";
 
 async function downloadCoupon(voucherId) {
 
@@ -1039,7 +1039,7 @@ async function downloadCoupon(voucherId) {
     await new Promise((resolve, reject) => {
       template.onload = resolve;
       template.onerror = () => reject(
-        new Error("Unable to load coupon-template.png. Please check its location.")
+        new Error("Unable to load coupon-template-new.png. Please check its location.")
       );
     });
 
@@ -1130,8 +1130,8 @@ async function downloadCoupon(voucherId) {
 
     drawFittedText(
       expiryDate,
-      540,
-      327,
+      205,
+      310,
       145,
       19
     );
